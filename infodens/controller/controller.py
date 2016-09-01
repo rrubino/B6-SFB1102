@@ -1,14 +1,14 @@
-import featuremanager as featman
+from ..featurextractor import featuremanager as featman
 
 # ========================== Controller ==========================
 # This script reads the config file, calls the feature extractors
 # And calls the necessary methods to print/classify the output.
 # ================================================================
 
-# ============================loadconfig===================================
+# ============================loadConfig===================================
 # Reads the config file, extracts the featureIDs and their argument strings
 # =========================================================================
-def infodens_loadconfig(config_file):
+def loadConfig(config_file):
     config = open(config_file, 'r')
 
     # Skip header
@@ -29,12 +29,12 @@ def infodens_loadconfig(config_file):
 
     return featureModuleIDs, featureIDs, featarg
 
-# ============================call_extractors================================
+# ============================callExtractors================================
 # Given a list of featureIDs and their arguments, call the feature manager
 # Which then checks the validity of the feature strings, and if all is valid
 # does the calls to feature extractors.
 # ===========================================================================
-def infodens_call_extractors(featureModIds, featureIDs, featargs):
+def callExtractors(featureModIds, featureIDs, featargs):
     valid_feats = featman.checkValid(featureModIds,featureIDs)
     if(valid_feats):
         # Continue to call features
@@ -44,7 +44,3 @@ def infodens_call_extractors(featureModIds, featureIDs, featargs):
         # terminate
         return -1
 
-featModIds, featIds, featargs = infodens_loadconfig("testconfig.txt")
-#print(infodens_loadconfig("testconfig.txt"))
-
-infodens_call_extractors(featModIds, featIds, featargs)

@@ -1,6 +1,5 @@
 import importlib
 
-
 # ========================== featuremanager ======================
 # This module validates the config file feature requests,
 # And calls the necessary feature extractors.
@@ -14,9 +13,10 @@ def checkValid(featureModuleIds, featureIDs):
     return 1
 
 def call_extractors(featureModuleIds, featureIDs, featargs ):
-    #print(featureIDs[0])
+    print(featureModuleIds[0])
 
-    modulePath = 'infodens.featurextractor.' + featureModuleIds[0]
+    #modulePath = 'infodens.featurextractor.' + featureModuleIds[0]
+    modulePath = "infodens.featurextractor."+featureModuleIds[0]
     m =  importlib.import_module(modulePath)
     featToCall = getattr(m,featureIDs[0])
     featToCall(featargs[0])
