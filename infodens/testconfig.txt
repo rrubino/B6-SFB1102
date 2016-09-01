@@ -1,0 +1,3 @@
+FeatureID    ExtractorArgs
+average_wordlen            35,"hello",'a'
+average_sent      21
