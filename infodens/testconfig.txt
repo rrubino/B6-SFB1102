@@ -1,3 +1,3 @@
-FeatureID    ExtractorArgs
-average_wordlen            35,"hello",'a'
-average_sent      21
+FeatureModuleID  FeatureID   				ExtractorArgs
+testextractor      average_wordlen            35,"hello",'a'
+averagesent		 average_sent     			 21

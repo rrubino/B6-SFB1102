@@ -9,13 +9,15 @@ import importlib
 # ============================call_extractors==============================
 # Reads the config file, extracts the featureIDs and their argument strings
 # =========================================================================
-def checkValid(featureIDs):
+def checkValid(featureModuleIds, featureIDs):
     print("hello from featman")
     return 1
 
-def call_extractors(featureIDs, featargs ):
+def call_extractors(featureModuleIds, featureIDs, featargs ):
     #print(featureIDs[0])
-    m =  importlib.import_module('infodens.featurextractor.testextractor')
+
+    modulePath = 'infodens.featurextractor.' + featureModuleIds[0]
+    m =  importlib.import_module(modulePath)
     featToCall = getattr(m,featureIDs[0])
     featToCall(featargs[0])
     print("Called features")
