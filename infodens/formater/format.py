@@ -85,7 +85,8 @@ class Format:
     def scikitFormat(self):
         
         X = np.asarray(self.featureSetX); y = np.asarray(self.featureSety)
-        if len(X.shape) ==1:
-            return X.reshape(X.shape[0], 1), y
-        else:
-            return X, y
+        return np.transpose(X), y
+#        if len(X.shape) ==1:
+#            return X.reshape(X.shape[0], 1), y
+#        else:
+#            return X, y
