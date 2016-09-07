@@ -1,46 +1,45 @@
 from ..featurextractor import featuremanager as featman
 
-# ========================== Controller ==========================
-# This script reads the config file, calls the feature extractors
-# And calls the necessary methods to print/classify the output.
-# ================================================================
 
-# ============================loadConfig===================================
-# Reads the config file, extracts the featureIDs and their argument strings
-# =========================================================================
-def loadConfig(config_file):
-    config = open(config_file, 'r')
+class Controller:
+    """Read the config file and init a FeatureManager. """
 
-    # Skip header
-    header = config.readline()
-    featureModuleIDs = []
-    featureIDs = []
-    featarg = []
+    def __init__(self, configFile =None):
+        self.config = configFile
+        self.featureIDs = []
+        self.featargs = []
 
-    #Extract featureID and feature Argument string
-    for line in config:
-        line = line.strip()
-        params = line.split()
-        featureModuleIDs.append(params[0])
-        featureIDs.append(params[1])
-        featarg.append(params[2])
+    def loadConfig(self):
+        """Read the config file, extract the featureIDs and
+        their argument strings.
+        """
+        config = open(self.config, 'r')
 
-    config.close()
+        # Skip header if needed
+        # header = config.readline()
 
-    return featureModuleIDs, featureIDs, featarg
+        # Extract featureID and feature Argument string
+        for line in config:
+            line = line.strip()
+            params = line.split()
+            self.featureIDs.append(params[0])
+            self.featargs.append(params[1])
 
-# ============================callExtractors================================
-# Given a list of featureIDs and their arguments, call the feature manager
-# Which then checks the validity of the feature strings, and if all is valid
-# does the calls to feature extractors.
-# ===========================================================================
-def callExtractors(featureModIds, featureIDs, featargs):
-    valid_feats = featman.checkValid(featureModIds,featureIDs)
-    if(valid_feats):
-        # Continue to call features
-        featman.call_extractors(featureModIds, featureIDs,featargs)
-        return 0
-    else:
-        # terminate
-        return -1
+        config.close()
+
+        return self.featureIDs, self.featargs
+
+    def manageFeatures(self):
+        """Init and call a feature manager. """
+
+        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs)
+        validFeats = manageFeatures.checkFeatValidity()
+        if validFeats:
+            # Continue to call features
+            manageFeatures.callExtractors()
+            return 0
+        else:
+            # terminate
+            print("Error in Config File, Please reformat. ")
+            return -1
 
