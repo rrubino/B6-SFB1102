@@ -1,4 +1,6 @@
 import importlib
+
+# Remove when callExtractors is implemented
 from .surfaceFeatures import SurfaceFeatures
 
 
@@ -35,8 +37,5 @@ class FeatureManager:
         # call the needed function
         print(surfaceFeats.averageWordLength())
 
-
-
         print("Called features")
-	
 
