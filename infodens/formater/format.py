@@ -4,7 +4,7 @@ Created on Wed Aug 31 12:32:17 2016
 
 @author: admin
 """
-
+import numpy as np
 def libsvmwriteToFile(theList, theFile):
     thefile = open(theFile, 'w')
     
@@ -82,3 +82,10 @@ class Format:
             arrfOutput.append(output_i)
         arrfwriteToFile(arrfOutput, fileName)
         
+    def scikitFormat(self):
+        
+        X = np.asarray(self.featureSetX); y = np.asarray(self.featureSety)
+        if len(X.shape) ==1:
+            return X.reshape(X.shape[0], 1), y
+        else:
+            return X, y

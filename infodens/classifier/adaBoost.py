@@ -37,7 +37,22 @@ class AdaBoost:
         ''' 
         classifier.__init__(self, X, y)
         
-    
+    def shuffle(self):
+        indices = [i for i in range(len(self.y))]
+        random.shuffle(indices)
+        newX = np.zeros(self.X.shape)
+        newy = np.zeros(self.y.shape)
+        if len(self.X.shape) == 1:
+            for i in range(len(self.y)):
+                newX[i] = self.X[indices[i]]
+                newy[i] = self.y[indices[i]]
+                
+        else:
+            for i in range(len(self.y)):
+                newX[i, :] = self.X[indices[i],:]
+                newy[i] = self.y[indices[i]]
+        self.X = newX
+        self.y = newy
 
     def splitTrainTest(self):
         self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 

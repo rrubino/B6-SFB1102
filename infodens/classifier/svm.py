@@ -4,6 +4,7 @@ Created on Aug 23, 2016
 @author: admin
 '''
 #from trans.classifier import classifier
+import random
 from classifier import Classifier
 import scipy
 import numpy as np
@@ -42,7 +43,22 @@ class SVM(Classifier):
         '''
         Classifier.__init__(self, X, y)
         
-    
+    def shuffle(self):
+        indices = [i for i in range(len(self.y))]
+        random.shuffle(indices)
+        newX = np.zeros(self.X.shape)
+        newy = np.zeros(self.y.shape)
+        if len(self.X.shape) == 1:
+            for i in range(len(self.y)):
+                newX[i] = self.X[indices[i]]
+                newy[i] = self.y[indices[i]]
+                
+        else:
+            for i in range(len(self.y)):
+                newX[i, :] = self.X[indices[i],:]
+                newy[i] = self.y[indices[i]]
+        self.X = newX
+        self.y = newy
 
     def splitTrainTest(self):
         self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
@@ -98,7 +114,7 @@ class SVM(Classifier):
     def evaluate(self):
         y_pred = self.predict()
         print ('Accuracy: ', accuracy_score(self.ytest, y_pred))
-        #print ('Precision: ', average_precision_score(self.ytest, y_pred))
+        print ('Precision: ', average_precision_score(self.ytest, y_pred))
         print ('Recall: ', recall_score(self.ytest, y_pred))
         print ('F-score: ', f1_score(self.ytest, y_pred))
         
