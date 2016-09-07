@@ -1,7 +1,18 @@
-from infodens.controller import controller as ctrl
+import sys
+from infodens.controller.controller import Controller
+
+# TODO: Reformat to use sys arguments for config file.
+
+def infodensRun(configFile):
+    # Init a Controller.
+    control = Controller(configFile)
+    # Load the config file
+    featIds, featargs = control.loadConfig()
+    print(featIds)
+    print(featargs)
+    # MAIN PROCESS (Extract all features)
+    control.manageFeatures()
 
 
-featModIds, featIds, featargs = ctrl.loadConfig("testconfig.txt")
-#print(infodens_loadconfig("testconfig.txt"))
 
-ctrl.callExtractors(featModIds, featIds, featargs)
+infodensRun("testconfig.txt")
