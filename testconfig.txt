@@ -1,6 +1,9 @@
-testSent.txt
 1 argument1
 # This is a comment
 5 anotherArg
+
+#empty lines are fine too
+input file : testSent.txt
 7 yetAnotherArg
+12 75 
 #Another comment
