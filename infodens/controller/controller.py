@@ -1,4 +1,5 @@
 from ..featurextractor import featuremanager as featman
+from ..preprocessor import preprocess
 
 
 class Controller:
@@ -8,6 +9,7 @@ class Controller:
         self.config = configFile
         self.featureIDs = []
         self.featargs = []
+        self.listOfSent = []
 
     def loadConfig(self):
         """Read the config file, extract the featureIDs and
@@ -15,8 +17,13 @@ class Controller:
         """
         config = open(self.config, 'r')
 
-        # Skip header if needed
-        # header = config.readline()
+        # First line is input file
+        # TODO: Change to search and find input file
+        inputFile = config.readline()
+        inputFile = inputFile.strip()
+        preprocessor = preprocess.Preprocess(inputFile)
+        self.listOfSent = preprocessor.preprocessBySentence()
+
 
         # Extract featureID and feature Argument string
         for line in config:
@@ -27,12 +34,12 @@ class Controller:
 
         config.close()
 
-        return self.featureIDs, self.featargs
+        return self.featureIDs, self.featargs, self.listOfSent
 
     def manageFeatures(self):
         """Init and call a feature manager. """
 
-        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs)
+        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, self.listOfSent)
         validFeats = manageFeatures.checkFeatValidity()
         if validFeats:
             # Continue to call features

@@ -10,11 +10,10 @@ from ..preprocessor.preprocess import Preprocess
 
 class SurfaceFeatures:
 
-    def __init__(self, fileName=None):
-        """Read file and init a list of sentences. """
-
-        sentenceLoader = Preprocess(fileName)
-        self.listOfSentences = sentenceLoader.preprocessBySentence()
+    def __init__(self, argumentString, listOfSent=None):
+        """Gets list of sentences to process """
+        self.listOfSentences = listOfSent
+        self.featArg = argumentString
     
     @featid(1)    
     def averageWordLength(self):

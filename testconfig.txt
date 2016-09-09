@@ -1,2 +1,3 @@
-1 testSent.txt
+testSent.txt
+1 argument1
 5 anotherArg

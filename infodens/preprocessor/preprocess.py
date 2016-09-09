@@ -14,8 +14,8 @@ class Preprocess:
         
         
     def preprocessBySentence(self):
-        f = open(self.fileName)
-        lines = f.readlines()
+        with open(self.fileName) as f:
+            lines = f.read().splitlines()
         
         return lines
         
