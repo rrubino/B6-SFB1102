@@ -28,9 +28,12 @@ class Controller:
         # Extract featureID and feature Argument string
         for line in config:
             line = line.strip()
-            params = line.split()
-            self.featureIDs.append(params[0])
-            self.featargs.append(params[1])
+            if line[0] is '#':
+                continue
+            else:
+                params = line.split()
+                self.featureIDs.append(params[0])
+                self.featargs.append(params[1])
 
         config.close()
 
