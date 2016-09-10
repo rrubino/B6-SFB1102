@@ -1,9 +1,11 @@
 1 argument1
 # This is a comment
 5 anotherArg
+classifiers : svm neural gmm
 
 #empty lines are fine too
-input file : testSent.txt
+input files : testSent.txt classes.txt
+# input and classifiers are parsed after ':'
 7 yetAnotherArg
 12 75 
 #Another comment

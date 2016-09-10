@@ -18,13 +18,8 @@ class Controller:
         config = open(self.config, 'r')
         statusOK = 1
         inputFile = 0
-
-        # First line is input file
-        # TODO: Change to search and find input file
-        # inputFile = config.readline()
-        # inputFile = inputFile.strip()
-        #preprocessor = preprocess.Preprocess(inputFile)
-        #self.listOfSent = preprocessor.preprocessBySentence()
+        inputClasses = 0
+        classifiersList = 0
 
 
         # Extract featureID and feature Argument string
@@ -38,9 +33,19 @@ class Controller:
                 continue
             elif "input" in line:
                 startInp = line.index(':')
-                line =  line[startInp+1:]
-                inputFile = line.strip()
-                #print(inputFile)
+                line = line[startInp+1:]
+                line = line.strip()
+                line = line.split()
+                inputFile = line[0]
+                inputClasses = line[1]
+                print(inputFile)
+                print(inputClasses)
+            elif "classif" in line:
+                startInp = line.index(':')
+                line = line[startInp+1:]
+                line = line.strip()
+                classifiersList = line.split()
+                print(classifiersList)
             else:
                 params = line.split()
                 if len(params) == 2:
