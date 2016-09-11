@@ -1,4 +1,5 @@
 from ..featurextractor import featuremanager as featman
+from ..preprocessor import preprocess
 
 
 class Controller:
@@ -8,31 +9,72 @@ class Controller:
         self.config = configFile
         self.featureIDs = []
         self.featargs = []
+        self.listOfSent = []
 
     def loadConfig(self):
         """Read the config file, extract the featureIDs and
         their argument strings.
         """
         config = open(self.config, 'r')
+        statusOK = 1
+        inputFile = 0
+        inputClasses = 0
+        classifiersList = 0
 
-        # Skip header if needed
-        # header = config.readline()
 
         # Extract featureID and feature Argument string
         for line in config:
             line = line.strip()
-            params = line.split()
-            self.featureIDs.append(params[0])
-            self.featargs.append(params[1])
+            if len(line) < 1:
+                #Line is empty
+                continue
+            elif line[0] is '#':
+                #Line is comment
+                continue
+            elif "input" in line:
+                startInp = line.index(':')
+                line = line[startInp+1:]
+                line = line.strip()
+                line = line.split()
+                inputFile = line[0]
+                inputClasses = line[1]
+                print(inputFile)
+                print(inputClasses)
+            elif "classif" in line:
+                startInp = line.index(':')
+                line = line[startInp+1:]
+                line = line.strip()
+                classifiersList = line.split()
+                print(classifiersList)
+            else:
+                params = line.split()
+                if len(params) == 2:
+                    if params[0].isdigit():
+                        self.featureIDs.append(params[0])
+                        self.featargs.append(params[1])
+                    else:
+                        statusOK = 0
+                        print("Feature ID is not a Number")
+                else:
+                    # Incorrect number/value of params
+                    statusOK = 0
+                    print("Incorrect number of params, should be only 2")
+
+        if inputFile is 0:
+            print("Error, Input file not found. ")
+            statusOK = 0
+        else:
+            preprocessor = preprocess.Preprocess(inputFile)
+            self.listOfSent = preprocessor.preprocessBySentence()
 
         config.close()
 
-        return self.featureIDs, self.featargs
+        return statusOK, self.featureIDs, self.featargs, self.listOfSent
 
     def manageFeatures(self):
         """Init and call a feature manager. """
 
-        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs)
+        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, self.listOfSent)
         validFeats = manageFeatures.checkFeatValidity()
         if validFeats:
             # Continue to call features

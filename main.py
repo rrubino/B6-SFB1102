@@ -7,11 +7,16 @@ def infodensRun(configFile):
     # Init a Controller.
     control = Controller(configFile)
     # Load the config file
-    featIds, featargs = control.loadConfig()
-    print(featIds)
-    print(featargs)
+    status, featIds, featargs, sentencesList = control.loadConfig()
     # MAIN PROCESS (Extract all features)
-    control.manageFeatures()
+    if status != 0:
+        print(featIds)
+        print(featargs)
+        print(sentencesList)
+        control.manageFeatures()
+    else:
+        print("Error")
+        return 0
 
 
 

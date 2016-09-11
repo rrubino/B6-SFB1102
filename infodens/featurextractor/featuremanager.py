@@ -13,9 +13,10 @@ class FeatureManager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, featureIDs, featureArgs):
+    def __init__(self, featureIDs, featureArgs, listOfSentences):
         self.featureIDs = featureIDs
         self.featureArgs = featureArgs
+        self.lofs = listOfSentences
 
     def checkFeatValidity(self):
         """TODO: Check if features requested are valid. """
@@ -37,7 +38,11 @@ class FeatureManager:
 
         #Testing feature and example.
         # Init the class with the corresponding argument
+<<<<<<< HEAD
         #surfaceFeats = SurfaceFeatures(self.featureArgs[0])
+=======
+        surfaceFeats = SurfaceFeatures(self.featureArgs[0], self.lofs)
+>>>>>>> 28d6afdc0292b2146a160dcc6d37728962ae43d9
         # call the needed function
         #print(surfaceFeats.averageWordLength())
 
