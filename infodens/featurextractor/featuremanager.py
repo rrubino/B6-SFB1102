@@ -13,10 +13,9 @@ class FeatureManager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, featureIDs, featureArgs, listOfSentences):
+    def __init__(self, featureIDs, featureArgs):
         self.featureIDs = featureIDs
         self.featureArgs = featureArgs
-        self.lofs = listOfSentences
 
     def checkFeatValidity(self):
         """TODO: Check if features requested are valid. """
@@ -38,11 +37,7 @@ class FeatureManager:
 
         #Testing feature and example.
         # Init the class with the corresponding argument
-<<<<<<< HEAD
         #surfaceFeats = SurfaceFeatures(self.featureArgs[0])
-=======
-        surfaceFeats = SurfaceFeatures(self.featureArgs[0], self.lofs)
->>>>>>> 28d6afdc0292b2146a160dcc6d37728962ae43d9
         # call the needed function
         #print(surfaceFeats.averageWordLength())
 
@@ -89,22 +84,16 @@ class FeatureManager:
         
         '''
         idClassmethod = {}
-        for fid in self.featureIDs:
-            idClassmethod[fid] = []
-            
+           
         for modul in modules:
             clsmembers = inspect.getmembers(modul, inspect.isclass)
             for i in range(len(clsmembers)):        
                 fIDs = idsOfMethods(clsmembers[i][1], 'featid', {})
                 for key in fIDs:
                     if key in self.featureIDs:
-                        idClassmethod[key].append(clsmembers[i][1])
-                        mtds = inspect.getmembers(clsmembers[i][1], predicate=inspect.ismethod)
-                        for method in mtds:
-                            if method[0] in featIDByUser.values() and method[0] == featIDByUser[key]:
-                                idClassmethod[key].append(method[1])
-                            break
-        ##dictionary = {id: [class, method]}
+                        idClassmethod[key] = clsmembers[i][1]
+                        
+        ##dictionary = {id: class}
                             
                             
         '''
@@ -114,7 +103,7 @@ class FeatureManager:
         featuresExtracted = []
         for i in range(len(self.featureIDs)):
             mtdCls = idClassmethod[self.featureIDs[i]]
-            instance = mtdCls[0](self.featureArgs[i])
+            instance = mtdCls(self.featureArgs[i])
             methd = getattr(instance, featureIds[self.featureIDs[i]])
             featuresExtracted.append(methd())
             
