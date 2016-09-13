@@ -8,7 +8,7 @@ Created on Sun Sep 04 18:15:17 2016
 import imp, os
 import sys, inspect
 from os import path
-from utils import featid, methodsWithDecorator, writeDictionaryToFile, readFileToDictionary, idsOfMethods
+from .utils import featid, methodsWithDecorator, writeDictionaryToFile, readFileToDictionary, idsOfMethods
 
 
 
