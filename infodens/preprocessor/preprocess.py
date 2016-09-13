@@ -16,6 +16,8 @@ class Preprocess:
     def preprocessBySentence(self):
         with open(self.fileName) as f:
             lines = f.read().splitlines()
+
+        f.close()
         
         return lines
         
