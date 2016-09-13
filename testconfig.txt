@@ -1,6 +1,6 @@
 1 argument1
 # This is a comment
-5 anotherArg
+2 anotherArg
 classifiers : svm neural gmm
 
 #empty lines are fine too
