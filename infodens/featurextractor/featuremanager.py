@@ -18,15 +18,19 @@ class FeatureManager:
         self.featureArgs = featureArgs
         self.lofs = listOfSentences
         '''
-		Import the featurextraction package at this point. It will be needed by most of the methods.
+        Import the featurextraction package at this point. It will be needed by most of the methods.
         '''
         
-        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('featurextractor')
 
-    def checkFeatValidity(self):
-        """TODO: Check if features requested are valid. """
+        self.idClassmethod, self.allFeatureIds = self.idClassDictionary()
 
+    def checkFeatValidity(self):
+        ''' Check if requested feature exists. '''
+        for featID in self.featureIDs:
+            if featID not in self.allFeatureIds:
+                return 0
         print("Inside checkFeatValidity. ")
         return 1
 
@@ -42,7 +46,6 @@ class FeatureManager:
         sourcelines = f.readlines()
         
         for i,line in enumerate(sourcelines):
-            
             line = line.strip()
             if line.split('(')[0].strip() == '@'+decoratorName: # leaving a bit out
                 theId = int(line.split('(')[1].split(')')[0])
@@ -50,7 +53,6 @@ class FeatureManager:
                 if theId in idsToSelect:
                     nextLine = sourcelines[i+1]
                     name = nextLine.split('def')[1].split('(')[0].strip()
-                    
                     theMethods[theId] = name
                 
         return theMethods
@@ -70,10 +72,8 @@ class FeatureManager:
             line = line.strip()
             if line.split('(')[0].strip() == '@'+decoratorName: # leaving a bit out
                 theId = int(line.split('(')[1].split(')')[0])
-                
                 nextLine = sourcelines[i+1]
                 name = nextLine.split('def')[1].split('(')[0].strip()
-                
                 theMethods[theId] = name
                 
         return theMethods
@@ -83,9 +83,9 @@ class FeatureManager:
         for every id chosen, find the class that has the method and pair them in a dictionary.
         '''
         possFeatureClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname) if module.endswith('.py')])
-        
-        
-        allFeatureIds = {};  featureIds = {};  idClassmethod = {}#All feature Ids        
+
+        # All feature Ids
+        allFeatureIds = {};  featureIds = {};  idClassmethod = {}
         
         for eachName in possFeatureClasses:
             modd = __import__('featurextractor.'+eachName)
@@ -99,54 +99,16 @@ class FeatureManager:
         return idClassmethod, allFeatureIds
         
     def callExtractors(self):
-        """TODO : Import and call feature extractors. """
+        '''Extract all feature Ids and names.  '''
 
-        # Use the below code to do dynamic calls by feature Strings
-        # Given the featureID to feature function string mapping.
-
-        #modulePath = 'infodens.featurextractor.' + featureModuleIds[0]
-        #modulePath = "infodens.featurextractor."+featureModuleIds[0]
-        #m =  importlib.import_module(modulePath)
-        #featToCall = getattr(m,featureIDs[0])
-        #featToCall(featargs[0])
-
-        #Testing feature and example.
-        # Init the class with the corresponding argument
-        #print (self.featureIDs)
-        #print (self.featureArgs)
-        #surfaceFeats = SurfaceFeatures(self.lofs,self.featureArgs[0])
-        # call the needed function
-        #print(surfaceFeats.averageWordLength())
-        #print(surfaceFeats.syllableRatio())
-
-        print("Called features")
-        '''
-        extract all feature Ids and names
-        
-        '''
-        '''
-        extract all feature Ids and names
-        
-        '''
-        
-
-        idClassmethod, allFeatureIds = self.idClassDictionary()
-                
-        
         featuresExtracted = []
         
         for i in range(len(self.featureIDs)):
-            mtdCls = idClassmethod[self.featureIDs[i]]
-            instance = mtdCls(self.lofs, self.featureArgs[i])
-            methd = getattr(instance, allFeatureIds[self.featureIDs[i]])
-            featuresExtracted.append(methd())
-        print (featuresExtracted)    
+            mtdCls = self.idClassmethod[self.featureIDs[i]]
+            instance = mtdCls(self.lofs)
+            methd = getattr(instance, self.allFeatureIds[self.featureIDs[i]])
+            featuresExtracted.append(methd(self.featureArgs[i]))
+        print(featuresExtracted)
+
+        print("Called features")
         return featuresExtracted
-            
-        
-                                
-                    
-            
-        
-                
-        

@@ -90,6 +90,6 @@ class Controller:
             return 0
         else:
             # terminate
-            print("Error in Config File, Please reformat. ")
+            print("Requested Feature ID not available.")
             return -1
 

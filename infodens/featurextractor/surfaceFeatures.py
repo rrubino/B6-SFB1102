@@ -10,16 +10,14 @@ from .utils import featid
 class SurfaceFeatures:
     
     
-    def __init__(self, lof,argumentString):
+    def __init__(self, lof):
         '''
-        Initializes the class with a list of sentences (or blocks)
-        
-        '''
+        Initializes the class with a list of sentences (or blocks). '''
+
         self.listOfSentences = lof
-        self.featArg = argumentString
     
     @featid(1)    
-    def averageWordLength(self):
+    def averageWordLength(self, argString):
         '''Find average word length of every sentence and return list. '''
 
         aveWordLen = []
@@ -32,7 +30,7 @@ class SurfaceFeatures:
         return aveWordLen
 
     @featid(2)
-    def syllableRatio(self):
+    def syllableRatio(self, argString):
         '''
         We approximate this feature by counting the number of vowel-sequences
         that are delimited by consonants or space in a word, normalized by the number of tokens
@@ -51,7 +49,7 @@ class SurfaceFeatures:
                     if word2List[i] in vowels and word2List[i+1] not in vowels:
                         sylCount += 1
             
-            sylRatios.append(float(sylCount)/ len(sentence))
+            sylRatios.append(float(sylCount)/len(sentence))
             
         return sylRatios
         

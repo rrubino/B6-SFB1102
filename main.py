@@ -19,5 +19,4 @@ def infodensRun(configFile):
         return 0
 
 
-
 infodensRun("testconfig.txt")
