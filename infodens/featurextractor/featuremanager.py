@@ -78,7 +78,25 @@ class FeatureManager:
                 
         return theMethods
         
+    def idClassDictionary(self):
+        '''
+        for every id chosen, find the class that has the method and pair them in a dictionary.
+        '''
+        possFeatureClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname) if module.endswith('.py')])
         
+        
+        allFeatureIds = {};  featureIds = {};  idClassmethod = {}#All feature Ids        
+        
+        for eachName in possFeatureClasses:
+            modd = __import__('featurextractor.'+eachName)
+            modul = getattr(modd, eachName)
+            clsmembers = inspect.getmembers(modul, inspect.isclass)
+            if len(clsmembers) > 0:                
+                featureIds = self.methodsWithDecorator(clsmembers[0][1], 'featid', self.featureIDs)                
+                allFeatureIds.update(featureIds)
+                idClassmethod.update({k:clsmembers[0][1] for k in featureIds.keys()})
+                
+        return idClassmethod, allFeatureIds
         
     def callExtractors(self):
         """TODO : Import and call feature extractors. """
@@ -112,19 +130,7 @@ class FeatureManager:
         '''
         
 
-        possFeatureClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname) if module.endswith('.py')])
-        
-        
-        allFeatureIds = {};  featureIds = {};  idClassmethod = {}#All feature Ids        
-        
-        for eachName in possFeatureClasses:
-            modd = __import__('featurextractor.'+eachName)
-            modul = getattr(modd, eachName)
-            clsmembers = inspect.getmembers(modul, inspect.isclass)
-            if len(clsmembers) > 0:                
-                featureIds = self.methodsWithDecorator(clsmembers[0][1], 'featid', self.featureIDs)                
-                allFeatureIds.update(featureIds)
-                idClassmethod.update({k:clsmembers[0][1] for k in featureIds.keys()})
+        idClassmethod, allFeatureIds = self.idClassDictionary()
                 
         
         featuresExtracted = []
