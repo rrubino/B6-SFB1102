@@ -6,6 +6,6 @@ classifiers : svm neural gmm
 #empty lines are fine too
 input files : testSent.txt classes.txt
 # input and classifiers are parsed after ':'
-7 yetAnotherArg
-12 75 
+#7 yetAnotherArg
+#12 75 
 #Another comment

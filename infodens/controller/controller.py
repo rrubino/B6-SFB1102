@@ -45,7 +45,7 @@ class Controller:
                 params = configLine.split()
                 if len(params) == 2:
                     if params[0].isdigit():
-                        self.featureIDs.append(params[0])
+                        self.featureIDs.append(int(params[0]))
                         self.featargs.append(params[1])
                     else:
                         statusOK = 0
