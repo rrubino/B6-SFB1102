@@ -1,0 +1,5 @@
+1 SVM
+2 RandomForest
+3 NeuralNetwork
+4 AdaBoost
+5 DecisionTree
