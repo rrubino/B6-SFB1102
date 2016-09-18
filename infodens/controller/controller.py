@@ -1,6 +1,6 @@
 from ..featurextractor import featuremanager as featman
 from ..preprocessor import preprocess
-
+from ..classifier import classifierManager
 
 class Controller:
     """Read the config file and init a FeatureManager. """
@@ -13,6 +13,7 @@ class Controller:
         self.inputClasses = []
         self.classifiersList = []
         self.inputFile = 0
+        self.extractedFeats = []
 
     def parseConfig(self, configFile):
         """Parse the config file lines.      """
@@ -86,10 +87,25 @@ class Controller:
         validFeats = manageFeatures.checkFeatValidity()
         if validFeats:
             # Continue to call features
-            manageFeatures.callExtractors()
+            self.extractedFeats = manageFeatures.callExtractors()
             return 0
         else:
             # terminate
             print("Requested Feature ID not available.")
             return -1
+
+    def classifyFeats(self):
+        """Instantiate a classifier Manager then run it. """
+
+        if self.inputClasses and self.classifiersList:
+            # Classify if the parameters needed are specified
+            preprocessor = preprocess.Preprocess(self.inputClasses)
+            classesList = preprocessor.preprocessClassID()
+            classifying = classifierManager.ClassifierManager(self.classifiersList, self.extractedFeats,
+                                                              classesList)
+            # TODO: Continue classification procedure,
+            # (call checkValid, runClassifier..etc)
+        else:
+            print("Classifier parameters not specified.")
+        return 1
 

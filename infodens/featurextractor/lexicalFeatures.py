@@ -5,14 +5,12 @@ Created on Thu Sep 15 11:16:36 2016
 @author: admin
 """
 import nltk
-from utils import featid
+from .utils import featid
 
 class LexicalFeatures:
     
-    def __init__(self, lof, argumentString):
+    def __init__(self, lof):
         self.lof = lof
-        self.featArg = argumentString
-        
     
     def computeDensity(self, taggedSentence):
         #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs. 
@@ -21,11 +19,8 @@ class LexicalFeatures:
         
         return float(len(taggedSentence) - len(jnrv)) / len(taggedSentence)
 
-
-        
-    
     @featid(3)        
-    def lexicalDensity(self):
+    def lexicalDensity(self, argString):
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
         This is computed by dividing the number of tokens tagged with POS tags 

@@ -11,15 +11,23 @@ class Preprocess:
     
     def __init__(self, fn):
         self.fileName = fn
-        
-        
+
     def preprocessBySentence(self):
         with open(self.fileName) as f:
             lines = f.read().splitlines()
 
         f.close()
-        
         return lines
+
+    def preprocessClassID(self):
+        """ Extract from each line the integer for class ID."""
+        ids = []
+        with open(self.fileName) as f:
+            lines = f.read().splitlines()
+        f.close()
+        for id in lines:
+            ids.append(int(id))
+        return ids
         
         
     def preprocessByBlock(self, blockSize):

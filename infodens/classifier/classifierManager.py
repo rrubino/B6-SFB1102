@@ -10,17 +10,26 @@ import sys, inspect
 from os import path
 
 class ClassifierManager:
-    
-    
+
     def __init__(self, ids, dSet, labs):
         self.classifierIDs = ids
         self.dataSet = dSet
         self.labels = labs
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
-        
-        
+        print(self.classifierIDs)
+        print(self.labels)
+        print(self.dataSet)
+
+    def checkValidClassifier(self, classifDict):
+        #TODO: replace classifDict to be with self.classifDict
+        for classifID in self.classifierIDs:
+            if classifID not in classifDict:
+                return 0
+        return 1
+
     def runClassifier(self, clf):
+        """ Run the provided classifier."""
         
         clf.shuffle()        
         clf.splitTrainTest()
@@ -31,11 +40,13 @@ class ClassifierManager:
     def readClassifierDictionary(self, theFile):
         with open(theFile) as f:
             fileContents = f.read().splitlines()        
-        theDict = {int(content.strip().split()[0]):content.strip().split()[1] for content in fileContents if int(content.strip().split()[0]) in self.classifierIDs}
+        theDict = {int(content.strip().split()[0]):content.strip().split()[1] for content in fileContents
+                   if int(content.strip().split()[0]) in self.classifierIDs}
         return theDict
     
     def callClassifiers(self):
-        possClassifierClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname) if module.endswith('.py')])
+        possClassifierClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname)
+                                     if module.endswith('.py')])
         
         classifierDictionary = self.readClassifierDictionary(self.pathname+'/classifierDictionary.txt')
         classnames = {name.lower():name for name in classifierDictionary.values()}
@@ -47,7 +58,3 @@ class ClassifierManager:
                 class_ = getattr(modul, classnames[eachName.lower()])
                 clf = class_(self.dataSet, self.labels)
                 self.runClassifier(clf)
-                
-                
-        
-        

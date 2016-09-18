@@ -13,7 +13,10 @@ def infodensRun(configFile):
         print(featIds)
         print(featargs)
         print(sentencesList)
+        # Manages feature Extraction
         control.manageFeatures()
+        # Manages a classifier
+        control.classifyFeats()
     else:
         print("Error")
         return 0
