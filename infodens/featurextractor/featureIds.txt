@@ -1,2 +1,0 @@
-1 averageWordLength
-2 testFeature
