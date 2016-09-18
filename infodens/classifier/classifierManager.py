@@ -17,9 +17,6 @@ class ClassifierManager:
         self.labels = labs
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
-        print(self.classifierIDs)
-        print(self.labels)
-        print(self.dataSet)
 
     def checkValidClassifier(self, classifDict):
         #TODO: replace classifDict to be with self.classifDict

@@ -2,7 +2,7 @@
 # This is a comment
 2 anotherArg
 classifiers : 1 2 3
-#3 test
+3 test
 
 #empty lines are fine too
 input files : testSent.txt testSentClasses.txt
