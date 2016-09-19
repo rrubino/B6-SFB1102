@@ -9,8 +9,7 @@ class FormatWriter:
     
     def __init__(self):
         self.className = 'format Writer'
-        
-        
+
     def libsvmwriteToFile(self, theList, theFile):
         thefile = open(theFile, 'w')
         

@@ -31,8 +31,7 @@ class NeuralNetwork(Classifier):
     '''
     classdocs
     '''
-   
-    
+
     
     classifierName = 'Neural Network'
     activation='relu'
@@ -76,9 +75,7 @@ class NeuralNetwork(Classifier):
     def splitTrainTest(self):
         self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
                                                                                             test_size=self.splitPercent,random_state=0)
-    
-                                                                                            
-                                                                                            
+
     def train(self):
         
         if self.n_foldCV <= 0:

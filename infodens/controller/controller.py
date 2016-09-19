@@ -14,11 +14,10 @@ class Controller:
         self.inputClasses = []
         self.classifiersList = []
         self.inputFile = 0
-        self.extractedFeats = []
         
-        #array format of dataset and labels
-        self.X = []
-        self.y = []
+        #array format of dataset and labels for classifying
+        self.extractedFeats = []
+        self.classesList = []
 
     def parseConfig(self, configFile):
         """Parse the config file lines.      """
@@ -45,8 +44,7 @@ class Controller:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
-                clsIds = [int(ids) for ids in configLine if ids.isdigit()]
-                self.classifiersList = clsIds
+                self.classifiersList = [int(ids) for ids in configLine if ids.isdigit()]
                 print(self.classifiersList)
             else:
                 params = configLine.split()
@@ -69,7 +67,6 @@ class Controller:
         their argument strings.
         """
         statusOK = 0
-
         # Extract featureID and feature Argument string
         with open(self.config) as config:
             # Parse the config file
@@ -81,7 +78,6 @@ class Controller:
             else:
                 preprocessor = preprocess.Preprocess(self.inputFile)
                 self.listOfSent = preprocessor.preprocessBySentence()
-
         config.close()
 
         return statusOK, self.featureIDs, self.featargs, self.listOfSent
@@ -103,20 +99,19 @@ class Controller:
     def formatFeatures(self):
         """Instantiate a Formater then run it. """
         preprocessor = preprocess.Preprocess(self.inputClasses)
-        classesList = preprocessor.preprocessClassID()
-        formatter = format.Format(self.extractedFeats, classesList)
-        self.X, self.y = formatter.scikitFormat()
-        
-        
-    
+        self.classesList = preprocessor.preprocessClassID()
+        formatter = format.Format(self.extractedFeats, self.classesList)
+        self.extractedFeats, self.classesList = formatter.scikitFormat()
+
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
             self.formatFeatures()
-            print(self.y)
-            classifying = classifierManager.ClassifierManager(self.classifiersList, self.X, self.y)
+            #print(self.y)
+            classifying = classifierManager.ClassifierManager(
+                          self.classifiersList,self.extractedFeats, self.classesList)
             classifying.callClassifiers()
             
             # TODO: Continue classification procedure,

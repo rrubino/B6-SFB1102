@@ -5,7 +5,7 @@ Created on Aug 23, 2016
 '''
 #from trans.classifier import classifier
 import random
-from classifier import Classifier
+from .classifier import Classifier
 import scipy
 import numpy as np
 import sklearn
@@ -26,16 +26,12 @@ class SVM(Classifier):
     '''
     classdocs
     '''
-    
-    
 
     classifierName = 'Support Vector Machine'
     C = 1.0
     k = 'linear'  #linear kernel
     max_iter = -1
     gamma = 'auto'
-    
-    
     
     def __init__(self, X, y):
         '''
@@ -64,7 +60,6 @@ class SVM(Classifier):
         self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
                                                                                             test_size=self.splitPercent,
                                                                                             random_state=0)
-                                                                                            
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -107,10 +102,7 @@ class SVM(Classifier):
 
     def predict(self):
         return self.model.predict(self.Xtest)
-        
-        
-        
-        
+
     def evaluate(self):
         y_pred = self.predict()
         print ('Accuracy: ', accuracy_score(self.ytest, y_pred))
@@ -118,10 +110,7 @@ class SVM(Classifier):
         print ('Recall: ', recall_score(self.ytest, y_pred))
         print ('F-score: ', f1_score(self.ytest, y_pred))
         
-        
-        
-        
-        
+
 def startModel(classifierType, X, y):
     models = []
     if classifierType == 'svm':

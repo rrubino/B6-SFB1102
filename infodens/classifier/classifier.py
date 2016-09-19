@@ -39,16 +39,13 @@ class Classifier:
     model = []
        
     n_foldCV = 0  # how many folds cross validation
-       
-       
     
     def __init__(self, dataX = None, datay = None):
-        if (dataX == None):
+        if ( dataX == []):
             self.model = []
         else:
             self.X = dataX
             self.y = datay
-              
-        
+
     def shuffle(self):
         pass   

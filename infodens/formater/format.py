@@ -6,10 +6,9 @@ Created on Wed Aug 31 12:32:17 2016
 """
 import numpy as np
 
-from formatWriter import FormatWriter
+from .formatWriter import FormatWriter
         
-        
-        
+
 class Format:
     
    
