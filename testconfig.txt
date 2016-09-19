@@ -1,11 +1,11 @@
 1 argument1
 # This is a comment
 2 anotherArg
-classifiers : 1 2 3
-3 test
+classifiers : 1
+#3 test
 
 #empty lines are fine too
-input files : testSent.txt testSentClasses.txt
+input files : testSent2.txt testSentClasses2.txt
 # input and classifiers are parsed after ':'
 #7 invalidfeat
 #12 75 

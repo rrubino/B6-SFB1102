@@ -54,7 +54,7 @@ class NeuralNetwork(Classifier):
         '''
         Constructor
         ''' 
-        classifier.__init__(self, X, y)
+        Classifier.__init__(self, X, y)
         
     def shuffle(self):
         indices = [i for i in range(len(self.y))]

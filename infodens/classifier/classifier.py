@@ -33,7 +33,7 @@ class Classifier:
     Xtest = []
     ytest = []
        
-    splitPercent = 0.7
+    splitPercent = 0.25
     shuffle = True
        
     model = []

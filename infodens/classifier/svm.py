@@ -114,7 +114,7 @@ class SVM(Classifier):
     def evaluate(self):
         y_pred = self.predict()
         print ('Accuracy: ', accuracy_score(self.ytest, y_pred))
-        print ('Precision: ', average_precision_score(self.ytest, y_pred))
+        #print ('Precision: ', average_precision_score(self.ytest, y_pred))
         print ('Recall: ', recall_score(self.ytest, y_pred))
         print ('F-score: ', f1_score(self.ytest, y_pred))
         

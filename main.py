@@ -10,9 +10,9 @@ def infodensRun(configFile):
     status, featIds, featargs, sentencesList = control.loadConfig()
     # MAIN PROCESS (Extract all features)
     if status != 0:
-        print(featIds)
-        print(featargs)
-        print(sentencesList)
+        #print(featIds)
+        #print(featargs)
+        #print(sentencesList)
         # Manages feature Extraction
         control.manageFeatures()
         # Manages a classifier

@@ -1,6 +1,7 @@
 from ..featurextractor import featuremanager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
+from ..formater import format
 
 class Controller:
     """Read the config file and init a FeatureManager. """
@@ -14,6 +15,10 @@ class Controller:
         self.classifiersList = []
         self.inputFile = 0
         self.extractedFeats = []
+        
+        #array format of dataset and labels
+        self.X = []
+        self.y = []
 
     def parseConfig(self, configFile):
         """Parse the config file lines.      """
@@ -40,7 +45,8 @@ class Controller:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
-                self.classifiersList = configLine
+                clsIds = [int(ids) for ids in configLine if ids.isdigit()]
+                self.classifiersList = clsIds
                 print(self.classifiersList)
             else:
                 params = configLine.split()
@@ -93,16 +99,26 @@ class Controller:
             # terminate
             print("Requested Feature ID not available.")
             return -1
-
+    
+    def formatFeatures(self):
+        """Instantiate a Formater then run it. """
+        preprocessor = preprocess.Preprocess(self.inputClasses)
+        classesList = preprocessor.preprocessClassID()
+        formatter = format.Format(self.extractedFeats, classesList)
+        self.X, self.y = formatter.scikitFormat()
+        
+        
+    
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
-            preprocessor = preprocess.Preprocess(self.inputClasses)
-            classesList = preprocessor.preprocessClassID()
-            classifying = classifierManager.ClassifierManager(self.classifiersList, self.extractedFeats,
-                                                              classesList)
+            self.formatFeatures()
+            print(self.y)
+            classifying = classifierManager.ClassifierManager(self.classifiersList, self.X, self.y)
+            classifying.callClassifiers()
+            
             # TODO: Continue classification procedure,
             # (call checkValid, runClassifier..etc)
         else:
