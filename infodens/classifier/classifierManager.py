@@ -8,7 +8,8 @@ import importlib
 import imp, os
 import sys, inspect
 from os import path
-from classifier import Classifier
+from .classifier import Classifier
+import difflib
 
 class ClassifierManager:
 
@@ -18,7 +19,10 @@ class ClassifierManager:
         self.labels = labs
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
-        self.availClassifiers = self.returnClassifiers()
+        self.classifyModules = []
+        self.returnClassifiers()
+        print(self.classifyModules)
+        print(self.availClassifiers)
 
     def checkValidClassifier(self):
         for classifID in self.classifierIDs:
@@ -30,19 +34,21 @@ class ClassifierManager:
         files = (os.listdir("infodens/classifier"))
         for file in files:
             if file.endswith(".py") and file is not "__init__.py":
-                importlib.import_module("infodens.classifier."+file.replace(".py",''))
-        return [cls.__name__ for cls in Classifier.__subclasses__()]
+                file = file.replace(".py",'')
+                module = "infodens.classifier."+ file
+                importlib.import_module(module)
+                self.classifyModules.append(file)
+        self.availClassifiers = [cls.__name__ for cls in Classifier.__subclasses__()]
                             
 
     def callClassifiers(self):
-        #possClassifierClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname)
-        #                            if module.endswith('.py')])
-        
-        moduleNames = {name.lower() for name in self.classifierIDs}
-        
+
         for classif in self.classifierIDs:
-            classModule = importlib.import_module("infodens.classifier." +
-                                                  classif.lower())
+            for module in self.classifyModules:
+                if classif.lower() == module.lower():
+                    break
+            print(module)
+            classModule = importlib.import_module("infodens.classifier."+module)
             class_ = getattr(classModule, classif)
             clf = class_(self.dataSet, self.labels)
             clf.runClassifier()

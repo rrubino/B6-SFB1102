@@ -10,7 +10,7 @@ import scipy
 import random
 import numpy as np
 import sklearn
-from sklearn.neural_network import MLPClassifier
+#from sklearn.neural_network import MLPClassifier
 
 from sklearn import cross_validation
 from sklearn.grid_search import GridSearchCV, RandomizedSearchCV

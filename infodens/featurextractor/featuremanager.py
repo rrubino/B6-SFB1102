@@ -56,28 +56,7 @@ class FeatureManager:
                     theMethods[theId] = name
                 
         return theMethods
-    
-    def allMethodsWithDecorator(cls, decoratorName):
-        '''
-        find all methods decorated in class cls with decoratorname unconditionally
-        
-        '''
-        theMethods = {}
-        sourceFile = inspect.getsourcefile(cls)
-        f = open(sourceFile, 'r')
-        sourcelines = f.readlines()
-        
-        for i,line in enumerate(sourcelines):
-            
-            line = line.strip()
-            if line.split('(')[0].strip() == '@'+decoratorName: # leaving a bit out
-                theId = int(line.split('(')[1].split(')')[0])
-                nextLine = sourcelines[i+1]
-                name = nextLine.split('def')[1].split('(')[0].strip()
-                theMethods[theId] = name
-                
-        return theMethods
-        
+
     def idClassDictionary(self):
         '''
         for every id chosen, find the class that has the method and pair them in a dictionary.
@@ -108,7 +87,7 @@ class FeatureManager:
             instance = mtdCls(self.lofs)
             methd = getattr(instance, self.allFeatureIds[self.featureIDs[i]])
             featuresExtracted.append(methd(self.featureArgs[i]))
-        print(featuresExtracted)
+        #print(featuresExtracted)
 
         print("Called features")
         return featuresExtracted
