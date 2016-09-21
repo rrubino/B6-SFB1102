@@ -25,28 +25,60 @@ class ClassifierManager:
                 return 0
         return 1
 
-    def runClassifier(self, clf):
-        """ Run the provided classifier."""
-        
-        clf.shuffle()        
-        clf.splitTrainTest()
-        clf.train()
-        clf.predict()
-        clf.evaluate()
-        
-    def readClassifierDictionary(self, theFile):
-        with open(theFile) as f:
-            fileContents = f.read().splitlines()        
-        theDict = {int(content.strip().split()[0]):content.strip().split()[1] for content in fileContents
-                   if int(content.strip().split()[0]) in self.classifierIDs}
-        return theDict
     
+        
+    
+    def findMethodsWithASuperClass(self, source, superClass):
+        f = open(source, 'r')
+        sourcelines = f.readlines()
+        
+        for i,line in enumerate(sourcelines):
+            className = ''
+            line = line.strip()
+            if line.find('#'):
+                line = line.split('#')[0]
+            if line.find('"""'):
+                line = line.split('"""')[0]
+            if line.startswith('class') and line.endswith(':'):
+                classNameAndArgs = line.split(' ')
+                classNameAndArgs = [val for val in classNameAndArgs if val != ' ']
+                
+                className = line.split(' ')[1].split("(")[0]
+                if classNameAndArgs[1].find('(') > -1:
+                    
+                    if line.split(' ')[1].split("(")[1].split(")")[0].strip() == superClass:
+                        return className, True 
+                    else:
+                        return className, False
+                else:
+                    return className, False
+                
+        return className, False
+        
+    
+    def findClassifiers(self):
+        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        fileName, pathname, description = imp.find_module('classifier')
+        possClassifierClasses = set([os.path.splitext(module)[0] for module in os.listdir(pathname) if module.endswith('.py')])
+        allClassifiers = []
+        for possibleClass in possClassifierClasses:
+            className, TorF = self.findMethodsWithASuperClass(self.pathname+'/'+possibleClass+'.py', 'Classifier')
+            if TorF:
+                allClassifiers.append(className)
+        return allClassifiers
+            
+                                   
+                        
+                            
+        
+        
+        
+        
     def callClassifiers(self):
         possClassifierClasses = set([os.path.splitext(module)[0] for module in os.listdir(self.pathname)
                                      if module.endswith('.py')])
         
-        classifierDictionary = self.readClassifierDictionary(self.pathname+'/classifierDictionary.txt')
-        classnames = {name.lower():name for name in classifierDictionary.values()}
+        classnames = {name.lower():name for name in self.classifierIDs}
         
         for eachName in possClassifierClasses:            
             if eachName.lower() in classnames.keys():                
@@ -54,4 +86,5 @@ class ClassifierManager:
                 modul = getattr(modd, eachName)                
                 class_ = getattr(modul, classnames[eachName.lower()])
                 clf = class_(self.dataSet, self.labels)
-                self.runClassifier(clf)
+                clf.runClassifier()
+                

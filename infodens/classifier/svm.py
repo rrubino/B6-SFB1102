@@ -39,27 +39,8 @@ class SVM(Classifier):
         '''
         Classifier.__init__(self, X, y)
         
-    def shuffle(self):
-        indices = [i for i in range(len(self.y))]
-        random.shuffle(indices)
-        newX = np.zeros(self.X.shape)
-        newy = np.zeros(self.y.shape)
-        if len(self.X.shape) == 1:
-            for i in range(len(self.y)):
-                newX[i] = self.X[indices[i]]
-                newy[i] = self.y[indices[i]]
-                
-        else:
-            for i in range(len(self.y)):
-                newX[i, :] = self.X[indices[i],:]
-                newy[i] = self.y[indices[i]]
-        self.X = newX
-        self.y = newy
-
-    def splitTrainTest(self):
-        self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
-                                                                                            test_size=self.splitPercent,
-                                                                                            random_state=0)
+    
+                                                                                      
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -82,70 +63,4 @@ class SVM(Classifier):
         self.model = clf
             
             
-    def saveModel(self, location, saveAs):
-        if os.path.exists(location):
-            with open(location+'/'+saveAs, 'wb') as output:
-                pickle.dump(self.model, output, pickle.HIGHEST_PROTOCOL)
-        else:
-            print ('Please enter a valid directory')
-            
-    def loadModel(self, location, savedAs):
-        if os.path.exists(location):
-            if os.path.isfile(location+'/'+savedAs):
-                with open(location+'/'+savedAs, 'rb') as input:
-                    self.model = pickle.load(input)
-            else:
-                print ('file does not exist')
-        else:
-            print ('Please enter a valid directory')
     
-
-    def predict(self):
-        return self.model.predict(self.Xtest)
-
-    def evaluate(self):
-        y_pred = self.predict()
-        print ('Accuracy: ', accuracy_score(self.ytest, y_pred))
-        #print ('Precision: ', average_precision_score(self.ytest, y_pred))
-        print ('Recall: ', recall_score(self.ytest, y_pred))
-        print ('F-score: ', f1_score(self.ytest, y_pred))
-        
-
-def startModel(classifierType, X, y):
-    models = []
-    if classifierType == 'svm':
-        
-        return SVM(X, y)
-    elif classifierType == 'rf':
-        return randomForest(X, y)
-    elif classifierType == 'dt':
-        return decisionTree(X, y)
-    elif classifierType == 'nn':
-        return neuralNetwork(X, y)
-    elif classifierType == 'ab':
-        return adaBoost(X,y)
-    elif classifierType == 'ensemble':
-        pass
-    
-    
-        
-from sklearn import datasets
-import classifier
-import adaBoost
-import svm
-import neuralNetwork
-import randomForest
-import ensemble
-import decisionTree
-
-if __name__ == '__main__':
-    clfType = 'svm'    
-    iris = datasets.load_iris()
-    iris_X = iris.data
-    iris_y = iris.target
-    
-    model = startModel(clfType, iris_X, iris_y)
-    
-    model.splitTrainTest()
-    model.train()
-    model.evaluate()

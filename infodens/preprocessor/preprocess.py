@@ -4,7 +4,7 @@ Created on Tue Aug 30 15:19:12 2016
 
 @author: admin
 """
-
+import codecs
 class Preprocess:
     
     fileName = ''
@@ -13,20 +13,18 @@ class Preprocess:
         self.fileName = fn
 
     def preprocessBySentence(self):
-        with open(self.fileName) as f:
+        with codecs.open(self.fileName, encoding='utf-8') as f:
             lines = f.read().splitlines()
-
-        f.close()
+            
         return lines
 
     def preprocessClassID(self):
         """ Extract from each line the integer for class ID."""
-        ids = []
-        with open(self.fileName) as f:
+        
+        with codecs.open(self.fileName, encoding='utf-8') as f:
             lines = f.read().splitlines()
-        f.close()
-        for id in lines:
-            ids.append(int(id))
+        ids = [int(id) for id in lines]
+        
         return ids
         
         
