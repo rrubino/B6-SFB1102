@@ -1,7 +1,7 @@
 1 argument1
 # This is a comment
 2 anotherArg
-classifiers : 1
+classifiers : SVM
 #3 test
 
 #empty lines are fine too

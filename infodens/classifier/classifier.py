@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score, recall_score
 
 
-class Classifier:
+class Classifier(object):
     '''
     classdocs
     '''
@@ -86,27 +86,27 @@ class Classifier:
                 print ('file does not exist')
         else:
             print ('Please enter a valid directory')
-    
 
     def predict(self):
         return self.model.predict(self.Xtest)
-        
-        
-        
-        
+
     def evaluate(self):
         y_pred = self.predict()
-        print ('Accuracy: ', accuracy_score(self.ytest, y_pred))
-        print ('Precision: ', precision_score(self.ytest, y_pred))
-        print ('Recall: ', recall_score(self.ytest, y_pred))
-        print ('F-score: ', f1_score(self.ytest, y_pred))
-        print ('Classification Report: ',classification_report(self.ytest, y_pred) )
+        print('Accuracy: ')
+        print(accuracy_score(self.ytest, y_pred))
+        print('Precision: ')
+        print(precision_score(self.ytest, y_pred))
+        print('Recall: ')
+        print(recall_score(self.ytest, y_pred))
+        print('F-score: ')
+        print(f1_score(self.ytest, y_pred))
+        print('Classification Report: ')
+        print(classification_report(self.ytest, y_pred) )
         
     def runClassifier(self):
         """ Run the provided classifier."""
-        
-        self.model.shuffle()        
-        self.model.splitTrainTest()
-        self.model.train()
-        self.model.predict()
-        self.model.evaluate()
+        self.shuffle()
+        self.splitTrainTest()
+        self.train()
+        self.predict()
+        self.evaluate()

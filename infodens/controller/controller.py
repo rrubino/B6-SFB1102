@@ -44,7 +44,7 @@ class Controller:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
-                self.classifiersList = [int(ids) for ids in configLine if ids.isdigit()]
+                self.classifiersList = configLine
                 print(self.classifiersList)
             else:
                 params = configLine.split()
@@ -111,11 +111,16 @@ class Controller:
             self.formatFeatures()
             #print(self.y)
             classifying = classifierManager.ClassifierManager(
-                          self.classifiersList,self.extractedFeats, self.classesList)
-            classifying.callClassifiers()
-            
-            # TODO: Continue classification procedure,
-            # (call checkValid, runClassifier..etc)
+                          self.classifiersList, self.extractedFeats, self.classesList)
+            validClassifiers = classifying.checkValidClassifier()
+            if validClassifiers:
+                # Continue to call classifiers
+                classifying.callClassifiers()
+                return 0
+            else:
+                # terminate
+                print("Requested Classifier not available.")
+                return -1
         else:
             print("Classifier parameters not specified.")
         return 1
