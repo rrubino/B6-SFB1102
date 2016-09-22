@@ -92,16 +92,13 @@ class Classifier(object):
 
     def evaluate(self):
         y_pred = self.predict()
-        print('Accuracy: ')
-        print(accuracy_score(self.ytest, y_pred))
-        print('Precision: ')
-        print(precision_score(self.ytest, y_pred))
-        print('Recall: ')
-        print(recall_score(self.ytest, y_pred))
-        print('F-score: ')
-        print(f1_score(self.ytest, y_pred))
-        print('Classification Report: ')
-        print(classification_report(self.ytest, y_pred) )
+        classifReport = 'Accuracy: '+ str(accuracy_score(self.ytest, y_pred))
+        classifReport += '\nPrecision: ' + str(precision_score(self.ytest, y_pred))
+        classifReport +='\nRecall: ' + str(recall_score(self.ytest, y_pred))
+        classifReport += '\nF-score: ' + str(f1_score(self.ytest, y_pred))
+        classifReport += '\nClassification Report:\n ' + str(classification_report(self.ytest, y_pred))
+        #print(classifReport)
+        return classifReport
         
     def runClassifier(self):
         """ Run the provided classifier."""
@@ -109,4 +106,4 @@ class Classifier(object):
         self.splitTrainTest()
         self.train()
         self.predict()
-        self.evaluate()
+        return self.evaluate()

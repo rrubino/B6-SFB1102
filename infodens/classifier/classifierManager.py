@@ -11,6 +11,7 @@ from os import path
 from .classifier import Classifier
 import difflib
 
+
 class ClassifierManager:
 
     def __init__(self, ids, dSet, labs):
@@ -21,8 +22,8 @@ class ClassifierManager:
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
         self.classifyModules = []
         self.returnClassifiers()
-        print(self.classifyModules)
-        print(self.availClassifiers)
+        #print(self.classifyModules)
+        #print(self.availClassifiers)
 
     def checkValidClassifier(self):
         for classifID in self.classifierIDs:
@@ -39,10 +40,10 @@ class ClassifierManager:
                 importlib.import_module(module)
                 self.classifyModules.append(file)
         self.availClassifiers = [cls.__name__ for cls in Classifier.__subclasses__()]
-                            
 
     def callClassifiers(self):
 
+        classifReports = ""
         for classif in self.classifierIDs:
             for module in self.classifyModules:
                 if classif.lower() == module.lower():
@@ -51,5 +52,7 @@ class ClassifierManager:
             classModule = importlib.import_module("infodens.classifier."+module)
             class_ = getattr(classModule, classif)
             clf = class_(self.dataSet, self.labels)
-            clf.runClassifier()
-                
+            classifReports += (classif + ":\n")
+            classifReports += clf.runClassifier()
+            classifReports += "\n"
+        return classifReports

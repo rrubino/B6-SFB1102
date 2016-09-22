@@ -38,8 +38,6 @@ class SVM(Classifier):
         initialized from its super class
         '''
         Classifier.__init__(self, X, y)
-        
-    
                                                                                       
     def train(self):
         

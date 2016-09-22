@@ -16,7 +16,6 @@ class Format:
         self.featureSetX = fsX
         self.featureSety = fsy
         
-        
     def libsvmFormat(self, fileName):
         writer = FormatWriter()
         libsvmOutput = []
@@ -32,9 +31,7 @@ class Format:
             
         writer.libsvmwriteToFile(libsvmOutput, fileName)
         return libsvmOutput
-        
-        
-        
+
     def arrfFormat(self, fileName):
         writer = FormatWriter()
         arrfOutput = []
@@ -48,11 +45,13 @@ class Format:
                 
             arrfOutput.append(output_i)
         writer.arrfwriteToFile(arrfOutput, fileName)
-        
-        
-        
+
     def scikitFormat(self):
         
         X = np.asarray(self.featureSetX); y = np.asarray(self.featureSety)
         return np.transpose(X), y
+
+    def outFormat(self, data, format):
+        #TODO: Format according to format
+        return data
         

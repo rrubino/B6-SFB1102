@@ -14,10 +14,33 @@ class Controller:
         self.inputClasses = []
         self.classifiersList = []
         self.inputFile = 0
+        self.classifReport = 0
+        self.featOutput = 0
+        self.featOutFormat = 0
         
         #array format of dataset and labels for classifying
         self.extractedFeats = []
         self.classesList = []
+
+    def parseOutputLine(self, line):
+        status = 1
+        startInp = line.index(':')
+        outputLine = line[startInp + 1:]
+        outputLine = outputLine.strip().split()
+        if "classif" in line and not self.classifReport:
+            self.classifReport = outputLine[0]
+        elif "feat" in line and not self.featOutput:
+            if len(outputLine) == 2:
+                self.featOutput = outputLine[0]
+                self.featOutFormat = outputLine[1]
+            else:
+                status = 0
+                print("Incorrect number of output params, should be exactly 2")
+        else:
+            print("Unsupported output type")
+            status = 0
+
+        return status
 
     def parseConfig(self, configFile):
         """Parse the config file lines.      """
@@ -25,6 +48,8 @@ class Controller:
 
         for configLine in configFile:
             configLine = configLine.strip()
+            if not statusOK:
+                break
             if len(configLine) < 1:
                 # Line is empty
                 continue
@@ -40,6 +65,8 @@ class Controller:
                 self.inputClasses = configLine[1]
                 print(self.inputFile)
                 print(self.inputClasses)
+            elif "output" in configLine:
+                statusOK = self.parseOutputLine(configLine)
             elif "classif" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -58,7 +85,7 @@ class Controller:
                 else:
                     # Incorrect number/value of params
                     statusOK = 0
-                    print("Incorrect number of params, should be only 2")
+                    print("Incorrect number of params, should be exactly 2")
 
         return statusOK
 
@@ -73,14 +100,17 @@ class Controller:
             statusOK = self.parseConfig(config)
 
             if self.inputFile is 0:
-                print("Error, Input file not found. ")
+                print("Error, Input file not found.")
                 statusOK = 0
             else:
-                preprocessor = preprocess.Preprocess(self.inputFile)
-                self.listOfSent = preprocessor.preprocessBySentence()
-        config.close()
+                preprocessor = preprocess.Preprocess()
+                self.listOfSent = preprocessor.preprocessBySentence(self.inputFile)
 
-        return statusOK, self.featureIDs, self.featargs, self.listOfSent
+        print(self.featOutFormat)
+        print(self.featOutput)
+        print(self.classifReport)
+
+        return statusOK, self.featureIDs
 
     def manageFeatures(self):
         """Init and call a feature manager. """
@@ -98,10 +128,19 @@ class Controller:
     
     def formatFeatures(self):
         """Instantiate a Formater then run it. """
-        preprocessor = preprocess.Preprocess(self.inputClasses)
-        self.classesList = preprocessor.preprocessClassID()
+        preprocessor = preprocess.Preprocess()
+        self.classesList = preprocessor.preprocessClassID(self.inputClasses)
         formatter = format.Format(self.extractedFeats, self.classesList)
+
+        if self.featOutput:
+            outFeats = self.extractedFeats
+            if self.featOutFormat:
+                outFeats = formatter.outFormat(self.extractedFeats, self.featOutFormat)
+            with open(self.featOutput, 'w') as featOut:
+                featOut.write(str(outFeats))
+
         self.extractedFeats, self.classesList = formatter.scikitFormat()
+
 
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
@@ -115,7 +154,12 @@ class Controller:
             validClassifiers = classifying.checkValidClassifier()
             if validClassifiers:
                 # Continue to call classifiers
-                classifying.callClassifiers()
+                reportOfClassif = classifying.callClassifiers()
+                print(reportOfClassif)
+                # Write output if file specified
+                if self.classifReport:
+                    with open(self.classifReport, 'w') as classifOut:
+                        classifOut.write(reportOfClassif)
                 return 0
             else:
                 # terminate
