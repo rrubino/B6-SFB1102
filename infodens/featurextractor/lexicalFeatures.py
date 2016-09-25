@@ -9,10 +9,10 @@ from infodens.preprocessor import preprocess
 
 class LexicalFeatures:
     
-    def __init__(self, lof):
-        self.lof = lof
+    def __init__(self, preprocessed):
+        self.preprocessor = preprocessed
     
-    def computeDensity(self, taggedSentences):
+    def computeDensity(self,taggedSentences):
         densities = []
         jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
@@ -29,7 +29,6 @@ class LexicalFeatures:
         This is computed by dividing the number of tokens tagged with POS tags 
         that do not start with J, N, R or V by the number of tokens in the chunk
         '''
-        tagger = preprocess.Preprocess()
-        taggedSents = tagger.nltkPOStag(self.lof)
+        taggedSents = self.preprocessor.nltkPOStag()
 
         return self.computeDensity(taggedSents)

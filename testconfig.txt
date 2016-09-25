@@ -3,9 +3,11 @@
 2 anotherArg
 classifiers : DecisionTree SVM
 #3 test
+#1 again
+#3 again
 
 #empty lines are fine too
-#output classifier: report1.txt
+output classifier: report1.txt
 output features: feats.txt format
 
 input files : testSent2.txt testSentClasses2.txt

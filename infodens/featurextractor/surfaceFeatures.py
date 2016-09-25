@@ -10,18 +10,17 @@ from .utils import featid
 class SurfaceFeatures:
     
     
-    def __init__(self, lof):
+    def __init__(self, preprocessed):
         '''
-        Initializes the class with a list of sentences (or blocks). '''
-
-        self.listOfSentences = lof
+        Initializes the class with a preprocessor. '''
+        self.preprocessor = preprocessed
     
     @featid(1)    
     def averageWordLength(self, argString):
         '''Find average word length of every sentence and return list. '''
 
         aveWordLen = []
-        for sentence in self.listOfSentences:
+        for sentence in self.preprocessor.getPlainSentences():
             sentence = sentence.strip()
             sentence = sentence.split()
             length = sum([len(s) for s in sentence])
@@ -39,7 +38,7 @@ class SurfaceFeatures:
         '''
         vowels = ['a', 'e', 'i', 'o', 'u']
         sylRatios = []
-        for sentence in self.listOfSentences:
+        for sentence in self.preprocessor.getPlainSentences():
             sentence = sentence.strip()
             sentence = sentence.split()
             sylCount = 0

@@ -102,9 +102,6 @@ class Controller:
             if self.inputFile is 0:
                 print("Error, Input file not found.")
                 statusOK = 0
-            else:
-                preprocessor = preprocess.Preprocess()
-                self.listOfSent = preprocessor.preprocessBySentence(self.inputFile)
 
         print(self.featOutFormat)
         print(self.featOutput)
@@ -114,30 +111,43 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-
-        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, self.listOfSent)
+        preprocessor = preprocess.Preprocess(self.inputFile)
+        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, preprocessor)
         validFeats = manageFeatures.checkFeatValidity()
         if validFeats:
             # Continue to call features
             self.extractedFeats = manageFeatures.callExtractors()
+            self.outputFeatures()
             return 0
         else:
             # terminate
             print("Requested Feature ID not available.")
             return -1
-    
-    def formatFeatures(self):
-        """Instantiate a Formater then run it. """
-        preprocessor = preprocess.Preprocess()
-        self.classesList = preprocessor.preprocessClassID(self.inputClasses)
-        formatter = format.Format(self.extractedFeats, self.classesList)
 
+    def outputFeatures(self):
+        """Output features if requested."""
+
+        #TODO : cleaner Format class with only needed init.
+        formatter = format.Format(self.extractedFeats, self.classesList)
         if self.featOutput:
             outFeats = self.extractedFeats
+            # Check if a format is requested then format with it
             if self.featOutFormat:
                 outFeats = formatter.outFormat(self.extractedFeats, self.featOutFormat)
             with open(self.featOutput, 'w') as featOut:
+                #TODO : write as binary
                 featOut.write(str(outFeats))
+        else:
+            print("Feature output was not specified.")
+
+    def formatFeatures(self):
+        """Instantiate a Formater then run it. """
+
+        # Extract the classed IDs from the given classes file
+        preprocessor = preprocess.Preprocess(self.inputClasses)
+        self.classesList = preprocessor.preprocessClassID()
+
+        formatter = format.Format(self.extractedFeats, self.classesList)
 
         self.extractedFeats, self.classesList = formatter.scikitFormat()
 

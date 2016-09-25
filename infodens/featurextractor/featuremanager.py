@@ -13,10 +13,10 @@ class FeatureManager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, featureIDs, featureArgs, listOfSentences):
+    def __init__(self, featureIDs, featureArgs, preprocessed):
         self.featureIDs = featureIDs
         self.featureArgs = featureArgs
-        self.lofs = listOfSentences
+        self.preprocessor = preprocessed
         '''
         Import the featurextraction package at this point. It will be needed by most of the methods.
         '''
@@ -33,7 +33,6 @@ class FeatureManager:
                 return 0
         print("Inside checkFeatValidity. ")
         return 1
-
 
     def methodsWithDecorator(self, cls, decoratorName, idsToSelect):
         '''
@@ -84,10 +83,11 @@ class FeatureManager:
         
         for i in range(len(self.featureIDs)):
             mtdCls = self.idClassmethod[self.featureIDs[i]]
-            instance = mtdCls(self.lofs)
+            instance = mtdCls(self.preprocessor)
             methd = getattr(instance, self.allFeatureIds[self.featureIDs[i]])
             featuresExtracted.append(methd(self.featureArgs[i]))
-        #print(featuresExtracted)
+            feateX = "Extracted feature:" + str(self.featureIDs[i])
+            print(feateX)
 
         print("Called features")
         return featuresExtracted
