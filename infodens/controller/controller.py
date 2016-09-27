@@ -117,7 +117,7 @@ class Controller:
         if validFeats:
             # Continue to call features
             self.extractedFeats = manageFeatures.callExtractors()
-            self.outputFeatures()
+            #self.outputFeatures()
             return 0
         else:
             # terminate

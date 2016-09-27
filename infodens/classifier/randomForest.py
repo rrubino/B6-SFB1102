@@ -41,7 +41,7 @@ class RandomForest(Classifier):
     def train(self):
         
         if self.n_foldCV <= 0:
-            print ('No cross validation required. If required set the parameter to a positive number')
+            #print ('No cross validation required. If required set the parameter to a positive number')
             clf = RandomForestClassifier(n_estimators=20)
             clf.fit(self.Xtrain, self.ytrain)
         else:

@@ -42,7 +42,7 @@ class SVM(Classifier):
     def train(self):
         
         if self.n_foldCV <= 0:
-            print ('No cross validation required. If required set the parameter to a positive number')
+            #print ('No cross validation required. If required set the parameter to a positive number')
             clf = SVC(decision_function_shape='ovo')
             clf.fit(self.Xtrain, self.ytrain)
         else:

@@ -98,12 +98,33 @@ class Classifier(object):
         classifReport += '\nF-score: ' + str(f1_score(self.ytest, y_pred))
         classifReport += '\nClassification Report:\n ' + str(classification_report(self.ytest, y_pred))
         #print(classifReport)
-        return classifReport
+        return classifReport, accuracy_score(self.ytest, y_pred), precision_score(self.ytest, y_pred), recall_score(self.ytest, y_pred), f1_score(self.ytest, y_pred) 
         
     def runClassifier(self):
         """ Run the provided classifier."""
-        self.shuffle()
-        self.splitTrainTest()
-        self.train()
-        self.predict()
-        return self.evaluate()
+        acc = []; pre = []; rec = []; fsc = []
+        if self.X.shape[0] < 100000:
+            for i in range(10):
+                self.shuffle()
+                self.splitTrainTest()
+                self.train()
+                self.predict()
+                clRep, accu, prec, reca, fsco =  self.evaluate()
+                acc.append(accu)
+                pre.append(prec)
+                rec.append(reca)
+                fsc.append(fsco)
+        
+            print ('average Accuracy: ', np.mean(acc))
+            print ('average Precision: ', np.mean(pre))
+            print ('average Recall: ', np.mean(rec))
+            print('average F1_score: ', np.mean(fsc))
+            
+        else:
+            self.shuffle()
+            self.splitTrainTest()
+            self.train()
+            self.predict()
+            clRep, accu, prec, reca, fsco =  self.evaluate()
+            #print ('Classification Report: ', clRep)
+        return clRep

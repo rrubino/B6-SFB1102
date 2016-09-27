@@ -66,14 +66,19 @@ class FeatureManager:
         allFeatureIds = {};  featureIds = {};  idClassmethod = {}
         
         for eachName in possFeatureClasses:
+            
             modd = __import__('featurextractor.'+eachName)
             modul = getattr(modd, eachName)
+            
             clsmembers = inspect.getmembers(modul, inspect.isclass)
-            if len(clsmembers) > 0:                
+            
+            if len(clsmembers) > 0:  
+                #print ('module name: ', clsmembers[0][1].__module__)
+                clsmembers = [m for m in clsmembers if m[1].__module__.startswith('featurextractor')]
                 featureIds = self.methodsWithDecorator(clsmembers[0][1], 'featid', self.featureIDs)                
                 allFeatureIds.update(featureIds)
                 idClassmethod.update({k:clsmembers[0][1] for k in featureIds.keys()})
-                
+        
         return idClassmethod, allFeatureIds
         
     def callExtractors(self):
@@ -85,7 +90,12 @@ class FeatureManager:
             mtdCls = self.idClassmethod[self.featureIDs[i]]
             instance = mtdCls(self.preprocessor)
             methd = getattr(instance, self.allFeatureIds[self.featureIDs[i]])
-            featuresExtracted.append(methd(self.featureArgs[i]))
+            feat = methd(self.featureArgs[i])
+            if type(feat[0]) is list:
+                
+                featuresExtracted.extend(feat)
+            else:
+                featuresExtracted.append(feat)
             feateX = "Extracted feature:" + str(self.featureIDs[i])
             print(feateX)
 

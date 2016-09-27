@@ -53,6 +53,7 @@ class ClassifierManager:
             class_ = getattr(classModule, classif)
             clf = class_(self.dataSet, self.labels)
             classifReports += (classif + ":\n")
+            #clfRep, acc,pre, rec, fsc = clf.runClassifier()
             classifReports += clf.runClassifier()
             classifReports += "\n"
         return classifReports

@@ -1,10 +1,10 @@
 1 argument1
 # This is a comment
-2 anotherArg
-classifiers : DecisionTree SVM
+#2 anotherArg
+classifiers : DecisionTree SVM RandomForest
 #3 test
 #1 again
-#3 again
+4 1
 
 #empty lines are fine too
 output classifier: report1.txt
