@@ -4,13 +4,13 @@ from ..classifier import classifierManager
 from ..formater import format
 
 class Controller:
-    """Read the config file and init a FeatureManager. """
+    """Read and parse the config file, init a FeatureManager,
+     and init a classifier manager. Handle output. """
 
     def __init__(self, configFile =None):
         self.config = configFile
         self.featureIDs = []
         self.featargs = []
-        self.listOfSent = []
         self.inputClasses = []
         self.classifiersList = []
         self.inputFile = 0
@@ -75,17 +75,20 @@ class Controller:
                 print(self.classifiersList)
             else:
                 params = configLine.split()
-                if len(params) == 2:
+                if len(params) == 2 or len(params) == 1:
                     if params[0].isdigit():
                         self.featureIDs.append(int(params[0]))
-                        self.featargs.append(params[1])
+                        if len(params) == 2:
+                            self.featargs.append(params[1])
+                        else:
+                            self.featargs.append([])
                     else:
                         statusOK = 0
                         print("Feature ID is not a Number")
                 else:
                     # Incorrect number/value of params
                     statusOK = 0
-                    print("Incorrect number of params, should be exactly 2")
+                    print("Incorrect number of params, max 2 parameters.")
 
         return statusOK
 
@@ -102,7 +105,6 @@ class Controller:
             if self.inputFile is 0:
                 print("Error, Input file not found.")
                 statusOK = 0
-
         print(self.featOutFormat)
         print(self.featOutput)
         print(self.classifReport)
@@ -117,12 +119,12 @@ class Controller:
         if validFeats:
             # Continue to call features
             self.extractedFeats = manageFeatures.callExtractors()
-            #self.outputFeatures()
-            return 0
+            self.outputFeatures()
+            return 1
         else:
             # terminate
             print("Requested Feature ID not available.")
-            return -1
+            return 0
 
     def outputFeatures(self):
         """Output features if requested."""

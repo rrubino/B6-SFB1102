@@ -4,7 +4,7 @@ Created on Thu Sep 15 11:16:36 2016
 
 @author: admin
 """
-from .utils import featid
+from .featureExtractor import featid
 from infodens.preprocessor import preprocess
 
 class LexicalFeatures:

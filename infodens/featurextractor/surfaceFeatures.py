@@ -4,7 +4,7 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .utils import featid
+from .featureExtractor import featid
 from collections import Counter
 
 
@@ -76,11 +76,6 @@ class SurfaceFeatures:
             
         vocabulary = Counter(ngramsExtend)
         return vocabulary
-    
-      
-      
-    
-        
     
     @featid(4)
     def ngramBagOfWords(self, argString): 

@@ -2,10 +2,6 @@ import importlib
 import imp, os
 import sys, inspect
 from os import path
-from .utils import featid, idsOfMethods
-
-# Remove when callExtractors is implemented
-#from .surfaceFeatures import SurfaceFeatures
 
 
 class FeatureManager:
@@ -31,7 +27,6 @@ class FeatureManager:
         for featID in self.featureIDs:
             if featID not in self.allFeatureIds:
                 return 0
-        print("Inside checkFeatValidity. ")
         return 1
 
     def methodsWithDecorator(self, cls, decoratorName, idsToSelect):

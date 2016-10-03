@@ -12,11 +12,16 @@ def infodensRun(configFile):
     if status != 0:
         print(featIds)
         # Manages feature Extraction
-        control.manageFeatures()
-        # Manages a classifier
-        control.classifyFeats()
+        status = control.manageFeatures()
+        if status != 0:
+            # Manages a classifier
+            control.classifyFeats()
+        else:
+            print("Error in feature Management.")
+            return 0
+
     else:
-        print("Error")
+        print("Error in Config file.")
         return 0
 
 
