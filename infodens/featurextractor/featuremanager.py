@@ -30,7 +30,7 @@ class FeatureManager:
                 return 0
         return 1
 
-    def methodsWithDecorator(self, cls, decoratorName, idsToSelect):
+    def methodsWithDecorator(self, cls, decoratorName):
         '''
         find all methods decorated in class cls with decoratorname and has id in idsToSelect
         
@@ -44,8 +44,6 @@ class FeatureManager:
             line = line.strip()
             if line.split('(')[0].strip() == '@'+decoratorName:
                 theId = int(line.split('(')[1].split(')')[0])
-                
-                #if theId in idsToSelect:
                 nextLine = sourcelines[i+1]
                 name = nextLine.split('def')[1].split('(')[0].strip()
                 theMethods[theId] = name
@@ -77,7 +75,7 @@ class FeatureManager:
                 clsmembers = [m for m in clsmembers if m[1].__module__.startswith('featurextractor') and
                              m[0] is not 'FeatureExtractor']
                 for i in range(0, len(clsmembers)):
-                    featureIds = self.methodsWithDecorator(clsmembers[i][1], 'featid', self.featureIDs)
+                    featureIds = self.methodsWithDecorator(clsmembers[i][1], 'featid')
                     allFeatureIds.update(featureIds)
                     idClassmethod.update({k:clsmembers[i][1] for k in featureIds.keys()})
 
