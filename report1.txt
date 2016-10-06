@@ -1,39 +1,39 @@
 DecisionTree:
-Accuracy: 0.561666666667
-Precision: 0.552715654952
-Recall: 0.584459459459
-F-score: 0.568144499179
+Accuracy: 0.603333333333
+Precision: 0.621359223301
+Recall: 0.613418530351
+F-score: 0.617363344051
 Classification Report:
               precision    recall  f1-score   support
 
-        1.0       0.55      0.58      0.57       296
-        2.0       0.57      0.54      0.55       304
+        1.0       0.62      0.61      0.62       313
+        2.0       0.58      0.59      0.59       287
 
-avg / total       0.56      0.56      0.56       600
+avg / total       0.60      0.60      0.60       600
 
 SVM:
-Accuracy: 0.496666666667
-Precision: 0.496666666667
-Recall: 1.0
-F-score: 0.663697104677
+Accuracy: 0.498333333333
+Precision: 0.0
+Recall: 0.0
+F-score: 0.0
 Classification Report:
               precision    recall  f1-score   support
 
-        1.0       0.50      1.00      0.66       298
-        2.0       0.00      0.00      0.00       302
+        1.0       0.00      0.00      0.00       301
+        2.0       0.50      1.00      0.67       299
 
 avg / total       0.25      0.50      0.33       600
 
 RandomForest:
-Accuracy: 0.61
-Precision: 0.598130841121
-Recall: 0.646464646465
-F-score: 0.621359223301
+Accuracy: 0.645
+Precision: 0.597523219814
+Recall: 0.699275362319
+F-score: 0.644407345576
 Classification Report:
               precision    recall  f1-score   support
 
-        1.0       0.60      0.65      0.62       297
-        2.0       0.62      0.57      0.60       303
+        1.0       0.60      0.70      0.64       276
+        2.0       0.70      0.60      0.65       324
 
-avg / total       0.61      0.61      0.61       600
+avg / total       0.65      0.65      0.65       600
 

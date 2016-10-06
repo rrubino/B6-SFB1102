@@ -35,19 +35,15 @@ class Classifier(object):
     ytest = []
        
     splitPercent = 0.3
-    shuffle = True
        
     model = []
        
     n_foldCV = 0  # how many folds cross validation
-       
-       
-    
+
     def __init__(self, dataX, datay):
         self.X = dataX
         self.y = datay
-              
-        
+
     def shuffle(self):
         indices = [i for i in range(len(self.y))]
         random.shuffle(indices)
@@ -103,6 +99,7 @@ class Classifier(object):
     def runClassifier(self):
         """ Run the provided classifier."""
         acc = []; pre = []; rec = []; fsc = []
+        clRep = 0
         if self.X.shape[0] < 100000:
             for i in range(10):
                 self.shuffle()

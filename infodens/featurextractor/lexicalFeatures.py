@@ -4,13 +4,10 @@ Created on Thu Sep 15 11:16:36 2016
 
 @author: admin
 """
-from .featureExtractor import featid
+from .featureExtraction import featid, FeatureExtractor
 from infodens.preprocessor import preprocess
 
-class LexicalFeatures:
-    
-    def __init__(self, preprocessed):
-        self.preprocessor = preprocessed
+class LexicalFeatures(FeatureExtractor):
     
     def computeDensity(self,taggedSentences):
         densities = []

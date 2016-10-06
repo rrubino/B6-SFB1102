@@ -4,18 +4,11 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .featureExtractor import featid
+from .featureExtraction import featid, FeatureExtractor
 from collections import Counter
 
 
-class SurfaceFeatures:
-    
-    
-    def __init__(self, preprocessed):
-        '''
-        Initializes the class with a preprocessor. '''
-        self.preprocessor = preprocessed
-        
+class SurfaceFeatures(FeatureExtractor):
     
     @featid(1)    
     def averageWordLength(self, argString):
@@ -53,15 +46,13 @@ class SurfaceFeatures:
             sylRatios.append(float(sylCount)/len(sentence))
             
         return sylRatios
-        
-    
+
     def ngrams(self, input, n):
       output = []
       for i in range(len(input)-n+1):
         output.append(input[i:i+n])
       return [' '.join(x) for x in output]
-    
-    
+
     def ngramsAllVoc(self, input, n):      
         ngramsList = []
         for eachInput in input:
@@ -73,12 +64,7 @@ class SurfaceFeatures:
             
         vocabulary = Counter(ngramsExtend)
         return vocabulary
-    
-      
-      
-    
-        
-    
+
     @featid(4)
     def ngramBagOfWords(self, argString): 
         '''
@@ -127,5 +113,3 @@ class SurfaceFeatures:
                         counter_j = allKeys.index(key)
                         ngramFeatures[counter_j][i] = float(ngramsVocab[j][key]) / sum(ngramsVocab[j].values())
         return ngramFeatures
-        
-   

@@ -12,3 +12,10 @@ def featid(fid):
             return func(*args, **kwargs)
         return func_wrapper
     return tags_decorator
+
+class FeatureExtractor(object):
+
+    def __init__(self, preprocessed):
+        '''
+        Initializes the class with a preprocessor. '''
+        self.preprocessor = preprocessed
