@@ -15,10 +15,7 @@ class SurfaceFeatures:
         '''
         Initializes the class with a preprocessor. '''
         self.preprocessor = preprocessed
-        self.listOfSentences = []
-        for sentence in self.preprocessor.getPlainSentences():
-            sentence = sentence.strip()
-            self.listOfSentences.append(sentence.split())
+        
     
     @featid(1)    
     def averageWordLength(self, argString):
@@ -77,31 +74,58 @@ class SurfaceFeatures:
         vocabulary = Counter(ngramsExtend)
         return vocabulary
     
+      
+      
+    
+        
+    
     @featid(4)
     def ngramBagOfWords(self, argString): 
-        if argString.isdigit():
-            n = int(argString)
+        '''
+        Extracts n-gram bag of words features from listOf Sentences
+        argString: is read off the config file and converted to integer if it is digit. If it is not a digit, an error is returned
+        
+        '''
+        argStringList = argString.split(',')
+        if argStringList[0].isdigit():
+            n = int(argStringList[0])
         else:
             print('Error: n should be an integer')
             return
-        #oneToNgramList = [] 
-        oneToNgramVoc = [self.ngramsAllVoc(self.listOfSentences, i+1) for i in range(n)]#Will hold unigram, bigram ...ngram Vocabulary
+        if len(argStringList) > 1:
+            if argStringList[1].isdigit():
+                freq = int(argStringList[1])
+            else:
+                print('Error: frequency should be an integer')
+                return
+        else:
+            freq = 1
+        #oneToNgramList = []
+        listOfSentences = []
+        for sentence in self.preprocessor.getPlainSentences():
+            sentence = sentence.strip()
+            listOfSentences.append(sentence.split())
+        oneToNgramVoc = [self.ngramsAllVoc(listOfSentences, i+1) for i in range(n)]#Will hold unigram, bigram ...ngram Vocabulary
+        oneToNgramVocFreq = []
+        for voc in oneToNgramVoc:
+            oneToNgramVocFreq.append({k:v for k in voc.keys() for v in voc.values() if voc[k] == v if v >= freq})
         allKeys = []
         
-        for vocab in oneToNgramVoc:
+        for vocab in oneToNgramVocFreq:
             allKeys.extend(vocab.keys())
         
         totalNumber = len(allKeys)
-        ngramFeatures = [[0 for j in range(len(self.listOfSentences))] for i in range(totalNumber)]
-        for i in range(len(self.listOfSentences)):
-            sent_i = self.listOfSentences[i]
+        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
+        for i in range(len(listOfSentences)):
+            sent_i = listOfSentences[i]
             allNgramsForSent_i = [self.ngrams(sent_i, k+1) for k in range(n)]
             ngramsVocab = [Counter(ng) for ng in allNgramsForSent_i]
             for j in range(len(ngramsVocab)):
                 keys_j = ngramsVocab[j].keys()
                 for key in keys_j:
-                    counter_j = allKeys.index(key)
-                    ngramFeatures[counter_j][i] = float(ngramsVocab[j][key]) / sum(ngramsVocab[j].values())
+                    if key in allKeys:
+                        counter_j = allKeys.index(key)
+                        ngramFeatures[counter_j][i] = float(ngramsVocab[j][key]) / sum(ngramsVocab[j].values())
         return ngramFeatures
         
    

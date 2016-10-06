@@ -5,7 +5,7 @@
 classifiers : DecisionTree SVM RandomForest
 #3 test
 #1 again
-4 1
+4 1,5
 
 #empty lines are fine too
 output classifier: report1.txt
