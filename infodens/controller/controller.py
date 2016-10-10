@@ -15,6 +15,7 @@ class Controller:
         self.classifiersList = []
         self.inputFile = 0
         self.classifReport = 0
+        self.corpusLM = 0
         self.featOutput = 0
         self.featOutFormat = 0
         
@@ -73,6 +74,12 @@ class Controller:
                 configLine = configLine.strip().split()
                 self.classifiersList = configLine
                 print(self.classifiersList)
+            elif "model" in configLine:
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip().split()
+                self.corpusLM = configLine
+                print(self.corpusLM)
             else:
                 params = configLine.split()
                 if len(params) == 2 or len(params) == 1:
@@ -113,9 +120,10 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.inputFile)
+        preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM)
         manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, preprocessor)
         validFeats = manageFeatures.checkFeatValidity()
+        preprocessor.buildLanguageModel()
         if validFeats:
             # Continue to call features
             self.extractedFeats = manageFeatures.callExtractors()

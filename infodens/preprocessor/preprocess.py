@@ -11,8 +11,9 @@ class Preprocess:
     
     fileName = ''
     
-    def __init__(self,fileName):
+    def __init__(self,fileName,corpusLM=0):
         self.inputFile = fileName
+        self.corpusForLM = corpusLM
         self.plainLof = []
         self.tokenSents = []
         self.nltkPOSSents = []
@@ -44,6 +45,10 @@ class Preprocess:
         if not self.tokenSents:
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.plainLof]
         return self.tokenSents
+
+    def buildLanguageModel(self):
+        if not self.corpusForLM:
+            print("Corpus for Language model not defined.")
 
     def nltkPOStag(self):
         """ Tag given sentences with POS of nltk. """
