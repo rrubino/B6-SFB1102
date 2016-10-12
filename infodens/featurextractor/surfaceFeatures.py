@@ -87,10 +87,8 @@ class SurfaceFeatures(FeatureExtractor):
         else:
             freq = 1
         #oneToNgramList = []
-        listOfSentences = []
-        for sentence in self.preprocessor.getPlainSentences():
-            sentence = sentence.strip()
-            listOfSentences.append(sentence.split())
+        listOfSentences = self.preprocessor.gettokenizeSents()
+
         oneToNgramVoc = [self.ngramsAllVoc(listOfSentences, i+1) for i in range(n)]#Will hold unigram, bigram ...ngram Vocabulary
         oneToNgramVocFreq = []
         for voc in oneToNgramVoc:
