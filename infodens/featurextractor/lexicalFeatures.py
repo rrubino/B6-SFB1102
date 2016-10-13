@@ -29,3 +29,16 @@ class LexicalFeatures(FeatureExtractor):
         taggedSents = self.preprocessor.nltkPOStag()
 
         return self.computeDensity(taggedSents)
+
+    @featid(11)
+    def lexicalRichness(self, argString):
+        '''
+        The ratio of unique tokens in the sentence over the sentence length.
+        '''
+
+        #TODO : Lemmatize tokens?
+        sentRichness = []
+        for sentence in self.preprocessor.gettokenizeSents():
+            sentRichness.append(float(len(set(sentence)))/len(sentence))
+
+        return sentRichness

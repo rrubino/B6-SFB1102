@@ -19,7 +19,6 @@ class Preprocess:
         self.nltkPOSSents = []
 
     def preprocessBySentence(self):
-
         with codecs.open(self.inputFile, encoding='utf-8') as f:
             lines = f.read().splitlines()
         return lines
@@ -43,9 +42,7 @@ class Preprocess:
 
     def gettokenizeSents(self):
         if not self.tokenSents:
-            if not self.plainLof:
-                self.plainLof = self.preprocessBySentence()
-            self.tokenSents = [nltk.word_tokenize(sent) for sent in self.plainLof]
+            self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
 
     def buildLanguageModel(self):
@@ -55,8 +52,5 @@ class Preprocess:
     def nltkPOStag(self):
         """ Tag given sentences with POS of nltk. """
         if not self.nltkPOSSents:
-            if not self.tokenSents:
-                self.gettokenizeSents()
-            self.nltkPOSSents = [nltk.pos_tag(tokens) for tokens in self.tokenSents]
-
+            self.nltkPOSSents = [nltk.pos_tag(tokens) for tokens in self.gettokenizeSents()]
         return self.nltkPOSSents
