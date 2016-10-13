@@ -95,7 +95,7 @@ class FeatureManager:
                 featuresExtracted.extend(feat)
             else:
                 featuresExtracted.append(feat)
-            feateX = "Extracted feature:" + str(self.featureIDs[i])
+            feateX = "Extracted feature: " + str(self.featureIDs[i])
             print(feateX)
 
         print("Called features")

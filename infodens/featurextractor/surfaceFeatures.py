@@ -15,13 +15,21 @@ class SurfaceFeatures(FeatureExtractor):
         '''Find average word length of every sentence and return list. '''
 
         aveWordLen = []
-        for sentence in self.preprocessor.getPlainSentences():
-            sentence = sentence.strip()
-            sentence = sentence.split()
+        for sentence in self.preprocessor.gettokenizeSents():
             length = sum([len(s) for s in sentence])
             aveWordLen.append(float(length) / len(sentence))
 
         return aveWordLen
+
+    @featid(10)
+    def sentenceLength(self, argString):
+        '''Find length of every sentence and return list. '''
+
+        sentLen = []
+        for sentence in self.preprocessor.gettokenizeSents():
+            sentLen.append(len(sentence))
+
+        return sentLen
 
     @featid(2)
     def syllableRatio(self, argString):
@@ -33,9 +41,7 @@ class SurfaceFeatures(FeatureExtractor):
         '''
         vowels = ['a', 'e', 'i', 'o', 'u']
         sylRatios = []
-        for sentence in self.preprocessor.getPlainSentences():
-            sentence = sentence.strip()
-            sentence = sentence.split()
+        for sentence in self.preprocessor.gettokenizeSents():
             sylCount = 0
             for word in sentence:
                 word2List = list(word)
@@ -44,7 +50,7 @@ class SurfaceFeatures(FeatureExtractor):
                         sylCount += 1
             
             sylRatios.append(float(sylCount)/len(sentence))
-            
+
         return sylRatios
 
     def ngrams(self, input, n):

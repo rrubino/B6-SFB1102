@@ -43,6 +43,8 @@ class Preprocess:
 
     def gettokenizeSents(self):
         if not self.tokenSents:
+            if not self.plainLof:
+                self.plainLof = self.preprocessBySentence()
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.plainLof]
         return self.tokenSents
 
