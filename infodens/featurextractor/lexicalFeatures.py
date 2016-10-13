@@ -42,3 +42,24 @@ class LexicalFeatures(FeatureExtractor):
             sentRichness.append(float(len(set(sentence)))/len(sentence))
 
         return sentRichness
+
+    @featid(12)
+    def lexicalToTokens(self, argString):
+        '''
+        The ratio of lexical words to tokens in the sentence.
+        '''
+
+        # TODO : Check if should be argument.
+        nonLexicalTags = ['CC', 'DT', 'WDT' 'IN', 'PDT']
+        # Coordinating conjunction, Determiner, Wh-determiner ,
+        #  Preposition or subordinating conjunction, Predeterminer
+
+        lexicalTokensRatio = []
+        for sentence in self.preprocessor.nltkPOStag():
+            lexicalCount = 0
+            for word in sentence:
+                if word[1] not in nonLexicalTags:
+                    lexicalCount += 1
+            lexicalTokensRatio.append(float(lexicalCount) / len(sentence))
+
+        return lexicalTokensRatio
