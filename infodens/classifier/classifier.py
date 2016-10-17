@@ -35,15 +35,20 @@ class Classifier(object):
     ytest = []
        
     splitPercent = 0.3
+    shuffle = True
        
     model = []
        
     n_foldCV = 0  # how many folds cross validation
-
+       
+    classifierName = ''
+    
     def __init__(self, dataX, datay):
         self.X = dataX
         self.y = datay
-
+        
+              
+        
     def shuffle(self):
         indices = [i for i in range(len(self.y))]
         random.shuffle(indices)
@@ -99,23 +104,34 @@ class Classifier(object):
     def runClassifier(self):
         """ Run the provided classifier."""
         acc = []; pre = []; rec = []; fsc = []
-        clRep = 0
         if self.X.shape[0] < 100000:
-            for i in range(10):
+            if self.classifierName == 'Support Vector Machine':
                 self.shuffle()
                 self.splitTrainTest()
                 self.train()
                 self.predict()
                 clRep, accu, prec, reca, fsco =  self.evaluate()
-                acc.append(accu)
-                pre.append(prec)
-                rec.append(reca)
-                fsc.append(fsco)
-        
-            print ('average Accuracy: ', np.mean(acc))
-            print ('average Precision: ', np.mean(pre))
-            print ('average Recall: ', np.mean(rec))
-            print('average F1_score: ', np.mean(fsc))
+                
+                print ('average Accuracy: ', accu)
+                print ('average Precision: ', prec)
+                print ('average Recall: ', reca)
+                print('average F1_score: ', fsco)
+            else:
+                for i in range(10):
+                    self.shuffle()
+                    self.splitTrainTest()
+                    self.train()
+                    self.predict()
+                    clRep, accu, prec, reca, fsco =  self.evaluate()
+                    acc.append(accu)
+                    pre.append(prec)
+                    rec.append(reca)
+                    fsc.append(fsco)
+            
+                print ('average Accuracy: ', np.mean(acc))
+                print ('average Precision: ', np.mean(pre))
+                print ('average Recall: ', np.mean(rec))
+                print('average F1_score: ', np.mean(fsc))
             
         else:
             self.shuffle()

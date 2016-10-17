@@ -20,6 +20,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import average_precision_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score, recall_score
+import time
 
 
 class SVM(Classifier):
@@ -38,26 +39,26 @@ class SVM(Classifier):
         initialized from its super class
         '''
         Classifier.__init__(self, X, y)
+        self.classifierName = 'Support Vector Machine'
+        
                                                                                       
     def train(self):
         
-        if self.n_foldCV <= 0:
-            #print ('No cross validation required. If required set the parameter to a positive number')
-            clf = SVC(decision_function_shape='ovo')
-            clf.fit(self.Xtrain, self.ytrain)
-        else:
-            score = 'recall'
-            # Set the parameters by cross-validation
-            tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
-                     'C': [1, 10, 100, 1000]},
-                    {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+        
+        score = 'recall'
+        
+        tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
+                 'C': [1, 10]},
+                {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
+                
+        print ('SVM Optimizing. This will take a while')
+        start_time = time.time()
+        clf = GridSearchCV(SVC(C=1), tuned_parameters,
+                   scoring='%s_weighted' % score)
+        
+        clf.fit(self.Xtrain, self.ytrain)
+        print ('Done with Optimizing. it took ', time.time() - start_time, ' seconds' ) 
                     
-                    
-            clf = GridSearchCV(SVC(C=1), tuned_parameters, cv=self.n_foldCV,
-                       scoring='%s_weighted' % score)
-            
-            clf.fit(self.Xtrain, self.ytrain)
-            
         self.model = clf
             
             
