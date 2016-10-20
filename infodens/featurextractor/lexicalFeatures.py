@@ -50,7 +50,10 @@ class LexicalFeatures(FeatureExtractor):
         '''
 
         # TODO : Check if should be argument.
-        nonLexicalTags = ['CC', 'DT', 'WDT' 'IN', 'PDT']
+        nonLexicalTags = argString.split(',')
+        print(nonLexicalTags)
+        #nonLexicalTags = ['CC', 'DT', 'WDT' 'IN', 'PDT']
+
         # Coordinating conjunction, Determiner, Wh-determiner ,
         #  Preposition or subordinating conjunction, Predeterminer
 

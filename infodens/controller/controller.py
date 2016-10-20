@@ -118,21 +118,36 @@ class Controller:
 
         return statusOK, self.featureIDs
 
+    def classesSentsMismatch(self,sentsPrep):
+        if self.inputClasses:
+            # Extract the classed IDs from the given classes file
+            preprocessor = preprocess.Preprocess(self.inputClasses)
+            self.classesList = preprocessor.preprocessClassID()
+            sentLen = len(sentsPrep.getPlainSentences())
+            classesLen = len(self.classesList)
+            if (sentLen != classesLen):
+                return True
+        return False
+
     def manageFeatures(self):
         """Init and call a feature manager. """
         preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM)
-        manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, preprocessor)
-        validFeats = manageFeatures.checkFeatValidity()
-        preprocessor.buildLanguageModel()
-        if validFeats:
-            # Continue to call features
-            self.extractedFeats = manageFeatures.callExtractors()
-            self.outputFeatures()
-            return 1
-        else:
-            # terminate
-            print("Requested Feature ID not available.")
+        if self.classesSentsMismatch(preprocessor):
+            print("Classes and Sentences length differ. Quiting. ")
             return 0
+        else:
+            manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, preprocessor)
+            validFeats = manageFeatures.checkFeatValidity()
+            if validFeats:
+                # Continue to call features
+                # preprocessor.buildLanguageModel()
+                self.extractedFeats = manageFeatures.callExtractors()
+                self.outputFeatures()
+                return 1
+            else:
+                # terminate
+                print("Requested Feature ID not available.")
+                return 0
 
     def outputFeatures(self):
         """Output features if requested."""
@@ -152,10 +167,6 @@ class Controller:
 
     def formatFeatures(self):
         """Instantiate a Formater then run it. """
-
-        # Extract the classed IDs from the given classes file
-        preprocessor = preprocess.Preprocess(self.inputClasses)
-        self.classesList = preprocessor.preprocessClassID()
 
         formatter = format.Format(self.extractedFeats, self.classesList)
 
