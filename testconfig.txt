@@ -7,7 +7,7 @@ classifiers : DecisionTree SVM RandomForest
 #3 test
 #1 again
 4 1,5
-4 2, 10
+4 2,10
 #10
 #11
 #12
@@ -18,6 +18,6 @@ output features: feats.txt format
 
 input files : testSent2.txt testSentClasses2.txt
 # input and classifiers are parsed after ':'
-#7 invalidfeat
-#12 75 
+#77 invalidfeat
+
 #Another comment

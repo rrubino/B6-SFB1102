@@ -5,19 +5,24 @@ Created on Tue Aug 30 15:19:12 2016
 @author: admin
 """
 import codecs
+import time
 import nltk
+from nltk.parse import ShiftReduceParser
+from nltk.grammar import Nonterminal
 from nltk import ngrams
 from collections import Counter
 from nltk.stem.porter import PorterStemmer
 porter_stemmer = PorterStemmer()
-import time
+
+
 
 class Preprocess:
     
     fileName = ''
     
-    def __init__(self,fileName):
+    def __init__(self,fileName,corpusLM=0):
         self.inputFile = fileName
+        self.corpusForLM = corpusLM
         self.plainLof = []
         self.tokenSents = []
         self.nltkPOSSents = []
@@ -29,7 +34,6 @@ class Preprocess:
         self.ngramsMixedDict = {}
 
     def preprocessBySentence(self):
-
         with codecs.open(self.inputFile, encoding='utf-8') as f:
             lines = f.read().splitlines()
         return lines
@@ -52,23 +56,18 @@ class Preprocess:
         return self.plainLof
 
     def gettokenizeSents(self):
-        print ('Getting tokenized sentences')
-        start_time = time.time()
-        if not self.plainLof:
-            self.plainLof = self.preprocessBySentence()
         if not self.tokenSents:
-            self.tokenSents = [nltk.word_tokenize(sent) for sent in self.plainLof]
-        print ('Done with getting tokens and it took ', time.time() - start_time, ' seconds')
+            self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
+
+    def buildLanguageModel(self):
+        if not self.corpusForLM:
+            print("Corpus for Language model not defined.")
 
     def nltkPOStag(self):
         """ Tag given sentences with POS of nltk. """
         if not self.nltkPOSSents:
-            if not self.tokenSents:
-                self.gettokenizeSents()
-            nltkPOSandWords = [nltk.pos_tag(tokens) for tokens in self.tokenSents]
-            self.nltkPOSSents = [[pos for (word, pos) in sent] for sent in nltkPOSandWords]
-
+            self.nltkPOSSents = [nltk.pos_tag(tokens) for tokens in self.gettokenizeSents()]
         return self.nltkPOSSents
         
     def getLemmatizedSents(self):
@@ -95,46 +94,42 @@ class Preprocess:
             self.mixedSents.append(sent)
             
         return self.mixedSents
-                
-        
+
     def buildTokenNgrams(self, n):
-        print ('Building token Ngrams')
+        print('Building token Ngrams')
         start_time = time.time()
         if not self.tokenSents:
             self.gettokenizeSents()        
         ngramsToksList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
         ngramsToks = [item for sublist in ngramsToksList for item in sublist] #flatten the list
         self.ngramsTokDict[n] = Counter(ngramsToks)
-        print ('Done building token Ngrams, it took ', time.time() - start_time, ' seconds')
+        print('Done building token Ngrams, it took ', time.time() - start_time, ' seconds')
         return self.ngramsTokDict[n]
-        
-    
-        
+
     def buildPOSNgrams(self, n):
-        print ('Building POS Ngrams')
+        print('Building POS Ngrams')
         start_time = time.time()
         if not self.nltkPOSSents:
             self.nltkPOStag()        
         ngramsPOSList = [list(ngrams(self.nltkPOSSents[i], n)) for i in range(len(self.nltkPOSSents))]
         ngramsPOS = [item for sublist in ngramsPOSList for item in sublist] #flatten the list
         self.ngramsPOSDict[n] = Counter(ngramsPOS)
-        print ('Done building POS Ngrams, it took ', time.time() - start_time, ' seconds')
+        print('Done building POS Ngrams, it took ', time.time() - start_time, ' seconds')
         return self.ngramsPOSDict[n]
 
-    
     def buildLemmaNgrams(self, n):
-        print ('Building Lemma Ngrams')
+        print('Building Lemma Ngrams')
         start_time = time.time()
         if not self.lemmatizedSents:
             self.getLemmatizedSents()        
         ngramsLemmaList = [list(ngrams(self.lemmatizedSents[i], n)) for i in range(len(self.lemmatizedSents))]
         ngramsLemma = [item for sublist in ngramsLemmaList for item in sublist] #flatten the list
         self.ngramsLemmaDict[n] = Counter(ngramsLemma)
-        print ('Done building Lemma Ngrams, it took ', time.time() - start_time, ' seconds')
+        print('Done building Lemma Ngrams, it took ', time.time() - start_time, ' seconds')
         return self.ngramsLemmaDict[n]
         
     def buildMixedNgrams(self, n):
-        print ('Building Mixed Ngrams')
+        print('Building Mixed Ngrams')
         start_time = time.time()
         if not self.mixedSents:
             self.getMixedSents()        
@@ -145,17 +140,8 @@ class Preprocess:
         return self.ngramsMixedDict[n]
         
     def ngramMinFreq(self, anNgram, freq):
-        print ('Getting ngram with minimum frequency')
+        print('Getting ngram with minimum frequency')
         start_time = time.time()
         finalNgram = {k:v for k in anNgram.keys() for v in anNgram.values() if anNgram[k] == v if v >= freq}
-        print ('Done ngram with minimum frequency, it took ', time.time() - start_time, ' seconds')
+        print('Done ngram with minimum frequency, it took ', time.time() - start_time, ' seconds')
         return finalNgram
-        
-        
-        
-        
-        
-
-    def buildLanguageModel(self):
-        if not self.corpusForLM:
-            print("Corpus for Language model not defined.")

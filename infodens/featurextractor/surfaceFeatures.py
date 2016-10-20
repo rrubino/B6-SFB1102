@@ -33,6 +33,11 @@ class SurfaceFeatures(FeatureExtractor):
 
         return sentLen
 
+    @featid(8)
+    def parseTreeDepth(self, argString):
+        '''Find depth of every sentence's parse tree and return list. '''
+        self.preprocessor.getParseTrees()
+
     @featid(2)
     def syllableRatio(self, argString):
         '''
@@ -85,8 +90,7 @@ class SurfaceFeatures(FeatureExtractor):
         listOfSentences = self.preprocessor.gettokenizeSents() 
              
         totalNumber = len(allKeys)
-        
-        
+
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
         
         print ('Extracting features from all sentences ')
@@ -101,10 +105,7 @@ class SurfaceFeatures(FeatureExtractor):
         print ('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
         
         return ngramFeatures   
-        
-        
-        
-        
+
     @featid(5)
     def ngramPOSBagOfWords(self, argString): 
         '''
@@ -135,10 +136,8 @@ class SurfaceFeatures(FeatureExtractor):
         listOfSentences = self.preprocessor.gettokenizeSents() 
              
         totalNumber = len(allKeys)
-        
-        
+
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-        
         
         print ('Extracting features from all sentences ')
         start_time = time.time()
@@ -149,12 +148,10 @@ class SurfaceFeatures(FeatureExtractor):
                     counter_j = allKeys.index(key)
                     ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
         
-        print ('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
-       
-        
+        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
+
         return ngramFeatures   
-        
-        
+
     @featid(6)
     def ngramMixedBagOfWords(self, argString): 
         '''
@@ -185,11 +182,9 @@ class SurfaceFeatures(FeatureExtractor):
         listOfSentences = self.preprocessor.gettokenizeSents() 
              
         totalNumber = len(allKeys)
-        
-        
+
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-        
-        
+
         print ('Extracting features from all sentences ')
         start_time = time.time()
         for i in range(len(listOfSentences)):            
@@ -199,9 +194,8 @@ class SurfaceFeatures(FeatureExtractor):
                     counter_j = allKeys.index(key)
                     ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
         
-        print ('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
-       
-        
+        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
+
         return ngramFeatures   
         
     @featid(7)
@@ -234,12 +228,10 @@ class SurfaceFeatures(FeatureExtractor):
         listOfSentences = self.preprocessor.gettokenizeSents() 
              
         totalNumber = len(allKeys)
-        
-        
+
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-        
-        
-        print ('Extracting features from all sentences ')
+
+        print('Extracting features from all sentences ')
         start_time = time.time()
         for i in range(len(listOfSentences)):            
             ngramsVocab = Counter(ngrams(listOfSentences[i], n))            
@@ -248,6 +240,6 @@ class SurfaceFeatures(FeatureExtractor):
                     counter_j = allKeys.index(key)
                     ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
         
-        print ('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
+        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
                
         return ngramFeatures
