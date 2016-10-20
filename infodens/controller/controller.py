@@ -19,6 +19,7 @@ class Controller:
         self.featOutput = 0
         self.featOutFormat = 0
         self.threadsCount = 0
+        self.language = 'EN'
         
         #array format of dataset and labels for classifying
         self.extractedFeats = []
@@ -81,6 +82,12 @@ class Controller:
                 configLine = configLine.strip().split()
                 self.corpusLM = configLine
                 print(self.corpusLM)
+            elif "lang" in configLine :
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip().split()
+                self.language = configLine
+                print(self.language)
             elif "thread" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -139,7 +146,8 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM)
+        preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM,
+                                             self.language)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")
             return 0

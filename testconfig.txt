@@ -3,6 +3,7 @@
 2
 #classifiers : RandomForest
 #language model: testSent.txt
+#language : FR
 threads : 9
 classifiers : DecisionTree SVM RandomForest
 

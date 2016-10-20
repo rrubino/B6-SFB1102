@@ -20,9 +20,10 @@ class Preprocess:
     
     fileName = ''
     
-    def __init__(self,fileName,corpusLM=0):
+    def __init__(self,fileName,corpusLM=0,language=0):
         self.inputFile = fileName
         self.corpusForLM = corpusLM
+        self.operatingLanguage = language
         self.plainLof = []
         self.tokenSents = []
         self.nltkPOSSents = []
@@ -32,6 +33,9 @@ class Preprocess:
         self.ngramsLemmaDict = {}
         self.ngramsPOSDict = {}
         self.ngramsMixedDict = {}
+
+    def getLanguageMode(self):
+        return self.operatingLanguage
 
     def preprocessBySentence(self):
         with codecs.open(self.inputFile, encoding='utf-8') as f:
