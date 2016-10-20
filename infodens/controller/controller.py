@@ -18,6 +18,7 @@ class Controller:
         self.corpusLM = 0
         self.featOutput = 0
         self.featOutFormat = 0
+        self.threadsCount = 0
         
         #array format of dataset and labels for classifying
         self.extractedFeats = []
@@ -80,6 +81,16 @@ class Controller:
                 configLine = configLine.strip().split()
                 self.corpusLM = configLine
                 print(self.corpusLM)
+            elif "thread" in configLine:
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip().split()
+                if configLine[0].isdigit():
+                    self.threadsCount = int(configLine[0])
+                    print(self.threadsCount)
+                else:
+                    statusOK = 0
+                    print("Number of threads is not a Number")
             else:
                 params = configLine.split()
                 if len(params) == 2 or len(params) == 1:
@@ -109,12 +120,9 @@ class Controller:
             # Parse the config file
             statusOK = self.parseConfig(config)
 
-            if self.inputFile is 0:
+            if self.inputFile is 0 and statusOK:
                 print("Error, Input file not found.")
                 statusOK = 0
-        print(self.featOutFormat)
-        print(self.featOutput)
-        print(self.classifReport)
 
         return statusOK, self.featureIDs
 
