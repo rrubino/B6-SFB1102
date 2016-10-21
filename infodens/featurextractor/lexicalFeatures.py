@@ -9,9 +9,9 @@ from infodens.preprocessor import preprocess
 
 class LexicalFeatures(FeatureExtractor):
     
-    def computeDensity(self,taggedSentences):
+    def computeDensity(self,taggedSentences, jnrv):
         densities = []
-        jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
+        #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
         for sent in taggedSentences:
             jnrvList = [word[0] for word in sent if word[0] in jnrv]
@@ -21,6 +21,7 @@ class LexicalFeatures(FeatureExtractor):
 
     @featid(3)        
     def lexicalDensity(self, argString):
+        jnrv = argString.split(',')
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
         This is computed by dividing the number of tokens tagged with POS tags 
@@ -28,7 +29,7 @@ class LexicalFeatures(FeatureExtractor):
         '''
         taggedSents = self.preprocessor.nltkPOStag()
 
-        return self.computeDensity(taggedSents)
+        return self.computeDensity(taggedSents, jnrv)
 
     @featid(11)
     def lexicalRichness(self, argString):

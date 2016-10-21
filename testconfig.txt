@@ -5,8 +5,8 @@
 #language model: testSent.txt
 #language : FR
 threads : 9
-classifiers : DecisionTree SVM RandomForest
-
+classifiers : DecisionTree RandomForest SVM
+3 J,N,V,R
 4 1,5
 4 2,10
 #10
