@@ -30,7 +30,7 @@ class Format:
             libsvmOutput.append(output_i)
             
         writer.libsvmwriteToFile(libsvmOutput, fileName)
-        return libsvmOutput
+        
 
     def arrfFormat(self, fileName):
         writer = FormatWriter()
