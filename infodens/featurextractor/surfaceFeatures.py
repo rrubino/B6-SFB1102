@@ -18,8 +18,11 @@ class SurfaceFeatures(FeatureExtractor):
 
         aveWordLen = []
         for sentence in self.preprocessor.gettokenizeSents():
-            length = sum([len(s) for s in sentence])
-            aveWordLen.append(float(length) / len(sentence))
+            if len(sentence) is 0:
+                aveWordLen.append(0)
+            else:
+                length = sum([len(s) for s in sentence])
+                aveWordLen.append(float(length) / len(sentence))
 
         return aveWordLen
 
@@ -55,8 +58,11 @@ class SurfaceFeatures(FeatureExtractor):
                 for i in range(len(word2List)-1):
                     if word2List[i] in vowels and word2List[i+1] not in vowels:
                         sylCount += 1
-            
-            sylRatios.append(float(sylCount)/len(sentence))
+
+            if len(sentence) is 0:
+                sylRatios.append(0)
+            else:
+                sylRatios.append(float(sylCount)/len(sentence))
 
         return sylRatios
 

@@ -7,8 +7,7 @@ Created on Tue Aug 30 15:19:12 2016
 import codecs
 import time
 import nltk
-from nltk.parse import ShiftReduceParser
-from nltk.grammar import Nonterminal
+from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
 from nltk.stem.porter import PorterStemmer
@@ -26,6 +25,7 @@ class Preprocess:
         self.operatingLanguage = language
         self.plainLof = []
         self.tokenSents = []
+        self.parseTrees = []
         self.nltkPOSSents = []
         self.lemmatizedSents = []
         self.mixedSents = []
@@ -36,6 +36,9 @@ class Preprocess:
 
     def getLanguageMode(self):
         return self.operatingLanguage
+
+    def setLanguageMode(self, lang):
+        self.operatingLanguage = lang
 
     def preprocessBySentence(self):
         with codecs.open(self.inputFile, encoding='utf-8') as f:
@@ -64,6 +67,11 @@ class Preprocess:
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
 
+    def getParseTrees(self):
+        if not self.parseTrees:
+            self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
+        return
+
     def buildLanguageModel(self):
         if not self.corpusForLM:
             print("Corpus for Language model not defined.")
@@ -91,7 +99,10 @@ class Preprocess:
         for i in range(len(self.tokenSents)):
             sent = []
             for j in range(len(self.tokenSents[i])):
-                if self.nltkPOSSents[i][j].startswith('J') or self.nltkPOSSents[i][j].startswith('N') or self.nltkPOSSents[i][j].startswith('V') or self.nltkPOSSents[i][j].startswith('R'):
+                if self.nltkPOSSents[i][j].startswith('J') or \
+                        self.nltkPOSSents[i][j].startswith('N') or \
+                        self.nltkPOSSents[i][j].startswith('V') or \
+                        self.nltkPOSSents[i][j].startswith('R'):
                     sent.append(self.nltkPOSSents[i][j])
                 else:
                     sent.append(self.tokenSents[i][j])
@@ -146,6 +157,6 @@ class Preprocess:
     def ngramMinFreq(self, anNgram, freq):
         print('Getting ngram with minimum frequency')
         start_time = time.time()
-        finalNgram = {k:v for k in anNgram.keys() for v in anNgram.values() if anNgram[k] == v if v >= freq}
+        finalNgram = dict((k, anNgram[k]) for k in anNgram.keys() if anNgram[k] >= freq)
         print('Done ngram with minimum frequency, it took ', time.time() - start_time, ' seconds')
         return finalNgram

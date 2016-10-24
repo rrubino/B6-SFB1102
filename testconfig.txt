@@ -6,11 +6,11 @@
 #language : FR
 threads : 9
 classifiers : DecisionTree RandomForest SVM
-3 J,N,V,R
+#3 J,N,V,R
 4 1,5
 4 2,10
-#10
-#11
+10
+11
 #12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt

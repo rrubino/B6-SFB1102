@@ -14,8 +14,11 @@ class LexicalFeatures(FeatureExtractor):
         #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
         for sent in taggedSentences:
-            jnrvList = [word[0] for word in sent if word[0] in jnrv]
-            densities.append(float(len(sent) - len(jnrvList)) / len(sent))
+            if(len(sent) is 0):
+                densities.append(0)
+            else:
+                jnrvList = [word[0] for word in sent if word[0] in jnrv]
+                densities.append(float(len(sent) - len(jnrvList)) / len(sent))
         
         return densities
 
@@ -40,7 +43,10 @@ class LexicalFeatures(FeatureExtractor):
         #TODO : Lemmatize tokens?
         sentRichness = []
         for sentence in self.preprocessor.gettokenizeSents():
-            sentRichness.append(float(len(set(sentence)))/len(sentence))
+            if len(sentence) is 0:
+                sentRichness.append(0)
+            else:
+                sentRichness.append(float(len(set(sentence)))/len(sentence))
 
         return sentRichness
 
@@ -52,7 +58,7 @@ class LexicalFeatures(FeatureExtractor):
 
         # TODO : Check if should be argument.
         nonLexicalTags = argString.split(',')
-        print(nonLexicalTags)
+        #print(nonLexicalTags)
         #nonLexicalTags = ['CC', 'DT', 'WDT' 'IN', 'PDT']
 
         # Coordinating conjunction, Determiner, Wh-determiner ,
@@ -64,6 +70,9 @@ class LexicalFeatures(FeatureExtractor):
             for word in sentence:
                 if word[1] not in nonLexicalTags:
                     lexicalCount += 1
-            lexicalTokensRatio.append(float(lexicalCount) / len(sentence))
+            if len(sentence) is 0:
+                lexicalTokensRatio.append(0)
+            else:
+                lexicalTokensRatio.append(float(lexicalCount) / len(sentence))
 
         return lexicalTokensRatio
