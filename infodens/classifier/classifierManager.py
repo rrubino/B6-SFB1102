@@ -14,13 +14,14 @@ import difflib
 
 class ClassifierManager:
 
-    def __init__(self, ids, dSet, labs):
+    def __init__(self, ids, dSet, labs, threads=1):
         self.classifierIDs = ids
         self.dataSet = dSet
         self.labels = labs
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
         self.classifyModules = []
+        self.threadsCount = threads
         self.returnClassifiers()
         #print(self.classifyModules)
         #print(self.availClassifiers)
@@ -51,7 +52,7 @@ class ClassifierManager:
             print(module)
             classModule = importlib.import_module("infodens.classifier."+module)
             class_ = getattr(classModule, classif)
-            clf = class_(self.dataSet, self.labels)
+            clf = class_(self.dataSet, self.labels, self.threadsCount)
             classifReports += (classif + ":\n")
             #clfRep, acc,pre, rec, fsc = clf.runClassifier()
             classifReports += clf.runClassifier()

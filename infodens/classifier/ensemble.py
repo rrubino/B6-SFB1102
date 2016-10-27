@@ -25,19 +25,13 @@ from sklearn import tree
 
 
 class Ensemble(Classifier):
-    
-    
-    
+
     classifierName = 'Ensemble'
     listOfClassifiers = []
-      
-    
     
     def __init__(self, clfs):
         self.listOfClassifiers = clfs
-    
-                                                                                             
-        
+
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -51,6 +45,3 @@ class Ensemble(Classifier):
             clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf
-            
-            
-    

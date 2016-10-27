@@ -12,185 +12,88 @@ import time
 
 class BagOfNgrams(FeatureExtractor):
 
-    @featid(4)
-    def ngramBagOfWords(self, argString): 
-        '''
-        Extracts n-gram bag of words features from listOf Sentences
-        argString: is read off the config file and converted to integer if it is digit. If it is not a digit, an error is returned
-        
-        '''
+    def ngramArgumentCheck(self, argString):
+        status = 1
+        n = 0
+        freq = 0
+
         argStringList = argString.split(',')
         if argStringList[0].isdigit():
             n = int(argStringList[0])
         else:
             print('Error: n should be an integer')
-            return
+            status = 0
         if len(argStringList) > 1:
             if argStringList[1].isdigit():
                 freq = int(argStringList[1])
             else:
                 print('Error: frequency should be an integer')
-                return
+                status = 0
         else:
             freq = 1
-        #oneToNgramList = []
-            
-        ngramVoc = self.preprocessor.buildTokenNgrams(n)
+        return status, n, freq
+
+    def ngramExtraction(self, type, argString):
+        status, n, freq = self.ngramArgumentCheck(argString)
+        if not status:
+            # Error in argument.
+            return
+
+        ngramVoc = []
+        listOfSentences = []
+        if type is "plain":
+            ngramVoc = self.preprocessor.buildTokenNgrams(n)
+            listOfSentences = self.preprocessor.gettokenizeSents()
+        elif type is "POS":
+            ngramVoc = self.preprocessor.buildPOSNgrams(n)
+            listOfSentences = self.preprocessor.nltkPOStag()
+        elif type is "lemma":
+            ngramVoc = self.preprocessor.buildLemmaNgrams(n)
+            listOfSentences = self.preprocessor.getLemmatizedSents()
+        elif type is "mixed":
+            ngramVoc = self.preprocessor.buildMixedNgrams(n)
+            listOfSentences = self.preprocessor.getMixedSents()
+
         finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
         allKeys = finNgram.keys()
-        
-        listOfSentences = self.preprocessor.gettokenizeSents() 
-             
-        totalNumber = len(allKeys)
 
-        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-        
-        start_time = time.time()
-        for i in range(len(listOfSentences)):            
-            ngramsVocab = Counter(ngrams(listOfSentences[i], n))            
+        numberOfFeatures = len(allKeys)
+
+        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(numberOfFeatures)]
+
+        for i in range(len(listOfSentences)):
+            ngramsVocab = Counter(ngrams(listOfSentences[i], n))
             for key in ngramsVocab:
                 if key in allKeys:
                     counter_j = allKeys.index(key)
                     ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
-        
-        print('Extracted Ngram, took ', (time.time() - start_time), ' seconds' )
-        
-        return ngramFeatures   
+
+        return ngramFeatures
+
+    @featid(4)
+    def ngramBagOfWords(self, argString): 
+        '''
+        Extracts n-gram bag of words features.
+        '''
+        return self.ngramExtraction("plain", argString)
 
     @featid(5)
     def ngramPOSBagOfWords(self, argString): 
         '''
-        Extracts n-gram bag of words features from listOf Sentences
-        argString: is read off the config file and converted to integer if it is digit. If it is not a digit, an error is returned
-        
+        Extracts n-gram POS bag of words features.
         '''
-        argStringList = argString.split(',')
-        if argStringList[0].isdigit():
-            n = int(argStringList[0])
-        else:
-            print('Error: n should be an integer')
-            return
-        if len(argStringList) > 1:
-            if argStringList[1].isdigit():
-                freq = int(argStringList[1])
-            else:
-                print('Error: frequency should be an integer')
-                return
-        else:
-            freq = 1
-        #oneToNgramList = []
-            
-        ngramVoc = self.preprocessor.buildPOSNgrams(n)
-        finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-        allKeys = finNgram.keys()
-        
-        listOfSentences = self.preprocessor.gettokenizeSents() 
-             
-        totalNumber = len(allKeys)
-
-        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-        
-        print ('Extracting features from all sentences ')
-        start_time = time.time()
-        for i in range(len(listOfSentences)):            
-            ngramsVocab = Counter(ngrams(listOfSentences[i], n))            
-            for key in ngramsVocab:
-                if key in allKeys:
-                    counter_j = allKeys.index(key)
-                    ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
-        
-        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
-
-        return ngramFeatures   
+        return self.ngramExtraction("POS", argString)
 
     @featid(6)
     def ngramMixedBagOfWords(self, argString): 
         '''
-        Extracts n-gram bag of words features from listOf Sentences
-        argString: is read off the config file and converted to integer if it is digit. If it is not a digit, an error is returned
-        
+        Extracts n-gram mixed bag of words features.
         '''
-        argStringList = argString.split(',')
-        if argStringList[0].isdigit():
-            n = int(argStringList[0])
-        else:
-            print('Error: n should be an integer')
-            return
-        if len(argStringList) > 1:
-            if argStringList[1].isdigit():
-                freq = int(argStringList[1])
-            else:
-                print('Error: frequency should be an integer')
-                return
-        else:
-            freq = 1
-        #oneToNgramList = []
-            
-        ngramVoc = self.preprocessor.buildMixedNgrams(n)
-        finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-        allKeys = finNgram.keys()
-        
-        listOfSentences = self.preprocessor.gettokenizeSents() 
-             
-        totalNumber = len(allKeys)
-
-        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-
-        print ('Extracting features from all sentences ')
-        start_time = time.time()
-        for i in range(len(listOfSentences)):            
-            ngramsVocab = Counter(ngrams(listOfSentences[i], n))            
-            for key in ngramsVocab:
-                if key in allKeys:
-                    counter_j = allKeys.index(key)
-                    ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
-        
-        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
-
-        return ngramFeatures   
+        return self.ngramExtraction("mixed", argString)
         
     @featid(7)
     def ngramLemmaBagOfWords(self, argString): 
         '''
-        Extracts n-gram bag of words features from listOf Sentences
-        argString: is read off the config file and converted to integer if it is digit. If it is not a digit, an error is returned
-        
+        Extracts n-gram lemmatized bag of words features.
         '''
-        argStringList = argString.split(',')
-        if argStringList[0].isdigit():
-            n = int(argStringList[0])
-        else:
-            print('Error: n should be an integer')
-            return
-        if len(argStringList) > 1:
-            if argStringList[1].isdigit():
-                freq = int(argStringList[1])
-            else:
-                print('Error: frequency should be an integer')
-                return
-        else:
-            freq = 1
-        #oneToNgramList = []
-            
-        ngramVoc = self.preprocessor.buildLemmaNgrams(n)
-        finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-        allKeys = finNgram.keys()
-        
-        listOfSentences = self.preprocessor.gettokenizeSents() 
-             
-        totalNumber = len(allKeys)
-
-        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(totalNumber)]
-
-        print('Extracting features from all sentences ')
-        start_time = time.time()
-        for i in range(len(listOfSentences)):            
-            ngramsVocab = Counter(ngrams(listOfSentences[i], n))            
-            for key in ngramsVocab:
-                if key in allKeys:
-                    counter_j = allKeys.index(key)
-                    ngramFeatures[counter_j][i] = float(ngramsVocab[key]) / sum(ngramsVocab.values())
-        
-        print('Done Extracting features from all sentences it took ', (time.time() - start_time), ' seconds' )
-               
-        return ngramFeatures
+        return self.ngramExtraction("lemma", argString)

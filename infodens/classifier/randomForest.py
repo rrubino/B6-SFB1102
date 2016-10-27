@@ -22,21 +22,10 @@ from sklearn.metrics import average_precision_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score, recall_score
 
-
-
 class RandomForest(Classifier):
-    
-    
     
     classifierName = 'Random Forest'
     n_estimators=20
-      
-    
-    
-    def __init__(self, X, y):
-        Classifier.__init__(self, X, y)
-        
-                                                                                      
         
     def train(self):
         
@@ -63,6 +52,3 @@ class RandomForest(Classifier):
             clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf
-            
-            
-    

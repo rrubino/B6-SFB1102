@@ -18,7 +18,7 @@ class Controller:
         self.corpusLM = 0
         self.featOutput = 0
         self.featOutFormat = 0
-        self.threadsCount = 0
+        self.threadsCount = 1
         self.language = 'EN'
         
         #array format of dataset and labels for classifying
@@ -93,7 +93,9 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 if configLine[0].isdigit():
-                    self.threadsCount = int(configLine[0])
+                    threads = int(configLine[0])
+                    if threads > 0:
+                        self.threadsCount = threads
                     print(self.threadsCount)
                 else:
                     statusOK = 0
@@ -197,7 +199,7 @@ class Controller:
             self.formatFeatures()
             #print(self.y)
             classifying = classifierManager.ClassifierManager(
-                          self.classifiersList, self.extractedFeats, self.classesList)
+                          self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount)
             validClassifiers = classifying.checkValidClassifier()
             if validClassifiers:
                 # Continue to call classifiers

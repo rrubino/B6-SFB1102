@@ -43,12 +43,11 @@ class Classifier(object):
        
     classifierName = ''
     
-    def __init__(self, dataX, datay):
+    def __init__(self, dataX, datay, threads=1):
         self.X = dataX
         self.y = datay
-        
-              
-        
+        self.threads = threads
+
     def shuffle(self):
         indices = [i for i in range(len(self.y))]
         random.shuffle(indices)

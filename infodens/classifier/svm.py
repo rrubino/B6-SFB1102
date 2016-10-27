@@ -11,7 +11,7 @@ import numpy as np
 import sklearn
 from sklearn.svm import SVC
 from sklearn import cross_validation
-from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
+from sklearn.grid_search import GridSearchCV
 import os
 import pickle
 from sklearn.metrics import precision_recall_fscore_support
@@ -33,20 +33,9 @@ class SVM(Classifier):
     k = 'linear'  #linear kernel
     max_iter = -1
     gamma = 'auto'
-    
-    def __init__(self, X, y):
-        '''
-        initialized from its super class
-        '''
-        Classifier.__init__(self, X, y)
-        self.classifierName = 'Support Vector Machine'
-        
-                                                                                      
+
     def train(self):
-        
-        
         score = 'recall'
-        
         tuned_parameters = [{'kernel': ['rbf'], 'gamma': [1e-3, 1e-4],
                  'C': [1, 10]},
                 {'kernel': ['linear'], 'C': [1, 10, 100, 1000]}]
@@ -57,9 +46,6 @@ class SVM(Classifier):
                    scoring='%s_weighted' % score)
         
         clf.fit(self.Xtrain, self.ytrain)
-        print ('Done with Optimizing. it took ', time.time() - start_time, ' seconds' ) 
+        print('Done with Optimizing. it took ', time.time() - start_time, ' seconds' )
                     
         self.model = clf
-            
-            
-    

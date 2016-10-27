@@ -25,19 +25,10 @@ from sklearn import tree
 
 
 class DecisionTree(Classifier):
-    
-    
-    
+
     classifierName = 'Decision Tree'
-    n_estimators=20
-      
-    
-    
-    def __init__(self, X, y):
-        Classifier.__init__(self, X, y)
-        
-                                                                                         
-        
+    n_estimators = 20
+
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -63,8 +54,3 @@ class DecisionTree(Classifier):
             clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf
-            
-            
-    
-            
-    

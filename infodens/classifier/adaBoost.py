@@ -31,13 +31,6 @@ class AdaBoost:
     classifierName = 'Adaboost'
     n_estimators=20
 
-    def __init__(self, X, y):
-        '''
-        Constructor
-        ''' 
-        classifier.__init__(self, X, y)
-    
-
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -48,5 +41,4 @@ class AdaBoost:
             #not yet implemented, so does the same thing as without cv                  
             clf.fit(self.Xtrain, self.ytrain)
             
-        self.model = clf    
-    
+        self.model = clf

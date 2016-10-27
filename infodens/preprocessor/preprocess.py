@@ -97,18 +97,19 @@ class Preprocess:
         
     def getMixedSents(self):
         """Build and return mixed sentences (POS for J,N,V, or R)"""
-        self.nltkPOStag()
-        for i in range(len(self.tokenSents)):
-            sent = []
-            for j in range(len(self.tokenSents[i])):
-                if self.nltkPOSSents[i][j].startswith('J') or \
-                        self.nltkPOSSents[i][j].startswith('N') or \
-                        self.nltkPOSSents[i][j].startswith('V') or \
-                        self.nltkPOSSents[i][j].startswith('R'):
-                    sent.append(self.nltkPOSSents[i][j])
-                else:
-                    sent.append(self.tokenSents[i][j])
-            self.mixedSents.append(sent)
+        if not self.mixedSents:
+            self.nltkPOStag()
+            for i in range(len(self.tokenSents)):
+                sent = []
+                for j in range(len(self.tokenSents[i])):
+                    if self.nltkPOSSents[i][j].startswith('J') or \
+                            self.nltkPOSSents[i][j].startswith('N') or \
+                            self.nltkPOSSents[i][j].startswith('V') or \
+                            self.nltkPOSSents[i][j].startswith('R'):
+                        sent.append(self.nltkPOSSents[i][j])
+                    else:
+                        sent.append(self.tokenSents[i][j])
+                self.mixedSents.append(sent)
             
         return self.mixedSents
 
