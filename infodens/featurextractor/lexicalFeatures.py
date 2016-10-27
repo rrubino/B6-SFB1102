@@ -17,7 +17,7 @@ class LexicalFeatures(FeatureExtractor):
             if(len(sent) is 0):
                 densities.append(0)
             else:
-                jnrvList = [word[0] for word in sent if word[0] in jnrv]
+                jnrvList = [tagPOS for tagPOS in sent if tagPOS in jnrv]
                 densities.append(float(len(sent) - len(jnrvList)) / len(sent))
         
         return densities
@@ -55,20 +55,13 @@ class LexicalFeatures(FeatureExtractor):
         '''
         The ratio of lexical words to tokens in the sentence.
         '''
-
-        # TODO : Check if should be argument.
         nonLexicalTags = argString.split(',')
-        #print(nonLexicalTags)
-        #nonLexicalTags = ['CC', 'DT', 'WDT' 'IN', 'PDT']
-
-        # Coordinating conjunction, Determiner, Wh-determiner ,
-        #  Preposition or subordinating conjunction, Predeterminer
 
         lexicalTokensRatio = []
         for sentence in self.preprocessor.nltkPOStag():
             lexicalCount = 0
-            for word in sentence:
-                if word[1] not in nonLexicalTags:
+            for tagPOS in sentence:
+                if tagPOS not in nonLexicalTags:
                     lexicalCount += 1
             if len(sentence) is 0:
                 lexicalTokensRatio.append(0)

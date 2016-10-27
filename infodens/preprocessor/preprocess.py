@@ -10,10 +10,7 @@ import nltk
 from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
-from nltk.stem.porter import PorterStemmer
-porter_stemmer = PorterStemmer()
-
-
+from nltk.stem.wordnet import WordNetLemmatizer
 
 class Preprocess:
     
@@ -29,73 +26,78 @@ class Preprocess:
         self.nltkPOSSents = []
         self.lemmatizedSents = []
         self.mixedSents = []
-        self.ngramsTokDict = {}
-        self.ngramsLemmaDict = {}
-        self.ngramsPOSDict = {}
-        self.ngramsMixedDict = {}
 
     def getLanguageMode(self):
+        """Return the current language mode."""
         return self.operatingLanguage
 
     def setLanguageMode(self, lang):
+        """Set language mode for preprocessing operations."""
         self.operatingLanguage = lang
 
     def preprocessBySentence(self):
-        with codecs.open(self.inputFile, encoding='utf-8') as f:
-            lines = f.read().splitlines()
+        """Load the input file which was specified at Init of object."""
+        lines = []
+        if self.inputFile:
+            with codecs.open(self.inputFile, encoding='utf-8') as f:
+                lines = f.read().splitlines()
         return lines
-
-    def preprocessClassID(self):
-        """ Extract from each line the integer for class ID."""
-
-        with codecs.open(self.inputFile, encoding='utf-8') as f:
-            lines = f.read().splitlines()
-        ids = [int(id) for id in lines]
-        
-        return ids
 
     def preprocessByBlock(self, fileName, blockSize):
         pass
 
+    def preprocessClassID(self):
+        """ Extract from each line the integer for class ID. Requires init with Classes file."""
+        with codecs.open(self.inputFile, encoding='utf-8') as f:
+            lines = f.read().splitlines()
+        ids = [int(id) for id in lines]
+        return ids
+
     def getPlainSentences(self):
+        """Return sentences as read from file."""
         if not self.plainLof:
             self.plainLof = self.preprocessBySentence()
         return self.plainLof
 
     def gettokenizeSents(self):
+        """Return tokenized sentences."""
         if not self.tokenSents:
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
 
     def getParseTrees(self):
+        """Return parse trees of each sentence."""
         if not self.parseTrees:
             self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
         return
 
     def buildLanguageModel(self):
+        """Build a language model from given corpus."""
         if not self.corpusForLM:
             print("Corpus for Language model not defined.")
 
     def nltkPOStag(self):
-        """ Tag given sentences with POS of nltk. """
+        """ Return POS tagged sentences. """
         if not self.nltkPOSSents:
-            self.nltkPOSSents = [nltk.pos_tag(tokens) for tokens in self.gettokenizeSents()]
+            tagPOSSents = [nltk.pos_tag(tokens) for tokens in self.gettokenizeSents()]
+            for i in range(0, len(tagPOSSents)):
+                self.nltkPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
         return self.nltkPOSSents
         
     def getLemmatizedSents(self):
-        if not self.plainLof:
-            self.plainLof = self.preprocessBySentence()
-        lemmatized = [porter_stemmer.stem(a) for a in self.plainLof]   
-        self.lemmatizedSents = [nltk.word_tokenize(tokens) for tokens in lemmatized]
+        """Lemmatize and return sentences."""
+        if not self.lemmatizedSents:
+            self.gettokenizeSents()
+            lemmatizer = WordNetLemmatizer()
+            for i in range(0,len(self.tokenSents)):
+                lemmatized = [lemmatizer.lemmatize(a) for a in self.tokenSents[i]]
+                self.lemmatizedSents.append(lemmatized)
+
         return self.lemmatizedSents
         
-    def getMixedSents(self):        
-        if not self.plainLof:
-            self.plainLof = self.preprocessBySentence()
-        if not self.tokenSents:
-            self.gettokenizeSents()
-        self.nltkPOSSents = self.nltkPOStag()
-        
+    def getMixedSents(self):
+        """Build and return mixed sentences (POS for J,N,V, or R)"""
+        self.nltkPOStag()
         for i in range(len(self.tokenSents)):
             sent = []
             for j in range(len(self.tokenSents[i])):
@@ -110,53 +112,38 @@ class Preprocess:
             
         return self.mixedSents
 
+    def buildNgramsType(self, type, n):
+        """Build and return given type of ngram."""
+        if type is "plain":
+            self.gettokenizeSents()
+            ngramsList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
+        elif type is "POS":
+            self.nltkPOStag()
+            ngramsList = [list(ngrams(self.nltkPOSSents[i], n)) for i in range(len(self.nltkPOSSents))]
+        elif type is "lemma":
+            self.getLemmatizedSents()
+            ngramsList = [list(ngrams(self.lemmatizedSents[i], n)) for i in range(len(self.lemmatizedSents))]
+        elif type is "mixed":
+            self.getMixedSents()
+            ngramsList = [list(ngrams(self.mixedSents[i], n)) for i in range(len(self.mixedSents))]
+
+        ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
+
+        return Counter(ngramsOutput)
+
     def buildTokenNgrams(self, n):
-        print('Building token Ngrams')
-        start_time = time.time()
-        if not self.tokenSents:
-            self.gettokenizeSents()        
-        ngramsToksList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
-        ngramsToks = [item for sublist in ngramsToksList for item in sublist] #flatten the list
-        self.ngramsTokDict[n] = Counter(ngramsToks)
-        print('Done building token Ngrams, it took ', time.time() - start_time, ' seconds')
-        return self.ngramsTokDict[n]
+        return self.buildNgramsType("plain",n)
 
     def buildPOSNgrams(self, n):
-        print('Building POS Ngrams')
-        start_time = time.time()
-        if not self.nltkPOSSents:
-            self.nltkPOStag()        
-        ngramsPOSList = [list(ngrams(self.nltkPOSSents[i], n)) for i in range(len(self.nltkPOSSents))]
-        ngramsPOS = [item for sublist in ngramsPOSList for item in sublist] #flatten the list
-        self.ngramsPOSDict[n] = Counter(ngramsPOS)
-        print('Done building POS Ngrams, it took ', time.time() - start_time, ' seconds')
-        return self.ngramsPOSDict[n]
+        return self.buildNgramsType("POS",n)
 
     def buildLemmaNgrams(self, n):
-        print('Building Lemma Ngrams')
-        start_time = time.time()
-        if not self.lemmatizedSents:
-            self.getLemmatizedSents()        
-        ngramsLemmaList = [list(ngrams(self.lemmatizedSents[i], n)) for i in range(len(self.lemmatizedSents))]
-        ngramsLemma = [item for sublist in ngramsLemmaList for item in sublist] #flatten the list
-        self.ngramsLemmaDict[n] = Counter(ngramsLemma)
-        print('Done building Lemma Ngrams, it took ', time.time() - start_time, ' seconds')
-        return self.ngramsLemmaDict[n]
+        return self.buildNgramsType("lemma",n)
         
     def buildMixedNgrams(self, n):
-        print('Building Mixed Ngrams')
-        start_time = time.time()
-        if not self.mixedSents:
-            self.getMixedSents()        
-        ngramsMixedList = [list(ngrams(self.mixedSents[i], n)) for i in range(len(self.mixedSents))]
-        ngramsMixed = [item for sublist in ngramsMixedList for item in sublist] #flatten the list
-        self.ngramsMixedDict[n] = Counter(ngramsMixed)
-        print ('Done building Mixed Ngrams, it took ', time.time() - start_time, ' seconds')
-        return self.ngramsMixedDict[n]
+        return self.buildNgramsType("mixed",n)
         
     def ngramMinFreq(self, anNgram, freq):
-        print('Getting ngram with minimum frequency')
-        start_time = time.time()
+        """Return anNgram with entries that have frequency greater or equal freq"""
         finalNgram = dict((k, anNgram[k]) for k in anNgram.keys() if anNgram[k] >= freq)
-        print('Done ngram with minimum frequency, it took ', time.time() - start_time, ' seconds')
         return finalNgram
