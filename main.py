@@ -24,5 +24,5 @@ def infodensRun(configFile):
         print("Error in Config file.")
         return 0
 
-
-infodensRun("testconfig.txt")
+if __name__ == '__main__':
+    infodensRun("testconfig.txt")

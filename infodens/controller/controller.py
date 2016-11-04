@@ -30,7 +30,7 @@ class Controller:
         startInp = line.index(':')
         outputLine = line[startInp + 1:]
         outputLine = outputLine.strip().split()
-        if "classif" in line and not self.classifReport:
+        if "classif" in line and not self.classifReport :
             self.classifReport = outputLine[0]
         elif "feat" in line and not self.featOutput:
             if len(outputLine) == 2:
@@ -96,10 +96,13 @@ class Controller:
                     threads = int(configLine[0])
                     if threads > 0:
                         self.threadsCount = threads
+                    else:
+                        statusOK = 0
+                        print("Number of threads is not a positive integer.")
                     print(self.threadsCount)
                 else:
                     statusOK = 0
-                    print("Number of threads is not a Number")
+                    print("Number of threads is not a positive integer.")
             else:
                 params = configLine.split()
                 if len(params) == 2 or len(params) == 1:

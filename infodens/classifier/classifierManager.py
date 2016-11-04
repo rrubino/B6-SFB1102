@@ -10,7 +10,16 @@ import sys, inspect
 from os import path
 from .classifier import Classifier
 import difflib
+from joblib import Parallel, delayed
+import multiprocessing
 
+
+def runClassifier(classifierToRun):
+    classifReport = str(type(classifierToRun).__name__)
+    classifReport += ":\n"
+    classifReport += classifierToRun.runClassifier()
+    classifReport += "\n"
+    return classifReport
 
 class ClassifierManager:
 
@@ -42,19 +51,26 @@ class ClassifierManager:
                 self.classifyModules.append(file)
         self.availClassifiers = [cls.__name__ for cls in Classifier.__subclasses__()]
 
+
     def callClassifiers(self):
 
-        classifReports = ""
+        classifierObjs = []
+        svmClass = 0
         for classif in self.classifierIDs:
             for module in self.classifyModules:
                 if classif.lower() == module.lower():
                     break
-            print(module)
             classModule = importlib.import_module("infodens.classifier."+module)
             class_ = getattr(classModule, classif)
-            clf = class_(self.dataSet, self.labels, self.threadsCount)
-            classifReports += (classif + ":\n")
-            #clfRep, acc,pre, rec, fsc = clf.runClassifier()
-            classifReports += clf.runClassifier()
-            classifReports += "\n"
-        return classifReports
+            if "SVM" in classif:
+                svmClass = class_(self.dataSet, self.labels, self.threadsCount)
+            else:
+                classifierObjs.append(class_(self.dataSet, self.labels, self.threadsCount))
+
+        num_cores = multiprocessing.cpu_count()
+        classifReports = Parallel(n_jobs=self.threadsCount)(delayed(runClassifier)(classif)
+                                                    for classif in classifierObjs)
+        if svmClass is not 0:
+            classifReports.append(runClassifier(svmClass))
+
+        return '\n'.join(classifReports)
