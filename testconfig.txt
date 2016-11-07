@@ -15,7 +15,7 @@ classifiers : DecisionTree RandomForest SVM
 #7 1,10
 #10
 #11
-#12 CC,DT,WDT,IN,PDT
+12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt
 output features: feats.txt format

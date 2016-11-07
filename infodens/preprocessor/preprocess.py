@@ -79,7 +79,7 @@ class Preprocess:
     def nltkPOStag(self):
         """ Return POS tagged sentences. """
         if not self.nltkPOSSents:
-            tagPOSSents = [nltk.pos_tag(tokens) for tokens in self.gettokenizeSents()]
+            tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
             for i in range(0, len(tagPOSSents)):
                 self.nltkPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
         return self.nltkPOSSents
