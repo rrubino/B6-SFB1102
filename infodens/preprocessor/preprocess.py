@@ -62,6 +62,7 @@ class Preprocess:
     def gettokenizeSents(self):
         """Return tokenized sentences."""
         if not self.tokenSents:
+            #print("tokenizing")
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
 

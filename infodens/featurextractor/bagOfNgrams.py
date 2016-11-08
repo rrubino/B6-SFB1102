@@ -46,8 +46,7 @@ class BagOfNgrams(FeatureExtractor):
             listOfSentences = self.preprocessor.gettokenizeSents()
         elif type is "POS":
             ngramVoc = self.preprocessor.buildPOSNgrams(n)
-            taggedSentences = self.preprocessor.nltkPOStag()
-            listOfSentences = [[pos for (word, pos) in sentence] for sentence in taggedSentences]
+            listOfSentences = self.preprocessor.nltkPOStag()
         elif type is "lemma":
             ngramVoc = self.preprocessor.buildLemmaNgrams(n)
             listOfSentences = self.preprocessor.getLemmatizedSents()
