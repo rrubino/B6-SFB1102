@@ -146,6 +146,12 @@ class Preprocess:
         return self.buildNgramsType("mixed",n)
         
     def ngramMinFreq(self, anNgram, freq):
+        indexOfngram = 0
+        finalNgram = {}
         """Return anNgram with entries that have frequency greater or equal freq"""
-        finalNgram = dict((k, anNgram[k]) for k in anNgram.keys() if anNgram[k] >= freq)
-        return finalNgram
+        for k in anNgram.keys():
+            if anNgram[k] >= freq:
+                finalNgram[k] = indexOfngram
+                indexOfngram += 1
+
+        return finalNgram, indexOfngram

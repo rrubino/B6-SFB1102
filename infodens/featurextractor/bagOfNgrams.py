@@ -54,19 +54,20 @@ class BagOfNgrams(FeatureExtractor):
             ngramVoc = self.preprocessor.buildMixedNgrams(n)
             listOfSentences = self.preprocessor.getMixedSents()
 
-        finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-        allKeys = sorted(finNgram.keys())
-
-        numberOfFeatures = len(allKeys)
+        finNgram, numberOfFeatures = self.preprocessor.ngramMinFreq(ngramVoc, freq)
 
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(numberOfFeatures)]
 
         for i in range(len(listOfSentences)):
             ngramsVocab = Counter(ngrams(listOfSentences[i], n))
-            for key in ngramsVocab:
-                if key in allKeys:
-                    counter_j = allKeys.index(key)
-                    ngramFeatures[counter_j][i] = round(float(ngramsVocab[key]) / sum(ngramsVocab.values()), 2)
+            #sumSent = sum(ngramsVocab.values())
+            lenSent = len(listOfSentences[i])
+            for ngramEntry in ngramsVocab:
+                ## Keys
+                ngramIndex = finNgram.get(ngramEntry, -1)
+                if ngramIndex >= 0:
+                    ngramFeatures[ngramIndex][i] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
+                    #ngramFeatures[ngramIndex][i] = round((float(ngramsVocab[ngramEntry])), 2)
 
         return ngramFeatures
 
