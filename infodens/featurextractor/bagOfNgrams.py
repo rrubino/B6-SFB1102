@@ -55,7 +55,7 @@ class BagOfNgrams(FeatureExtractor):
             listOfSentences = self.preprocessor.getMixedSents()
 
         finNgram = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-        allKeys = finNgram.keys()
+        allKeys = sorted(finNgram.keys())
 
         numberOfFeatures = len(allKeys)
 

@@ -17,34 +17,41 @@ class Format:
         self.featureSety = fsy
         
     def libsvmFormat(self, fileName):
+        X, y = self.scikitFormat()
+        Xlist = X.tolist()
+        ylist = y.tolist()
         writer = FormatWriter()
         libsvmOutput = []
-        for i in range(len(self.featureSety)):
+        for i in range(len(ylist)):
             output_i = []
-            label = self.featureSety[i]
-            output_i.append(label)
-            for j in range(len(self.featureSetX[i])):
-                output_i.append(str(j+1)+':'+str(self.featureSetX[i][j]))
-            
+            label = ylist[i]
+            output_i.append(label)            
+            for j in range(len(Xlist[i])):
+                output_i.append(str(j+1)+':'+str(Xlist[i][j]))            
                 
             libsvmOutput.append(output_i)
             
         writer.libsvmwriteToFile(libsvmOutput, fileName)
+        return libsvmOutput
         
 
     def arrfFormat(self, fileName):
+        X, y = self.scikitFormat()
+        Xlist = X.tolist()
+        ylist = y.tolist()
         writer = FormatWriter()
         arrfOutput = []
-        for i in range(len(self.featureSety)):
+        for i in range(len(ylist)):
             output_i = []
-            label = self.featureSety[i]
+            label = ylist[i]
             
-            for j in range(len(self.featureSetX[i])):
-                output_i.append(self.featureSetX[i][j])
+            for j in range(len(Xlist[i])):
+                output_i.append(Xlist[i][j])
             output_i.append(label)
                 
             arrfOutput.append(output_i)
         writer.arrfwriteToFile(arrfOutput, fileName)
+        return arrfOutput
 
     def scikitFormat(self):
         
