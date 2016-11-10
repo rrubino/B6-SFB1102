@@ -3,20 +3,15 @@ import imp, os
 import sys, inspect
 from os import path
 from joblib import Parallel, delayed
-import multiprocessing
 
 
-def runFeatureMethod(featureIndex,idClassmethod,featureIDs,
-                     preprocessor,allFeatureIds,featureArgs):
+def runFeatureMethod(mtdCls,featureID,
+                     preprocessor,featureName,featureArgs):
     """ Run the given feature extractor. """
-    i = featureIndex
-    mtdCls = idClassmethod[featureIDs[i]]
     instance = mtdCls(preprocessor)
-    methd = getattr(instance, allFeatureIds[featureIDs[i]])
-    feateX = "Extracting feature: " + str(featureIDs[i])
-    #print(feateX)
-    feat = methd(featureArgs[i])
-    feateX = "Extracted feature: " + str(featureIDs[i])
+    methd = getattr(instance, featureName)
+    feat = methd(featureArgs)
+    feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
     print(feateX)
     return feat
 
@@ -25,10 +20,11 @@ class FeatureManager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, featureIDs, featureArgs, preprocessed):
+    def __init__(self, featureIDs, featureArgs, preprocessed, threadsCount):
         self.featureIDs = featureIDs
         self.featureArgs = featureArgs
         self.preprocessor = preprocessed
+        self.threads = threadsCount
         '''
         Import the featurextraction package at this point. It will be needed by most of the methods.
         '''
@@ -76,7 +72,6 @@ class FeatureManager:
         possFeatureClasses.discard('__init__')
         possFeatureClasses.discard('featuremanager')
 
-        #print(possFeatureClasses)
         # All feature Ids
         allFeatureIds = {};  featureIds = {};  idClassmethod = {}
         
@@ -87,49 +82,37 @@ class FeatureManager:
             clsmembers = inspect.getmembers(modul, inspect.isclass)
 
             if len(clsmembers) > 0:
-                #print ('module name: ', clsmembers[0][1].__module__)
                 clsmembers = [m for m in clsmembers if m[1].__module__.startswith('featurextractor') and
                              m[0] is not 'FeatureExtractor']
                 for i in range(0, len(clsmembers)):
                     featureIds = self.methodsWithDecorator(clsmembers[i][1], 'featid')
                     allFeatureIds.update(featureIds)
-                    idClassmethod.update({k:clsmembers[i][1] for k in featureIds.keys()})
+                    idClassmethod.update({k: clsmembers[i][1] for k in featureIds.keys()})
 
         return idClassmethod, allFeatureIds
 
     def callExtractors(self):
         '''Extract all feature Ids and names.  '''
 
-        featuresExtracted = []
-        #featureMethods = []
-        
-        # for i in range(len(self.featureIDs)):
-        #     mtdCls = self.idClassmethod[self.featureIDs[i]]
-        #     instance = mtdCls(self.preprocessor)
-        #     methd = getattr(instance, self.allFeatureIds[self.featureIDs[i]])
-        #     featureMethods.append(methd)
-
-
-        num_cores = multiprocessing.cpu_count()
-
         #If number of cores is One, resort to iterative call to take advantage of
         # Preprocessor storing operations.
 
-        featuresExtracted = Parallel(n_jobs=num_cores)(delayed(runFeatureMethod)(i,
-                                                        self.idClassmethod,
-                                                        self.featureIDs,
+        featuresExtracted = Parallel(n_jobs=self.threads)(delayed(runFeatureMethod)(
+                                                        self.idClassmethod[self.featureIDs[i]],
+                                                        self.featureIDs[i],
                                                         self.preprocessor,
-                                                        self.allFeatureIds,
-                                                        self.featureArgs)
+                                                        self.allFeatureIds[self.featureIDs[i]],
+                                                        self.featureArgs[i])
                                                        for i in range(len(self.featureIDs)))
 
         output = []
-        # TODO: Manage in delayed instead of outside.
         for i in range(0, len(featuresExtracted)):
-            if type(featuresExtracted[i][0]) is list:
+            if len(featuresExtracted[i]) > 0 and\
+                    isinstance(featuresExtracted[i][0], list):
                 output.extend(featuresExtracted[i])
             else:
-                output.append(featuresExtracted[i])
+                if len(featuresExtracted[i]) > 0:
+                    output.append(featuresExtracted[i])
 
         print("Called features")
         #print(output)

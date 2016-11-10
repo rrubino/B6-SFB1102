@@ -12,7 +12,6 @@ class SurfaceFeatures(FeatureExtractor):
     @featid(1)    
     def averageWordLength(self, argString):
         '''Find average word length of every sentence and return list. '''
-
         aveWordLen = []
         for sentence in self.preprocessor.gettokenizeSents():
             if len(sentence) is 0:
@@ -46,6 +45,7 @@ class SurfaceFeatures(FeatureExtractor):
         in the chunk
         
         '''
+
         vowels = ['a', 'e', 'i', 'o', 'u']
         sylRatios = []
         for sentence in self.preprocessor.gettokenizeSents():

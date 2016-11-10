@@ -56,6 +56,10 @@ class BagOfNgrams(FeatureExtractor):
 
         finNgram, numberOfFeatures = self.preprocessor.ngramMinFreq(ngramVoc, freq)
 
+        if numberOfFeatures == 0:
+            print("Cut-off too high, no ngrams passed it.")
+            return []
+
         ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(numberOfFeatures)]
 
         for i in range(len(listOfSentences)):

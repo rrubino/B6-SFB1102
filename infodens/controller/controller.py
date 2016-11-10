@@ -2,6 +2,7 @@ from ..featurextractor import featuremanager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
 from ..formater import format
+import multiprocessing
 
 class Controller:
     """Read and parse the config file, init a FeatureManager,
@@ -18,7 +19,7 @@ class Controller:
         self.corpusLM = 0
         self.featOutput = 0
         self.featOutFormat = 0
-        self.threadsCount = 1
+        self.threadsCount = multiprocessing.cpu_count()
         self.language = 'EN'
         
         #array format of dataset and labels for classifying
@@ -66,8 +67,8 @@ class Controller:
                 configLine = configLine.strip().split()
                 self.inputFile = configLine[0]
                 self.inputClasses = configLine[1]
-                print(self.inputFile)
-                print(self.inputClasses)
+                #print(self.inputFile)
+                #print(self.inputClasses)
             elif "output" in configLine:
                 statusOK = self.parseOutputLine(configLine)
             elif "classif" in configLine:
@@ -75,7 +76,6 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.classifiersList = configLine
-                print(self.classifiersList)
             elif "model" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -99,7 +99,7 @@ class Controller:
                     else:
                         statusOK = 0
                         print("Number of threads is not a positive integer.")
-                    print(self.threadsCount)
+                    #print(self.threadsCount)
                 else:
                     statusOK = 0
                     print("Number of threads is not a positive integer.")
@@ -136,9 +136,9 @@ class Controller:
                 print("Error, Input file not found.")
                 statusOK = 0
 
-        return statusOK, self.featureIDs
+        return statusOK, self.featureIDs, self.classifiersList
 
-    def classesSentsMismatch(self,sentsPrep):
+    def classesSentsMismatch(self, sentsPrep):
         if self.inputClasses:
             # Extract the classed IDs from the given classes file
             preprocessor = preprocess.Preprocess(self.inputClasses)
@@ -157,7 +157,8 @@ class Controller:
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs, preprocessor)
+            manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs,
+                                                    preprocessor, self.threadsCount)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
                 # Continue to call features
