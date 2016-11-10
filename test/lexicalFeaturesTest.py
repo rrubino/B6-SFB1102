@@ -16,20 +16,17 @@ import difflib
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
 fileName, pathname, description = imp.find_module('infodens')
 
-
-
-prep = imp.load_source('preprocess', pathname+'/preprocessor/preprocess.py')
-prepObj = prep.Preprocess('testFile.txt')
+from infodens.preprocessor import preprocess
+prepObj = preprocess.Preprocess('testFile.txt')
 
 from infodens.featurextractor import lexicalFeatures
-#surf = imp.load_source('surfaceFeatures', pathname+'/featurextractor/surfaceFeatures.py')
 lexObj = lexicalFeatures.LexicalFeatures(prepObj)
 
 class Test_lexicalFeatures(unittest.TestCase):
 
     def test_lexicalDensity(self):
         c = [0.5, 0.25, 0.5, 0.25]
-        ch = lexObj.lexicalDensity('J,N,R,V')
+        ch = lexObj.lexicalDensity('NNP,NN,VBZ')
         self.assertListEqual(c,ch)
         
     def test_lexicalRichness(self):
@@ -48,5 +45,5 @@ class Test_lexicalFeatures(unittest.TestCase):
         
     
         
-if __name__ == '__main__':
+if __name__ == '__main__':    
     unittest.main()

@@ -26,8 +26,9 @@ fileName, pathname, description = imp.find_module('infodens')
 
 
 
-prep = imp.load_source('preprocess', pathname+'/preprocessor/preprocess.py')
-prepObj = prep.Preprocess('testFile.txt')
+#prep = imp.load_source('preprocess', pathname+'/preprocessor/preprocess.py')
+from infodens.preprocessor import preprocess
+prepObj = preprocess.Preprocess('testFile.txt')
 
 class Test_preprocess(unittest.TestCase):
 
@@ -47,7 +48,7 @@ class Test_preprocess(unittest.TestCase):
         self.assertListEqual(s,ps)
         
     def test_nltkPOStag(self):
-        s = [[('This', 'DT'), ('is', 'VBZ'), ('a', 'DT'), ('boy', 'NN')], [('His', 'PRP$'), ('name', 'NN'), ('is', 'VBZ'), ('Audu', 'NNP')], [('This', 'DT'), ('is', 'VBZ'), ('a', 'DT'), ('girl', 'NN')], [('Her', 'PRP$'), ('name', 'NN'), ('is', 'VBZ'), ('Sarah', 'NNP')]]
+        s = [['DT', 'VBZ', 'DT', 'NN'], ['PRP$', 'NN', 'VBZ', 'NNP'], ['DT', 'VBZ', 'DT', 'NN'], ['PRP$', 'NN', 'VBZ', 'NNP']]
         ps = prepObj.nltkPOStag()
         self.assertListEqual(s,ps)
         
