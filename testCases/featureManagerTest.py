@@ -23,13 +23,13 @@ class Test_featureManager(unittest.TestCase):
         self.conObj = controller.Controller('testconfig.txt')
         ch, ids = self.conObj.loadConfig()
         
-        from infodens.featurextractor import featuremanager
-        self.featMgrObj = featuremanager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs,self. prepObj)
+        from infodens.featurextractor import featureManager
+        self.featMgrObj = featureManager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs,self. prepObj)
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
         self.prepObj2 = preprocess.Preprocess('testFile.txt')
-        self.featMgrObj2 = featuremanager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
+        self.featMgrObj2 = featureManager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
 
     def test_idClassDictionary(self):        
         chALlIds = {1: 'averageWordLength', 2: 'syllableRatio', 3: 'lexicalDensity', 4: 'ngramBagOfWords', 5: 'ngramPOSBagOfWords', 6: 'ngramMixedBagOfWords', 7: 'ngramLemmaBagOfWords', 8: 'parseTreeDepth', 10: 'sentenceLength', 11: 'lexicalRichness', 12: 'lexicalToTokens'}

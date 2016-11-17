@@ -30,13 +30,13 @@ class Test_format(unittest.TestCase):
         self.conObj = controller.Controller('testconfig.txt')
         ch, ids = self.conObj.loadConfig()
         
-        from infodens.featurextractor import featuremanager
-        self.featMgrObj = featuremanager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs, self.prepObj)
+        from infodens.featurextractor import featureManager
+        self.featMgrObj = featureManager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs, self.prepObj)
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
         self.prepObj2 = preprocess.Preprocess('testFile.txt')
-        self.featMgrObj2 = featuremanager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
+        self.featMgrObj2 = featureManager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
         
         self.features = self.featMgrObj2.callExtractors()
         self.prepObj3 = preprocess.Preprocess('labelFile.txt')

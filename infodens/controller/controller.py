@@ -1,4 +1,4 @@
-from ..featurextractor import featuremanager as featman
+from ..featurextractor import featureManager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
 from ..formater import format, formatWriter
