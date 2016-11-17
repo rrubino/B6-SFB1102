@@ -18,7 +18,7 @@ classifiers : DecisionTree RandomForest SVM
 #12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt
-output features: feats.txt format
+output features: feats.txt libsvm
 
 input files : testSent2.txt testSentClasses2.txt
 # input and classifiers are parsed after ':'

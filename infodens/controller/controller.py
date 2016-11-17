@@ -1,7 +1,7 @@
 from ..featurextractor import featuremanager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
-from ..formater import format
+from ..formater import format, formatWriter
 import multiprocessing
 
 class Controller:
@@ -37,6 +37,8 @@ class Controller:
             if len(outputLine) == 2:
                 self.featOutput = outputLine[0]
                 self.featOutFormat = outputLine[1]
+            elif len(outputLine) == 1:
+                self.featOutput = outputLine[0]
             else:
                 status = 0
                 print("Incorrect number of output params, should be exactly 2")
@@ -174,36 +176,31 @@ class Controller:
     def outputFeatures(self):
         """Output features if requested."""
 
-        #TODO : cleaner Format class with only needed init.
-        formatter = format.Format(self.extractedFeats, self.classesList)
         if self.featOutput:
-            outFeats = self.extractedFeats
-            # Check if a format is requested then format with it
-            if self.featOutFormat:
-                outFeats = formatter.outFormat(self.extractedFeats, self.featOutFormat)
-            with open(self.featOutput, 'w') as featOut:
-                #TODO : write as binary
-                featOut.write(str(outFeats))
+            formatter = formatWriter.FormatWriter()
+            # if format is not set in config, will use a default libsvm output.
+            formatter.outFormat(self.extractedFeats, self.featOutput, self.featOutFormat)
         else:
             print("Feature output was not specified.")
 
     def formatFeatures(self):
-        """Instantiate a Formater then run it. """
+        """Format the data according to Scikit format by default. """
 
         formatter = format.Format(self.extractedFeats, self.classesList)
-
         self.extractedFeats, self.classesList = formatter.scikitFormat()
-
 
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
+
+            # Default format for classifiers is scikit format
             self.formatFeatures()
-            #print(self.y)
+
             classifying = classifierManager.ClassifierManager(
                           self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount)
+
             validClassifiers = classifying.checkValidClassifier()
             if validClassifiers:
                 # Continue to call classifiers

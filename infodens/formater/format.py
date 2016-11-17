@@ -10,8 +10,7 @@ from .formatWriter import FormatWriter
         
 
 class Format:
-    
-   
+
     def __init__(self, fsX, fsy):
         self.featureSetX = fsX
         self.featureSety = fsy
@@ -33,7 +32,6 @@ class Format:
             
         writer.libsvmwriteToFile(libsvmOutput, fileName)
         return libsvmOutput
-        
 
     def arrfFormat(self, fileName):
         X, y = self.scikitFormat()
@@ -55,10 +53,7 @@ class Format:
 
     def scikitFormat(self):
         
-        X = np.asarray(self.featureSetX); y = np.asarray(self.featureSety)
+        X = np.asarray(self.featureSetX)
+        y = np.asarray(self.featureSety)
         return np.transpose(X), y
 
-    def outFormat(self, data, format):
-        #TODO: Format according to format
-        return data
-        

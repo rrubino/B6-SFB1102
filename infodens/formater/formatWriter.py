@@ -17,7 +17,7 @@ class FormatWriter:
             for it in item:
                 thefile.write(str(it)+' ')
             thefile.write('\n')
-        
+        thefile.close()
 
     def arrfwriteToFile(self, theList, theFile):
         thefile = open(theFile, 'w')
@@ -39,3 +39,16 @@ class FormatWriter:
                 else:
                     thefile.write(str(it)+',')
             thefile.write('\n')
+        thefile.close()
+
+    def outFormat(self, data, fileName, formatType):
+        # TODO: Format according to format
+        if formatType == "libsvm":
+            self.libsvmwriteToFile(data,fileName)
+        elif formatType == "arrf":
+            self.arrfwriteToFile(data,fileName)
+        else:
+            self.libsvmwriteToFile(data,fileName)
+            print("Defaulting to libsvm format.")
+
+
