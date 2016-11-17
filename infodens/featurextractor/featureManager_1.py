@@ -4,7 +4,6 @@ import sys, inspect
 from os import path
 from joblib import Parallel, delayed
 
-
 def runFeatureMethod(mtdCls,featureID,
                      preprocessor,featureName,featureArgs):
     """ Run the given feature extractor. """
@@ -14,6 +13,7 @@ def runFeatureMethod(mtdCls,featureID,
     feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
     print(feateX)
     return feat
+
 
 class FeatureManager:
     """ Validate the config feature requests,
