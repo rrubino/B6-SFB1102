@@ -1,0 +1,298 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to infodens’s documentation! &mdash; infodens 1.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="infodens 1.1 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-infodens-s-documentation">
+<h1>Welcome to infodens&#8217;s documentation!<a class="headerlink" href="#welcome-to-infodens-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="using-the-api">
+<h1>Using the API<a class="headerlink" href="#using-the-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-the-software">
+<h2>About the software<a class="headerlink" href="#about-the-software" title="Permalink to this headline">¶</a></h2>
+<p>This is a machine learning package for translationese detection experiments. It has  often  been  observed  that  the
+product  of  translation  is  somehow  different than non-translated text, scholars have emphasized  two  distinct  bases  for  such  differences.
+While some point to the interference from the source language  spilling  over  into  translation  in  a source language specific   way,   others
+have  noted  general  effects  of  the  process  of translation that are independent of source language.</p>
+<p>In this software, we implement various features and machine learning algorithms to experiment on text documents (Original and Translated).
+Machine learning algorithms implemented include:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Support Vector Machines (SVM)</li>
+<li>Neural Networks</li>
+<li>Decision Trees</li>
+<li>Random Forests</li>
+</ul>
+</div></blockquote>
+<p>Features implemented include:</p>
+<blockquote>
+<div><ul class="simple">
+<li>surface features:</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>average word length</li>
+<li>sentence length</li>
+<li>syllable ratio</li>
+</ul>
+</div></blockquote>
+<ul>
+<li><dl class="first docutils">
+<dt>lexical features:</dt>
+<dd><ul class="first last simple">
+<li>lexical density</li>
+<li>lexical richness</li>
+<li>parse tree depth</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">ngram features</p>
+</li>
+</ul>
+<blockquote>
+<div><ul class="simple">
+<li>Bag-of-word ngrams</li>
+<li>Bag-of-POS ngrams</li>
+<li>Bag-of-lemma ngrams</li>
+<li>Bag-of-MixedWords ngrams</li>
+</ul>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="downloading-the-software">
+<h2>Downloading the software<a class="headerlink" href="#downloading-the-software" title="Permalink to this headline">¶</a></h2>
+<p>Goto any <em>directory</em> of your choice:</p>
+<blockquote>
+<div><ul class="simple">
+<li>cd path/to/directory</li>
+</ul>
+</div></blockquote>
+<p>Clone the software:</p>
+<blockquote>
+<div><ul class="simple">
+<li>git clone <a class="reference external" href="https://github.com/rrubino/B6-SFB1102.git">https://github.com/rrubino/B6-SFB1102.git</a></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="running-the-software">
+<h2>Running the software<a class="headerlink" href="#running-the-software" title="Permalink to this headline">¶</a></h2>
+<p>Goto your chosen <em>directory</em>:</p>
+<blockquote>
+<div><ul class="simple">
+<li>cd path/to/directory</li>
+</ul>
+</div></blockquote>
+<p>Run the software:</p>
+<blockquote>
+<div><ul class="simple">
+<li>python main.py</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="pre-requisites">
+<h2>Pre-requisites<a class="headerlink" href="#pre-requisites" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li>Python programming language</li>
+<li>Natural Language ToolKit</li>
+<li>Scikit</li>
+<li>Pattern Library</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
+<p>This is where you set the parameters (features, classifiers etc.) for running the program
+Open the tesconfig.txt using a text editor (e.g. gedit textconfig.txt)</p>
+<div class="line-block">
+<div class="line">Find the line that starts with “<strong>input files</strong> :”. On this line you are to input two file paths. The first path is the path to the file containing the sentences (original and translated) for training and testing and the second path is the path containing the labels or classes of the sentences.</div>
+</div>
+<p>input files : path/to/sentences.txt path/to/classes.txt</p>
+<div class="line-block">
+<div class="line">Find the line that starts with “<strong>output classifier</strong> :”. On this line you are to input a path which would be a path to a file that would contain results of the classification (Accuracy, precision, recall and fscore).</div>
+</div>
+<p>output classifier: path/to/classificationResults.txt</p>
+<div class="line-block">
+<div class="line">Find the line that starts with “<strong>classifiers</strong> :”. On this line you will input the names of the classifiers you intend to experiment with separated by spaces.</div>
+<div class="line">classifiers : DecisionTree RandomForest SVM</div>
+</div>
+<p>You must input at least one of these. But which one of them and how many you choose is up to you</p>
+<div class="line-block">
+<div class="line">On the line that starts with “<strong>language model</strong>:” you are to input a path to a file that contains sentences from which you intend to create a language model which you might need for some feature extraction modules.</div>
+</div>
+<p>language model: path/to/file.txt</p>
+<div class="section" id="features-configuration">
+<h3>Features Configuration<a class="headerlink" href="#features-configuration" title="Permalink to this headline">¶</a></h3>
+<div class="line-block">
+<div class="line">1. <strong>averageWordLength</strong>:</div>
+<div class="line"><strong>Description</strong>: Mean length of words (in characters) based on the assumption that translated texts used simpler words, particularly shorter ones.</div>
+<div class="line"><strong>Parameters</strong>: None. This feature takes no parameter. To configure, just type the feature id 1</div>
+</div>
+<div class="line-block">
+<div class="line">2. <strong>syllableRatio</strong>:</div>
+<div class="line"><strong>Description</strong>: We approximate this feature by counting the number of vowel-sequences that are delimited by consonants or space in a word, normalized by the number of tokens in the chunk.</div>
+<div class="line"><strong>Parameters</strong>: None. This feature also takes no parameter. To configure, just type the feature id 2</div>
+</div>
+<div class="line-block">
+<div class="line">3. <strong>lexicalDensity</strong>:</div>
+<div class="line"><strong>Description</strong>: The frequency of tokens that are not nouns, adjectives, adverbs or verbs. This is computed by dividing the number of tokens tagged with POS tags that do not start with J, N, R or V by the number of tokens in the chunk</div>
+<div class="line"><strong>Parameters</strong>: JJ,NN,VP. POS tags that start with J, N, R, or V</div>
+<div class="line"><strong>Configure</strong>: 3 JJ,NN,VP,VB</div>
+</div>
+<div class="line-block">
+<div class="line">4. <strong>ngramBagOfWords</strong>:</div>
+<div class="line"><strong>Description</strong>: Extracts n-gram bag of words features.</div>
+<div class="line"><strong>Parameters</strong>: n,minimumFrequency. The first parameter is the size of the ngrams n, the second is the minmum frequency required to include a token in the ngram construction</div>
+<div class="line"><strong>Configure</strong>: 4 2,10</div>
+</div>
+<div class="line-block">
+<div class="line">5. <strong>ngramPOSBagOfWords</strong>:</div>
+<div class="line"><strong>Description</strong>: Extracts n-gram bag of words features for POS tags.</div>
+<div class="line"><strong>Parameters</strong>: n,minimumFrequency. The first parameter is the size of the ngrams n, the second is the minmum frequency required to include a token in the ngram construction</div>
+<div class="line"><strong>Configure</strong>: 5 2,10</div>
+</div>
+<div class="line-block">
+<div class="line">6. <strong>ngramMixedBagOfWords</strong>:</div>
+<div class="line"><strong>Description</strong>: Extracts n-gram bag of words features for Mixed Words (Function words replaced by POS).</div>
+<div class="line"><strong>Parameters</strong>: n,minimumFrequency. The first parameter is the size of the ngrams n, the second is the minmum frequency required to include a token in the ngram construction</div>
+<div class="line"><strong>Configure</strong>: 6 2,10</div>
+</div>
+<div class="line-block">
+<div class="line">7. <strong>ngramLemmaBagOfWords</strong>:</div>
+<div class="line"><strong>Description</strong>: Extracts n-gram bag of words features for word lemmas.</div>
+<div class="line"><strong>Parameters</strong>: n,minimumFrequency. The first parameter is the size of the ngrams n, the second is the minmum frequency required to include a token in the ngram construction</div>
+<div class="line"><strong>Configure</strong>: 7 2,10</div>
+</div>
+<div class="line-block">
+<div class="line">8. <strong>parseTreeDepth</strong>:</div>
+<div class="line"><strong>Description</strong>: Find depth of a sentence&#8217;s parse tree</div>
+<div class="line"><strong>Parameters</strong>: None. This feature also takes no parameter. To configure, just type the feature id 8</div>
+</div>
+<div class="line-block">
+<div class="line">9. N/A</div>
+<div class="line">10. <strong>sentenceLength</strong>:</div>
+<div class="line"><strong>Description</strong>: Computes sentences’ length as a feature</div>
+<div class="line"><strong>Parameters</strong>: None. This feature also takes no parameter. To configure, just type the feature id 10</div>
+</div>
+<div class="line-block">
+<div class="line">11. <strong>lexicalRichness</strong>:</div>
+<div class="line"><strong>Description</strong>: The ratio of unique tokens in the sentence over the sentence length.</div>
+<div class="line"><strong>Parameters</strong>: None. This feature also takes no parameter. To configure, just type the feature id 11</div>
+</div>
+<div class="line-block">
+<div class="line">12. <strong>lexicalToTokens</strong>: Description: The ratio of lexical words to tokens in the sentence.</div>
+<div class="line"><strong>Parameters</strong>: CC,DT,WDT,IN,PDT</div>
+<div class="line"><strong>Configure</strong>: 12 CC,DT,WDT,IN,PDT</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to infodens&#8217;s documentation!</a></li>
+<li><a class="reference internal" href="#using-the-api">Using the API</a><ul>
+<li><a class="reference internal" href="#about-the-software">About the software</a></li>
+<li><a class="reference internal" href="#downloading-the-software">Downloading the software</a></li>
+<li><a class="reference internal" href="#running-the-software">Running the software</a></li>
+<li><a class="reference internal" href="#pre-requisites">Pre-requisites</a></li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="#features-configuration">Features Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Raphael Rubino.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
