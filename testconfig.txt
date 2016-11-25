@@ -18,7 +18,7 @@ classifiers : RandomForest
 #12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt
-#output features: feats.txt libsvm
+output features: feats.txt arrf
 
 #input files : testSent.txt testSentClasses.txt
 input files : testSent2.txt testSentClasses2.txt

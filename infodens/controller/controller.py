@@ -1,7 +1,7 @@
 from ..featurextractor import featureManager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
-from ..formater import format, formatWriter
+from ..formater import format
 import multiprocessing
 import numpy as np
 
@@ -182,9 +182,9 @@ class Controller:
         """Output features if requested."""
 
         if self.featOutput:
-            formatter = formatWriter.FormatWriter()
+            formatter = format.Format(self.extractedFeats,self.classesList)
             # if format is not set in config, will use a default libsvm output.
-            formatter.outFormat(self.extractedFeats, self.featOutput, self.featOutFormat)
+            formatter.outFormat(self.featOutput, self.featOutFormat)
         else:
             print("Feature output was not specified.")
 

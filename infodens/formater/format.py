@@ -4,29 +4,25 @@ Created on Wed Aug 31 12:32:17 2016
 
 @author: admin
 """
-import numpy as np
-
 from .formatWriter import FormatWriter
         
 
 class Format:
 
     def __init__(self, fsX, fsy):
-        self.featureSetX = fsX
-        self.featureSety = fsy
+        self.X = fsX.tolist()
+        self.Y = fsy.tolist()
         
     def libsvmFormat(self, fileName):
-        X, y = self.scikitFormat()
-        Xlist = X.tolist()
-        ylist = y.tolist()
+
         writer = FormatWriter()
         libsvmOutput = []
-        for i in range(len(ylist)):
+        for i in range(len(self.Y)):
             output_i = []
-            label = ylist[i]
+            label = self.Y[i]
             output_i.append(label)            
-            for j in range(len(Xlist[i])):
-                output_i.append(str(j+1)+':'+str(Xlist[i][j]))            
+            for j in range(len(self.X[i])):
+                output_i.append(str(j+1)+':'+str(self.X[i][j]))
                 
             libsvmOutput.append(output_i)
             
@@ -34,26 +30,27 @@ class Format:
         return libsvmOutput
 
     def arrfFormat(self, fileName):
-        X, y = self.scikitFormat()
-        Xlist = X.tolist()
-        ylist = y.tolist()
+
         writer = FormatWriter()
         arrfOutput = []
-        for i in range(len(ylist)):
+        for i in range(len(self.Y)):
             output_i = []
-            label = ylist[i]
+            label = self.Y[i]
             
-            for j in range(len(Xlist[i])):
-                output_i.append(Xlist[i][j])
+            for j in range(len(self.X[i])):
+                output_i.append(self.X[i][j])
             output_i.append(label)
                 
             arrfOutput.append(output_i)
         writer.arrfwriteToFile(arrfOutput, fileName)
         return arrfOutput
 
-    def scikitFormat(self):
-        
-        X = np.asarray(self.featureSetX)
-        y = np.asarray(self.featureSety)
-        return np.transpose(X), y
+    def outFormat(self, fileName, formatType):
+        if formatType == "libsvm":
+            self.libsvmFormat(fileName)
+        elif formatType == "arrf":
+            self.arrfFormat(fileName)
+        else:
+            self.libsvmFormat(fileName)
+            print("Defaulting to libsvm format.")
 
