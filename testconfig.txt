@@ -1,12 +1,12 @@
 1
 # This is a comment
-2
+#2
 #classifiers : RandomForest
 #language model: testSent.txt
 #language : FR
 threads : 9
-classifiers : DecisionTree RandomForest SVM
-#classifiers : DecisionTree RandomForest
+#classifiers : DecisionTree RandomForest SVM
+classifiers : RandomForest
 #3 J,N,V,R
 4 1,10
 4 2,5
@@ -18,7 +18,9 @@ classifiers : DecisionTree RandomForest SVM
 #12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt
-output features: feats.txt libsvm
+#output features: feats.txt libsvm
 
+#input files : testSent.txt testSentClasses.txt
 input files : testSent2.txt testSentClasses2.txt
+#input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'

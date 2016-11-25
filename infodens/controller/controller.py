@@ -3,6 +3,7 @@ from ..preprocessor import preprocess
 from ..classifier import classifierManager
 from ..formater import format, formatWriter
 import multiprocessing
+import numpy as np
 
 class Controller:
     """Read and parse the config file, init a FeatureManager,
@@ -21,6 +22,7 @@ class Controller:
         self.featOutFormat = 0
         self.threadsCount = multiprocessing.cpu_count()
         self.language = 'EN'
+        self.numSentences = 0
         
         #array format of dataset and labels for classifying
         self.extractedFeats = []
@@ -69,7 +71,8 @@ class Controller:
                 configLine = configLine.strip().split()
                 self.inputFile = configLine[0]
                 self.inputClasses = configLine[1]
-                #print(self.inputFile)
+                print("Input File: ")
+                print(self.inputFile)
                 #print(self.inputClasses)
             elif "output" in configLine:
                 statusOK = self.parseOutputLine(configLine)
@@ -142,11 +145,13 @@ class Controller:
 
     def classesSentsMismatch(self, sentsPrep):
         if self.inputClasses:
-            # Extract the classed IDs from the given classes file
+            # Extract the classed IDs from the given classes file and Check for
+            # Length equality with the sentences.
             preprocessor = preprocess.Preprocess(self.inputClasses)
-            self.classesList = preprocessor.preprocessClassID()
+            self.classesList = np.asarray(preprocessor.preprocessClassID())
             sentLen = len(sentsPrep.getPlainSentences())
             classesLen = len(self.classesList)
+            self.numSentences = sentLen
             if (sentLen != classesLen):
                 return True
         return False
@@ -159,7 +164,7 @@ class Controller:
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.FeatureManager(self.featureIDs, self.featargs,
+            manageFeatures = featman.FeatureManager(self.numSentences, self.featureIDs, self.featargs,
                                                     preprocessor, self.threadsCount)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
@@ -183,25 +188,16 @@ class Controller:
         else:
             print("Feature output was not specified.")
 
-    def formatFeatures(self):
-        """Format the data according to Scikit format by default. """
-
-        formatter = format.Format(self.extractedFeats, self.classesList)
-        self.extractedFeats, self.classesList = formatter.scikitFormat()
-
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
-
-            # Default format for classifiers is scikit format
-            self.formatFeatures()
-
             classifying = classifierManager.ClassifierManager(
                           self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount)
 
             validClassifiers = classifying.checkValidClassifier()
+
             if validClassifiers:
                 # Continue to call classifiers
                 reportOfClassif = classifying.callClassifiers()

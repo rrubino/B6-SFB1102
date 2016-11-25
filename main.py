@@ -1,5 +1,6 @@
 import sys
 from infodens.controller.controller import Controller
+import profile
 
 # TODO: Reformat to use sys arguments for config file.
 
@@ -28,5 +29,9 @@ def infodensRun(configFile):
         print("Error in Config file.")
         return 0
 
-if __name__ == '__main__':
+def main():
     infodensRun("testconfig.txt")
+
+
+if __name__ == '__main__':
+    main()

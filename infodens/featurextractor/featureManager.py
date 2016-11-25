@@ -3,9 +3,12 @@ import imp, os
 import sys, inspect
 from os import path
 from joblib import Parallel, delayed
+import itertools
+import numpy as np
 
-def runFeatureMethod(mtdCls,featureID,
-                     preprocessor,featureName,featureArgs):
+
+def runFeatureMethod(mtdCls, featureID,
+                     preprocessor,featureName, featureArgs):
     """ Run the given feature extractor. """
     instance = mtdCls(preprocessor)
     methd = getattr(instance, featureName)
@@ -20,11 +23,12 @@ class FeatureManager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, featureIDs, featureArgs, preprocessed, threadsCount):
+    def __init__(self, sentCount, featureIDs, featureArgs, preprocessed, threadsCount):
         self.featureIDs = featureIDs
         self.featureArgs = featureArgs
         self.preprocessor = preprocessed
         self.threads = threadsCount
+        self.sentCount = sentCount
         '''
         Import the featurextraction package at this point. It will be needed by most of the methods.
         '''
@@ -97,7 +101,7 @@ class FeatureManager:
         #If number of cores is One, resort to iterative call to take advantage of
         # Preprocessor storing operations.
 
-        featuresExtracted = Parallel(n_jobs=self.threads)(delayed(runFeatureMethod)(
+        featuresExtracted = Parallel(n_jobs=self.threads, mmap_mode='r')(delayed(runFeatureMethod)(
                                                         self.idClassmethod[self.featureIDs[i]],
                                                         self.featureIDs[i],
                                                         self.preprocessor,
@@ -105,15 +109,23 @@ class FeatureManager:
                                                         self.featureArgs[i])
                                                        for i in range(len(self.featureIDs)))
 
-        output = []
-        for i in range(0, len(featuresExtracted)):
-            if len(featuresExtracted[i]) > 0 and\
-                    isinstance(featuresExtracted[i][0], list):
-                output.extend(featuresExtracted[i])
-            else:
-                if len(featuresExtracted[i]) > 0:
-                    output.append(featuresExtracted[i])
+        print("All features extracted. ")
 
-        print("Called features")
-        #print(output)
-        return output
+        output = []
+
+        #Format into scikit format (Each row is a sentence's feature Vector)
+        for j in range(0, self.sentCount):
+            sentFeats = []
+            for i in range(0, len(self.featureIDs)):
+                if isinstance(featuresExtracted[i][j], list):
+                    sentFeats.extend(featuresExtracted[i][j])
+                else:
+                    sentFeats.append(featuresExtracted[i][j])
+            output.append(sentFeats)
+
+        featVec = "Feature Vector Length: " + str(len(output)) + "x" + str(len(output[0]))
+        print(featVec)
+
+        print("Ready to Classify. ")
+
+        return np.asarray(output)

@@ -7,6 +7,7 @@ Created on Sun Sep 04 14:12:49 2016
 from .featureExtraction import featid, FeatureExtractor
 from collections import Counter
 from nltk import ngrams
+import numpy as np
 import time
 
 
@@ -54,26 +55,34 @@ class BagOfNgrams(FeatureExtractor):
             ngramVoc = self.preprocessor.buildMixedNgrams(n)
             listOfSentences = self.preprocessor.getMixedSents()
 
+        print("Ngrams built.")
+
         finNgram, numberOfFeatures = self.preprocessor.ngramMinFreq(ngramVoc, freq)
+
+        print("Cut off done. ")
 
         if numberOfFeatures == 0:
             print("Cut-off too high, no ngrams passed it.")
             return []
 
-        ngramFeatures = [[0 for j in range(len(listOfSentences))] for i in range(numberOfFeatures)]
+        ngramFeatures = np.zeros((len(listOfSentences), numberOfFeatures))
+
+        print("Extracting ngram feats.")
 
         for i in range(len(listOfSentences)):
             ngramsVocab = Counter(ngrams(listOfSentences[i], n))
-            #sumSent = sum(ngramsVocab.values())
             lenSent = len(listOfSentences[i])
             for ngramEntry in ngramsVocab:
                 ## Keys
                 ngramIndex = finNgram.get(ngramEntry, -1)
                 if ngramIndex >= 0:
-                    ngramFeatures[ngramIndex][i] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
-                    #ngramFeatures[ngramIndex][i] = round((float(ngramsVocab[ngramEntry])), 2)
+                    ngramFeatures[i][ngramIndex] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
 
-        return ngramFeatures
+        print("Finished ngram features.")
+        ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
+        print(ngramLength)
+
+        return ngramFeatures.tolist()
 
     @featid(4)
     def ngramBagOfWords(self, argString): 
