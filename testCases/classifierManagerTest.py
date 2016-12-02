@@ -7,33 +7,7 @@ from os import path
 import difflib
 
 
-sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-fileName, pathname, description = imp.find_module('infodens')
 
-from infodens.preprocessor import preprocess
-prepObj = preprocess.Preprocess('testFile.txt')
-from infodens.formater import format
-
-from infodens.controller import controller
-conObj = controller.Controller('testconfig.txt')
-ch, ids = conObj.loadConfig()
-
-from infodens.featurextractor import featureManager
-featMgrObj = featureManager.FeatureManager(conObj.featureIDs, conObj.featargs, prepObj)
-
-conObj2 = controller.Controller('testconfig2.txt')
-conObj2.loadConfig()
-prepObj2 = preprocess.Preprocess('testFile.txt')
-featMgrObj2 = featureManager.FeatureManager(conObj2.featureIDs, conObj2.featargs, prepObj2)
-
-features = featMgrObj2.callExtractors()
-prepObj3 = preprocess.Preprocess('labelFile.txt')
-labels = prepObj3.preprocessClassID()
-fmtObj = format.Format(features, labels)
-X, y = fmtObj.scikitFormat()
-
-from infodens.classifier import classifierManager
-clfMgrObj = classifierManager.ClassifierManager(conObj2.classifiersList, X, y)
 
 class Test_classifierManager(unittest.TestCase):
     
@@ -47,7 +21,7 @@ class Test_classifierManager(unittest.TestCase):
         
         from infodens.controller import controller
         self.conObj = controller.Controller('testconfig.txt')
-        ch, ids = self.conObj.loadConfig()
+        ch, ids, cl = self.conObj.loadConfig()
         
         from infodens.featurextractor import featureManager
         self.featMgrObj = featureManager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs, self.prepObj)
@@ -81,7 +55,8 @@ class Test_classifierManager(unittest.TestCase):
         self.assertEquals(c,ch)
         
     def test_checkValidClassifierNeg(self):
-        self.clfMgrObj2 = classifierManager.ClassifierManager(['dt', 'RandomForest', 'SVM'], X, y)        
+        from infodens.classifier import classifierManager
+        self.clfMgrObj2 = classifierManager.ClassifierManager(['dt', 'RandomForest', 'SVM'], self.X, self.y)        
         c = 0
         idCMs, allIds = self.featMgrObj.idClassDictionary()
         ch = self.clfMgrObj2.checkValidClassifier()
