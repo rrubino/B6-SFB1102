@@ -20,7 +20,10 @@ from os import path
 import difflib
 import time
 
-
+sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+fileName, pathname, description = imp.find_module('infodens')
+from infodens.preprocessor import preprocess
+prepObj = preprocess.Preprocess('testFile.txt')
 
 
 class Test_preprocess(unittest.TestCase):
@@ -84,13 +87,12 @@ class Test_preprocess(unittest.TestCase):
         self.assertDictEqual(s, ps) 
         
     def test_ngramMinFreq(self):
-        s = {('This', 'VBZ'): 2, ('a', 'NN'): 2, ('NN', 'VBZ'): 2, ('VBZ', 'a'): 2, ('VBZ', 'NNP'): 2}
+        s = {('This', 'VBZ'): 0, ('a', 'NN'): 3, ('VBZ', 'a'): 2, ('NN', 'VBZ'): 4, ('VBZ', 'NNP'): 1}
         ss = {('This', 'VBZ'): 2, ('a', 'NN'): 2, ('NN', 'VBZ'): 2, ('His', 'NN'): 1, ('VBZ', 'NNP'): 2, ('Her', 'NN'): 1, ('VBZ', 'a'): 2}
-        ps = self.prepObj.ngramMinFreq(ss, 2)
+        ps, ind = self.prepObj.ngramMinFreq(ss, 2)
         self.assertDictEqual(s, ps) 
         
 if __name__ == '__main__':
-    
     unittest.main()
     
 

@@ -28,15 +28,15 @@ class Test_format(unittest.TestCase):
         
         from infodens.controller import controller
         self.conObj = controller.Controller('testconfig.txt')
-        ch, ids = self.conObj.loadConfig()
+        ch, ids, cids = self.conObj.loadConfig()
         
         from infodens.featurextractor import featureManager
-        self.featMgrObj = featureManager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs, self.prepObj)
+        self.featMgrObj = featureManager.FeatureManager(4, self.conObj.featureIDs, self.conObj.featargs, self.prepObj, 1)
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
         self.prepObj2 = preprocess.Preprocess('testFile.txt')
-        self.featMgrObj2 = featureManager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
+        self.featMgrObj2 = featureManager.FeatureManager(4, self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2, 1)
         
         self.features = self.featMgrObj2.callExtractors()
         self.prepObj3 = preprocess.Preprocess('labelFile.txt')
@@ -60,7 +60,7 @@ class Test_format(unittest.TestCase):
         
     def test_libsvmFormat(self):
         c = [[1, '1:2.5', '2:0.75'], [1, '1:3.25', '2:1.0'], [2, '1:2.75', '2:0.75'], [2, '1:3.5', '2:1.25']]
-        ch = ch = self.fmtObj.libsvmFormat('libfmt.txt')
+        ch =  self.fmtObj.libsvmFormat('libfmt.txt')
         self.assertListEqual(c,ch)
     
     def test_lexicalToTokens(self):

@@ -21,15 +21,15 @@ class Test_featureManager(unittest.TestCase):
         
         from infodens.controller import controller
         self.conObj = controller.Controller('testconfig.txt')
-        ch, ids = self.conObj.loadConfig()
+        ch, ids, cids = self.conObj.loadConfig()
         
         from infodens.featurextractor import featureManager
-        self.featMgrObj = featureManager.FeatureManager(self.conObj.featureIDs, self.conObj.featargs,self. prepObj)
+        self.featMgrObj = featureManager.FeatureManager(4, self.conObj.featureIDs, self.conObj.featargs,self. prepObj, 1)
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
         self.prepObj2 = preprocess.Preprocess('testFile.txt')
-        self.featMgrObj2 = featureManager.FeatureManager(self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2)
+        self.featMgrObj2 = featureManager.FeatureManager(4, self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2, 1)
 
     def test_idClassDictionary(self):        
         chALlIds = {1: 'averageWordLength', 2: 'syllableRatio', 3: 'lexicalDensity', 4: 'ngramBagOfWords', 5: 'ngramPOSBagOfWords', 6: 'ngramMixedBagOfWords', 7: 'ngramLemmaBagOfWords', 8: 'parseTreeDepth', 10: 'sentenceLength', 11: 'lexicalRichness', 12: 'lexicalToTokens'}
@@ -50,7 +50,8 @@ class Test_featureManager(unittest.TestCase):
         
     def test_callExtractors(self):        
         c = [[2.5, 3.25, 2.75, 3.5], [0.75, 1.0, 0.75, 1.25]]        
-        ch = self.featMgrObj2.callExtractors()
+        chArr = self.featMgrObj2.callExtractors()
+        ch = chArr.tolist()
         self.assertListEqual(c,ch)
         
     

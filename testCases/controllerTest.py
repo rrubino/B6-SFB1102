@@ -7,13 +7,7 @@ from os import path
 import difflib
 
 
-sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-fileName, pathname, description = imp.find_module('infodens')
-from infodens.preprocessor import preprocess
-prepObj = preprocess.Preprocess('testFile.txt')
-from infodens.controller import controller
-conObj = controller.Controller('testconfig.txt')
-conObj2 = controller.Controller('testconfig2.txt')
+
 
 
 
@@ -22,29 +16,56 @@ conObj2 = controller.Controller('testconfig2.txt')
 
 
 class Test_controller(unittest.TestCase):
+    
+    def setUp(self):
+        sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
+        fileName, pathname, description = imp.find_module('infodens')
+        from infodens.preprocessor import preprocess
+        self.prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        self.conObj = controller.Controller('testconfig.txt')
+        self.conObj2 = controller.Controller('testconfig2.txt')
 
     def test_parseOutputLine(self):
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
         conObj = controller.Controller('testconfig.txt')
         c = 1
         ch = conObj.parseOutputLine('output classifier: report1.txt')
         self.assertEquals(c,ch)
         
     def test_parseOutputLine2(self):
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
         conObj = controller.Controller('testconfig.txt')
         c = 1
         ch = conObj.parseOutputLine('output features: feats.txt format')
         self.assertEquals(c,ch)
         
     def test_parseOutputLine3(self):
+        
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
         conObj = controller.Controller('testconfig.txt')
-        c = 0
+        c = 1
         ch = conObj.parseOutputLine('output features: feats.txt')
         self.assertEquals(c,ch)
         
     def test_loadConfig(self):
+        
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
         conObj = controller.Controller('testconfig.txt')
         c = 1
-        ch, ids = conObj.loadConfig()
+        ch, ids, cids = conObj.loadConfig()
         self.assertEquals(c,ch)
         
         fids = conObj.featureIDs
@@ -60,6 +81,11 @@ class Test_controller(unittest.TestCase):
         self.assertListEqual(featArgs, chfeatArgs)
     
     def test_classesSentsMismatch(self):
+        
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
         conObj = controller.Controller('testconfig.txt')
         prepObj = preprocess.Preprocess('testFile.txt')
         c = False
@@ -67,8 +93,14 @@ class Test_controller(unittest.TestCase):
         self.assertEquals(c,ch)
         
     def test_manageFeatures(self):
+        
+        from infodens.preprocessor import preprocess
+        prepObj = preprocess.Preprocess('testFile.txt')
+        from infodens.controller import controller
+        
+        
         conObj = controller.Controller('testconfig2.txt')
-        ch, ids = conObj.loadConfig()
+        ch, ids, cids = conObj.loadConfig()
         c = 1
         ch = conObj.manageFeatures()
         self.assertEquals(c,ch)
