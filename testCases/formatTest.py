@@ -11,6 +11,7 @@ import imp, os
 import sys, inspect
 from os import path
 import difflib
+import numpy as np
 
 
 
@@ -41,20 +42,10 @@ class Test_format(unittest.TestCase):
         self.features = self.featMgrObj2.callExtractors()
         self.prepObj3 = preprocess.Preprocess('labelFile.txt')
         self.labels = self.prepObj3.preprocessClassID()
-        self.fmtObj = format.Format(self.features, self.labels)
-        self.X, self.y = self.fmtObj.scikitFormat()
         
-        from infodens.classifier import classifierManager
-        self.clfMgrObj = classifierManager.ClassifierManager(self.conObj2.classifiersList, self.X, self.y)
-
-    def test_scikitFormat(self):
-        chX = [[2.5, 0.75], [3.25, 1.0], [2.75, 0.75], [3.5, 1.25]]
-        chy = [1, 1, 2, 2]
-        X, y = self.fmtObj.scikitFormat()
-        Xlist = X.tolist()
-        ylist = y.tolist()
-        self.assertListEqual(chX,Xlist)
-        self.assertListEqual(chy,ylist)
+        self.X = self.features
+        self.y = np.asarray(self.labels)
+        self.fmtObj = format.Format(self.X, self.y)
         
         
         
