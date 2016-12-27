@@ -8,11 +8,11 @@ import numpy as np
 
 
 def runFeatureMethod(mtdCls, featureID,
-                     preprocessor,featureName, featureArgs):
+                     preprocessor,featureName, featureArgs, featOrder):
     """ Run the given feature extractor. """
     instance = mtdCls(preprocessor)
     methd = getattr(instance, featureName)
-    feat = methd(featureArgs)
+    feat = methd(featureArgs, featOrder)
     feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
     print(feateX)
     return feat
@@ -106,7 +106,7 @@ class FeatureManager:
                                                         self.featureIDs[i],
                                                         self.preprocessor,
                                                         self.allFeatureIds[self.featureIDs[i]],
-                                                        self.featureArgs[i])
+                                                        self.featureArgs[i], i)
                                                        for i in range(len(self.featureIDs)))
 
         print("All features extracted. ")
@@ -114,18 +114,30 @@ class FeatureManager:
         output = []
 
         #Format into scikit format (Each row is a sentence's feature Vector)
+
+        mmapFeats = []
+        for i in range(len(self.featureIDs)):
+            mmapFeats.append(np.load(featuresExtracted[i], mmap_mode='r'))
+
         for j in range(0, self.sentCount):
             sentFeats = []
-            for i in range(0, len(self.featureIDs)):
-                if isinstance(featuresExtracted[i][j], list):
-                    sentFeats.extend(featuresExtracted[i][j])
+            for i in range(len(self.featureIDs)):
+                featX = mmapFeats[i]
+                #if Ngram feature take the whole feature vector
+                if 4 <= self.featureIDs[i] <= 7 :
+                    sentFeats.extend(featX[j, :])
                 else:
-                    sentFeats.append(featuresExtracted[i][j])
+                    sentFeats.append(featX[j])
+                featX = 0
             output.append(sentFeats)
+        mmapFeats = 0
 
         featVec = "Feature Vector Length: " + str(len(output)) + "x" + str(len(output[0]))
         print(featVec)
 
         print("Ready to Classify. ")
+
+        for afile in featuresExtracted:
+            os.remove(afile)
 
         return np.asarray(output)

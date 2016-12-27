@@ -10,7 +10,7 @@ import numpy as np
 
 class LexicalFeatures(FeatureExtractor):
     
-    def computeDensity(self,taggedSentences, jnrv):
+    def computeDensity(self, taggedSentences, jnrv):
         densities = np.zeros(self.preprocessor.getSentCount())
         #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
@@ -23,10 +23,10 @@ class LexicalFeatures(FeatureExtractor):
                 densities[i] = (float(len(sent) - len(jnrvList)) / len(sent))
             i += 1
 
-        return densities.tolist()
+        return densities
 
     @featid(3)        
-    def lexicalDensity(self, argString):
+    def lexicalDensity(self, argString, featOrder):
         jnrv = argString.split(',')
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
@@ -35,10 +35,12 @@ class LexicalFeatures(FeatureExtractor):
         '''
         taggedSents = self.preprocessor.nltkPOStag()
 
-        return self.computeDensity(taggedSents, jnrv)
+        fileName = "3-" + str(featOrder) + ".npy"
+        np.save(fileName, self.computeDensity(taggedSents, jnrv))
+        return fileName
 
     @featid(11)
-    def lexicalRichness(self, argString):
+    def lexicalRichness(self, argString, featOrder):
         '''
         The ratio of unique tokens in the sentence over the sentence length.
         '''
@@ -54,10 +56,12 @@ class LexicalFeatures(FeatureExtractor):
                 sentRichness[i] = (float(len(set(sentence)))/len(sentence))
             i += 1
 
-        return sentRichness.tolist()
+        fileName = "11-" + str(featOrder) + ".npy"
+        np.save(fileName, sentRichness)
+        return fileName
 
     @featid(12)
-    def lexicalToTokens(self, argString):
+    def lexicalToTokens(self, argString, featOrder):
         '''
         The ratio of lexical words to tokens in the sentence.
         '''
@@ -76,4 +80,6 @@ class LexicalFeatures(FeatureExtractor):
                 lexicalTokensRatio[i] = (float(lexicalCount) / len(sentence))
             i += 1
 
-        return lexicalTokensRatio.tolist()
+        fileName = "12-" + str(featOrder) + ".npy"
+        np.save(fileName, lexicalTokensRatio)
+        return fileName

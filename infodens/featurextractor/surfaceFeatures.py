@@ -11,7 +11,7 @@ import numpy as np
 class SurfaceFeatures(FeatureExtractor):
     
     @featid(1)    
-    def averageWordLength(self, argString):
+    def averageWordLength(self, argString, featOrder):
         '''Find average word length of every sentence and return list. '''
         aveWordLen = np.zeros(self.preprocessor.getSentCount())
         i = 0
@@ -23,10 +23,12 @@ class SurfaceFeatures(FeatureExtractor):
                 aveWordLen[i] = (float(length) / len(sentence))
             i += 1
 
-        return aveWordLen.tolist()
+        fileName = "1-" + str(featOrder) + ".npy"
+        np.save(fileName, aveWordLen)
+        return fileName
 
     @featid(10)
-    def sentenceLength(self, argString):
+    def sentenceLength(self, argString, featOrder):
         '''Find length of every sentence and return list. '''
 
         sentLen = np.zeros(self.preprocessor.getSentCount())
@@ -35,15 +37,17 @@ class SurfaceFeatures(FeatureExtractor):
             sentLen[i] = (len(sentence))
             i += 1
 
-        return sentLen.tolist()
+        fileName = "10-" + str(featOrder) + ".npy"
+        np.save(fileName, sentLen)
+        return fileName
 
     @featid(8)
-    def parseTreeDepth(self, argString):
+    def parseTreeDepth(self, argString, featOrder):
         '''Find depth of every sentence's parse tree and return list. '''
         self.preprocessor.getParseTrees()
 
     @featid(2)
-    def syllableRatio(self, argString):
+    def syllableRatio(self, argString, featOrder):
         '''
         We approximate this feature by counting the number of vowel-sequences
         that are delimited by consonants or space in a word, normalized by the number of tokens
@@ -68,4 +72,6 @@ class SurfaceFeatures(FeatureExtractor):
                 sylRatios[i] = (float(sylCount)/len(sentence))
             i += 1
 
-        return sylRatios.tolist()
+        fileName = "2-" + str(featOrder) + ".npy"
+        np.save(fileName, sylRatios)
+        return fileName

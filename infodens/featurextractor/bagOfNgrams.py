@@ -82,32 +82,40 @@ class BagOfNgrams(FeatureExtractor):
         ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
         print(ngramLength)
 
-        return ngramFeatures.tolist()
+        return ngramFeatures
 
     @featid(4)
-    def ngramBagOfWords(self, argString): 
+    def ngramBagOfWords(self, argString, featOrder):
         '''
         Extracts n-gram bag of words features.
         '''
-        return self.ngramExtraction("plain", argString)
+        fileName = "4-" + str(featOrder) + ".npy"
+        np.save(fileName, self.ngramExtraction("plain", argString))
+        return fileName
 
     @featid(5)
-    def ngramPOSBagOfWords(self, argString): 
+    def ngramPOSBagOfWords(self, argString, featOrder):
         '''
         Extracts n-gram POS bag of words features.
         '''
-        return self.ngramExtraction("POS", argString)
+        fileName = "5-" + str(featOrder) + ".npy"
+        np.save(fileName, self.ngramExtraction("POS", argString))
+        return fileName
 
     @featid(6)
-    def ngramMixedBagOfWords(self, argString): 
+    def ngramMixedBagOfWords(self, argString, featOrder):
         '''
         Extracts n-gram mixed bag of words features.
         '''
-        return self.ngramExtraction("mixed", argString)
-        
+        fileName = "6-" + str(featOrder) + ".npy"
+        np.save(fileName, self.ngramExtraction("mixed", argString))
+        return fileName
+
     @featid(7)
-    def ngramLemmaBagOfWords(self, argString): 
+    def ngramLemmaBagOfWords(self, argString, featOrder):
         '''
         Extracts n-gram lemmatized bag of words features.
         '''
-        return self.ngramExtraction("lemma", argString)
+        fileName = "7-" + str(featOrder) + ".npy"
+        np.save(fileName, self.ngramExtraction("lemma", argString))
+        return fileName
