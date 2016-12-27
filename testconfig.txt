@@ -1,12 +1,12 @@
 1
 # This is a comment
-#2
+2
 #classifiers : RandomForest
 #language model: testSent.txt
 #language : FR
 threads : 9
-#classifiers : DecisionTree RandomForest SVM
-classifiers : RandomForest
+classifiers : DecisionTree RandomForest SVM
+#classifiers : RandomForest
 #3 J,N,V,R
 4 1,10
 4 2,5

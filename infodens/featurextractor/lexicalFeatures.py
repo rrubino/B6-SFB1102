@@ -6,21 +6,24 @@ Created on Thu Sep 15 11:16:36 2016
 """
 from .featureExtraction import featid, FeatureExtractor
 from infodens.preprocessor import preprocess
+import numpy as np
 
 class LexicalFeatures(FeatureExtractor):
     
     def computeDensity(self,taggedSentences, jnrv):
-        densities = []
+        densities = np.zeros(self.preprocessor.getSentCount())
         #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
+        i = 0
         for sent in taggedSentences:
             if(len(sent) is 0):
-                densities.append(0)
+                densities[i] = 0
             else:
                 jnrvList = [tagPOS for tagPOS in sent if tagPOS in jnrv]
-                densities.append(float(len(sent) - len(jnrvList)) / len(sent))
-        
-        return densities
+                densities[i] = (float(len(sent) - len(jnrvList)) / len(sent))
+            i += 1
+
+        return densities.tolist()
 
     @featid(3)        
     def lexicalDensity(self, argString):
@@ -41,14 +44,17 @@ class LexicalFeatures(FeatureExtractor):
         '''
 
         #TODO : Lemmatize tokens?
-        sentRichness = []
+        sentRichness = np.zeros(self.preprocessor.getSentCount())
+
+        i = 0
         for sentence in self.preprocessor.gettokenizeSents():
             if len(sentence) is 0:
-                sentRichness.append(0)
+                sentRichness[i] = 0
             else:
-                sentRichness.append(float(len(set(sentence)))/len(sentence))
+                sentRichness[i] = (float(len(set(sentence)))/len(sentence))
+            i += 1
 
-        return sentRichness
+        return sentRichness.tolist()
 
     @featid(12)
     def lexicalToTokens(self, argString):
@@ -57,15 +63,17 @@ class LexicalFeatures(FeatureExtractor):
         '''
         nonLexicalTags = argString.split(',')
 
-        lexicalTokensRatio = []
+        lexicalTokensRatio = np.zeros(self.preprocessor.getSentCount())
+        i = 0
         for sentence in self.preprocessor.nltkPOStag():
             lexicalCount = 0
             for tagPOS in sentence:
                 if tagPOS not in nonLexicalTags:
                     lexicalCount += 1
             if len(sentence) is 0:
-                lexicalTokensRatio.append(0)
+                lexicalTokensRatio[i] = 0
             else:
-                lexicalTokensRatio.append(float(lexicalCount) / len(sentence))
+                lexicalTokensRatio[i] = (float(lexicalCount) / len(sentence))
+            i += 1
 
-        return lexicalTokensRatio
+        return lexicalTokensRatio.tolist()

@@ -20,6 +20,7 @@ class Preprocess:
         self.inputFile = fileName
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
+        self.sentCount = 0
         self.plainLof = []
         self.tokenSents = []
         self.parseTrees = []
@@ -53,10 +54,15 @@ class Preprocess:
         ids = [int(id) for id in lines]
         return ids
 
+    def getSentCount(self):
+        self.getPlainSentences()
+        return self.sentCount
+
     def getPlainSentences(self):
         """Return sentences as read from file."""
         if not self.plainLof:
             self.plainLof = self.preprocessBySentence()
+            self.sentCount = len(self.plainLof)
         return self.plainLof
 
     def gettokenizeSents(self):
