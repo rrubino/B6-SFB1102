@@ -147,8 +147,8 @@ class Controller:
         if self.inputClasses:
             # Extract the classed IDs from the given classes file and Check for
             # Length equality with the sentences.
-            preprocessor = preprocess.Preprocess(self.inputClasses)
-            self.classesList = np.asarray(preprocessor.preprocessClassID())
+            #preprocessor = preprocess.Preprocess(self.inputClasses)
+            self.classesList = np.asarray(sentsPrep.preprocessClassID())
             sentLen = len(sentsPrep.getPlainSentences())
             classesLen = len(self.classesList)
             self.numSentences = sentLen
@@ -158,7 +158,7 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM,
+        preprocessor = preprocess.Preprocess(self.inputFile, self.inputClasses, self.corpusLM,
                                              self.language)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")

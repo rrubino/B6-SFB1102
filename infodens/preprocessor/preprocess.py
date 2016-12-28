@@ -11,13 +11,15 @@ from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
 from nltk.stem.wordnet import WordNetLemmatizer
+import numpy as np
 
 class Preprocess:
     
     fileName = ''
     
-    def __init__(self,fileName,corpusLM=0,language=0):
+    def __init__(self,fileName, classFile,corpusLM=0,language=0):
         self.inputFile = fileName
+        self.classFile = classFile
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
         self.plainLof = []
@@ -26,6 +28,9 @@ class Preprocess:
         self.nltkPOSSents = []
         self.lemmatizedSents = []
         self.mixedSents = []
+        self.labels = []
+        self.classBasedtokenSents = {}
+        self.classBasedPOSSents = {}
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -48,10 +53,10 @@ class Preprocess:
 
     def preprocessClassID(self):
         """ Extract from each line the integer for class ID. Requires init with Classes file."""
-        with codecs.open(self.inputFile, encoding='utf-8') as f:
+        with codecs.open(self.classFile, encoding='utf-8') as f:
             lines = f.read().splitlines()
-        ids = [int(id) for id in lines]
-        return ids
+        self.labels = [int(id) for id in lines]
+        return self.labels
 
     def getPlainSentences(self):
         """Return sentences as read from file."""
@@ -65,7 +70,36 @@ class Preprocess:
             #print("tokenizing")
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
         return self.tokenSents
-
+        
+        
+    def getClassBasedTokSents(self):
+        
+        if not self.tokenSents:
+            #print("tokenizing")
+            self.tokenSents = self.gettokenizeSents()
+        
+        if not self.labels:
+            self.labels = self.preprocessClassID
+        classes = list(np.unique(self.labels))
+        for clas in classes:
+            self.classBasedtokenSents[clas] = [self.tokenSents[i] for i in range(len(self.tokenSents)) if self.labels[i] == clas]
+        
+        return self.classBasedtokenSents
+        
+    def getClassBasedPOSSents(self):
+        
+        if not self.nltkPOSSents:
+            #print("tokenizing")
+            self.nltkPOSSents = self.nltkPOStag()
+        
+        if not self.labels:
+            self.labels = self.preprocessClassID
+        classes = list(np.unique(self.labels))
+        for clas in classes:
+            self.classBasedPOSSents[clas] = [self.nltkPOSSents[i] for i in range(len(self.nltkPOSSents)) if self.labels[i] == clas]
+        
+        return self.classBasedPOSSents
+        
     def getParseTrees(self):
         """Return parse trees of each sentence."""
         if not self.parseTrees:
@@ -113,7 +147,40 @@ class Preprocess:
                 self.mixedSents.append(sent)
             
         return self.mixedSents
-
+    
+        
+    def buildLengthBasedDict(self):
+        if not self.tokenSents:
+            self.tokenSents = self.gettokenizeSents()
+        lenDict = {}
+        for sentence in self.tokenSents:
+            for token in sentence:
+                if len(token) in lenDict:
+                    lenDict[len(token)] += 1
+                else:
+                    lenDict[len(token)] = 1
+        return lenDict
+                                
+    def buildClassBasedNgrams(self, type, n):       
+        """Build and return given type of ngram. we implemant only plain for now"""
+        if type is "plain":
+            if not self.classBasedtokenSents:
+                self.classBasedtokenSents = self.getClassBasedTokSents() 
+            ngramsList = {}
+            ngramsOutput = {}
+            for key in self.classBasedtokenSents:
+                ngramsList[key] = [list(ngrams(self.classBasedtokenSents[key][i], n)) for i in range(len(self.classBasedtokenSents[key]))]
+                ngramsOutput[key] = Counter([item for sublist in ngramsList[key] for item in sublist]) 
+        elif type is "POS":
+            if not self.classBasedPOSSents:
+                self.classBasedPOSSents = self.getClassBasedPOSSents() 
+            ngramsList = {}
+            ngramsOutput = {}
+            for key in self.classBasedPOSSents:
+                ngramsList[key] = [list(ngrams(self.classBasedPOSSents[key][i], n)) for i in range(len(self.classBasedPOSSents[key]))]
+                ngramsOutput[key] = Counter([item for sublist in ngramsList[key] for item in sublist]) 
+        return ngramsOutput 
+        
     def buildNgramsType(self, type, n):
         """Build and return given type of ngram."""
         if type is "plain":

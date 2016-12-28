@@ -1,21 +1,29 @@
-1
+#1
 # This is a comment
 #2
 #classifiers : RandomForest
 #language model: testSent.txt
 #language : FR
-threads : 9
+threads : 1
 #classifiers : DecisionTree RandomForest SVM
 classifiers : RandomForest
 #3 J,N,V,R
-4 1,10
-4 2,5
+#4 1,5
+#4 2,5
 #5 1,10
 #6 1,10
 #7 1,10
 #10
 #11
 #12 CC,DT,WDT,IN,PDT
+
+
+#13 1,5
+#14 1,1
+#15 1,5
+#16 1,10
+#17
+
 
 output classifier: report1.txt
 output features: feats.txt arrf
