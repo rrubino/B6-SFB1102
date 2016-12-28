@@ -42,7 +42,10 @@ class ClassifierManager:
         return 1
 
     def returnClassifiers(self):
-        files = (os.listdir("infodens/classifier"))
+        dirr = os.path.dirname(__file__)
+        
+        #files = (os.listdir("infodens/classifier"))
+        files = (os.listdir(dirr))
         for file in files:
             if file.endswith(".py") and file is not "__init__.py":
                 file = file.replace(".py",'')

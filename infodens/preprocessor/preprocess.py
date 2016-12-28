@@ -79,9 +79,10 @@ class Preprocess:
             self.tokenSents = self.gettokenizeSents()
         
         if not self.labels:
-            self.labels = self.preprocessClassID
+            self.labels = self.preprocessClassID()
         classes = list(np.unique(self.labels))
         for clas in classes:
+            
             self.classBasedtokenSents[clas] = [self.tokenSents[i] for i in range(len(self.tokenSents)) if self.labels[i] == clas]
         
         return self.classBasedtokenSents
@@ -93,7 +94,7 @@ class Preprocess:
             self.nltkPOSSents = self.nltkPOStag()
         
         if not self.labels:
-            self.labels = self.preprocessClassID
+            self.labels = self.preprocessClassID()
         classes = list(np.unique(self.labels))
         for clas in classes:
             self.classBasedPOSSents[clas] = [self.nltkPOSSents[i] for i in range(len(self.nltkPOSSents)) if self.labels[i] == clas]

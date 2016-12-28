@@ -46,23 +46,23 @@ class InfodensFeatures(FeatureExtractor):
             # Error in argument.
             return
         
-        CBS = self.preprocessor.buildClassBasedNgrams('plain', n)
+        CBS = self.preprocessor.buildClassBasedNgrams('plain', n)        
         listOfSentences = self.preprocessor.gettokenizeSents()
         wordMinFreq = {}; numFeats = {};
         features = {}
         for key in CBS:
-            wordMinFreq[key], numFeats[key] = self.preprocessor.ngramMinFreq(CBS[key], freq)
+            wordMinFreq[key], numFeats[key] = self.preprocessor.ngramMinFreq(CBS[key], freq)            
+            
             #features[key] = np.zeros((len(listOfSentences), numFeats[key]))
             feats = np.zeros((len(listOfSentences), numFeats[key]))
             
             i=0;
             for sentence in listOfSentences:
-                ngramsVocab = Counter(ngrams(sentence, 1))
+                ngramsVocab = Counter(ngrams(sentence, n))
+                
                 for eachunigram in ngramsVocab:
-                    ngramIndex = wordMinFreq[key].get(eachunigram, -1)
-                    
-                    if ngramIndex >= 0:
-                        
+                    ngramIndex = wordMinFreq[key].get(eachunigram, -1)                    
+                    if ngramIndex >= 0:                       
                         result = CBS[key][eachunigram] + 1
                         result /= (sum(CBS[key].values()) + len(CBS[key]))
                         result = -1 * np.log2(result)
@@ -100,7 +100,7 @@ class InfodensFeatures(FeatureExtractor):
             
             i=0;
             for sentence in listOfSentences:
-                ngramsVocab = Counter(ngrams(sentence, 1))
+                ngramsVocab = Counter(ngrams(sentence, 2))
                 for eachunigram in ngramsVocab:
                     ngramIndex = wordMinFreq[key].get(eachunigram, -1)
                     
@@ -140,7 +140,7 @@ class InfodensFeatures(FeatureExtractor):
         
         i=0;
         for sentence in listOfSentences:
-            ngramsVocab = Counter(ngrams(sentence, 1))
+            ngramsVocab = Counter(ngrams(sentence, n))
             for eachunigram in ngramsVocab:
                 ngramIndex = wordMinFreq.get(eachunigram, -1)
                 
@@ -175,7 +175,7 @@ class InfodensFeatures(FeatureExtractor):
         
         i=0;
         for sentence in listOfSentences:
-            ngramsVocab = Counter(ngrams(sentence, 1))
+            ngramsVocab = Counter(ngrams(sentence, n))
             for eachunigram in ngramsVocab:
                 ngramIndex = wordMinFreq.get(eachunigram, -1)
                 
