@@ -21,7 +21,7 @@ class Test_controller(unittest.TestCase):
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         fileName, pathname, description = imp.find_module('infodens')
         from infodens.preprocessor import preprocess
-        self.prepObj = preprocess.Preprocess('testFile.txt')
+        self.prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.controller import controller
         self.conObj = controller.Controller('testconfig.txt')
         self.conObj2 = controller.Controller('testconfig2.txt')
@@ -49,7 +49,7 @@ class Test_controller(unittest.TestCase):
     def test_parseOutputLine3(self):
         
         from infodens.preprocessor import preprocess
-        prepObj = preprocess.Preprocess('testFile.txt')
+        prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.controller import controller
         
         conObj = controller.Controller('testconfig.txt')
@@ -60,7 +60,7 @@ class Test_controller(unittest.TestCase):
     def test_loadConfig(self):
         
         from infodens.preprocessor import preprocess
-        prepObj = preprocess.Preprocess('testFile.txt')
+        prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.controller import controller
         
         conObj = controller.Controller('testconfig.txt')
@@ -83,11 +83,11 @@ class Test_controller(unittest.TestCase):
     def test_classesSentsMismatch(self):
         
         from infodens.preprocessor import preprocess
-        prepObj = preprocess.Preprocess('testFile.txt')
+        prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.controller import controller
         
         conObj = controller.Controller('testconfig.txt')
-        prepObj = preprocess.Preprocess('testFile.txt')
+        prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         c = False
         ch = conObj.classesSentsMismatch(prepObj)
         self.assertEquals(c,ch)
@@ -95,7 +95,7 @@ class Test_controller(unittest.TestCase):
     def test_manageFeatures(self):
         
         from infodens.preprocessor import preprocess
-        prepObj = preprocess.Preprocess('testFile.txt')
+        prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.controller import controller
         
         

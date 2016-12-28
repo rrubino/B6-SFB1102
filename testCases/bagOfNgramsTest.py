@@ -21,7 +21,7 @@ class Test_bagOfNgrams(unittest.TestCase):
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         fileName, pathname, description = imp.find_module('infodens')
         from infodens.preprocessor import preprocess
-        self.prepObj = preprocess.Preprocess('testFile.txt')
+        self.prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.featurextractor import bagOfNgrams
         self.ngramsObj = bagOfNgrams.BagOfNgrams(self.prepObj)
         

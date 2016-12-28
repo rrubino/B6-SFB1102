@@ -20,11 +20,6 @@ from os import path
 import difflib
 import time
 
-sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-fileName, pathname, description = imp.find_module('infodens')
-from infodens.preprocessor import preprocess
-prepObj = preprocess.Preprocess('testFile.txt')
-
 
 class Test_preprocess(unittest.TestCase):
     
@@ -32,7 +27,7 @@ class Test_preprocess(unittest.TestCase):
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         fileName, pathname, description = imp.find_module('infodens')
         from infodens.preprocessor import preprocess
-        self.prepObj = preprocess.Preprocess('testFile.txt')
+        self.prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         
 
     def test_preprocessBySentence(self):

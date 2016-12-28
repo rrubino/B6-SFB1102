@@ -17,7 +17,7 @@ class Test_featureManager(unittest.TestCase):
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         fileName, pathname, description = imp.find_module('infodens')
         from infodens.preprocessor import preprocess
-        self.prepObj = preprocess.Preprocess('testFile.txt')        
+        self.prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')        
         
         from infodens.controller import controller
         self.conObj = controller.Controller('testconfig.txt')
@@ -28,7 +28,7 @@ class Test_featureManager(unittest.TestCase):
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
-        self.prepObj2 = preprocess.Preprocess('testFile.txt')
+        self.prepObj2 = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         self.featMgrObj2 = featureManager.FeatureManager(4, self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2, 1)
 
     def test_idClassDictionary(self):        

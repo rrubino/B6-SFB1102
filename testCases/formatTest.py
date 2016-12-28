@@ -24,7 +24,7 @@ class Test_format(unittest.TestCase):
         fileName, pathname, description = imp.find_module('infodens')
         
         from infodens.preprocessor import preprocess
-        self.prepObj = preprocess.Preprocess('testFile.txt')
+        self.prepObj = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         from infodens.formater import format
         
         from infodens.controller import controller
@@ -36,11 +36,11 @@ class Test_format(unittest.TestCase):
         
         self.conObj2 = controller.Controller('testconfig2.txt')
         self.conObj2.loadConfig()
-        self.prepObj2 = preprocess.Preprocess('testFile.txt')
+        self.prepObj2 = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         self.featMgrObj2 = featureManager.FeatureManager(4, self.conObj2.featureIDs, self.conObj2.featargs, self.prepObj2, 1)
         
         self.features = self.featMgrObj2.callExtractors()
-        self.prepObj3 = preprocess.Preprocess('labelFile.txt')
+        self.prepObj3 = preprocess.Preprocess('testFile.txt', 'labelFile.txt')
         self.labels = self.prepObj3.preprocessClassID()
         
         self.X = self.features
