@@ -8,6 +8,8 @@ from .featureExtraction import featid, FeatureExtractor
 from collections import Counter
 from nltk import ngrams
 import numpy as np
+from scipy import sparse
+import scipy.io
 import time
 
 
@@ -65,7 +67,8 @@ class BagOfNgrams(FeatureExtractor):
             print("Cut-off too high, no ngrams passed it.")
             return []
 
-        ngramFeatures = np.zeros((len(listOfSentences), numberOfFeatures))
+        #ngramFeatures = np.zeros((len(listOfSentences), numberOfFeatures))
+        ngramFeatures = sparse.lil_matrix((len(listOfSentences), numberOfFeatures))
 
         print("Extracting ngram feats.")
 
@@ -76,7 +79,7 @@ class BagOfNgrams(FeatureExtractor):
                 ## Keys
                 ngramIndex = finNgram.get(ngramEntry, -1)
                 if ngramIndex >= 0:
-                    ngramFeatures[i][ngramIndex] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
+                    ngramFeatures[i, ngramIndex] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
 
         print("Finished ngram features.")
         ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
@@ -89,33 +92,33 @@ class BagOfNgrams(FeatureExtractor):
         '''
         Extracts n-gram bag of words features.
         '''
-        fileName = "4-" + str(featOrder) + ".npy"
-        np.save(fileName, self.ngramExtraction("plain", argString))
+        fileName = "4-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, self.ngramExtraction("plain", argString))
         return fileName
 
     @featid(5)
-    def ngramPOSBagOfWords(self, argString, featOrder):
+    def ngramBagOfPOS(self, argString, featOrder):
         '''
         Extracts n-gram POS bag of words features.
         '''
-        fileName = "5-" + str(featOrder) + ".npy"
-        np.save(fileName, self.ngramExtraction("POS", argString))
+        fileName = "5-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, self.ngramExtraction("POS", argString))
         return fileName
 
     @featid(6)
-    def ngramMixedBagOfWords(self, argString, featOrder):
+    def ngramBagOfMixedWords(self, argString, featOrder):
         '''
         Extracts n-gram mixed bag of words features.
         '''
-        fileName = "6-" + str(featOrder) + ".npy"
-        np.save(fileName, self.ngramExtraction("mixed", argString))
+        fileName = "6-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, self.ngramExtraction("mixed", argString))
         return fileName
 
     @featid(7)
-    def ngramLemmaBagOfWords(self, argString, featOrder):
+    def ngramBagOfLemmas(self, argString, featOrder):
         '''
         Extracts n-gram lemmatized bag of words features.
         '''
-        fileName = "7-" + str(featOrder) + ".npy"
-        np.save(fileName, self.ngramExtraction("lemma", argString))
+        fileName = "7-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, self.ngramExtraction("lemma", argString))
         return fileName

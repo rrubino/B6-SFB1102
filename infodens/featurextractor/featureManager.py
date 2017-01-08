@@ -5,6 +5,8 @@ from os import path
 from joblib import Parallel, delayed
 import itertools
 import numpy as np
+import scipy.io
+from scipy import sparse
 
 
 def runFeatureMethod(mtdCls, featureID,
@@ -16,7 +18,6 @@ def runFeatureMethod(mtdCls, featureID,
     feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
     print(feateX)
     return feat
-
 
 class FeatureManager:
     """ Validate the config feature requests,
@@ -95,6 +96,19 @@ class FeatureManager:
 
         return idClassmethod, allFeatureIds
 
+    def getfeatVectorLen(self, featuresExtracted):
+
+        mmapFeats = []
+        for i in range(len(self.featureIDs)):
+            csrMat = scipy.io.mmread(featuresExtracted[i])
+            mmapFeats.append(csrMat.tolil())
+
+        featsCount = 0
+        for i in range(len(self.featureIDs)):
+           featsCount += mmapFeats[i].get_shape()[1]
+
+        return featsCount
+
     def callExtractors(self):
         '''Extract all feature Ids and names.  '''
 
@@ -111,33 +125,24 @@ class FeatureManager:
 
         print("All features extracted. ")
 
-        output = []
 
-        #Format into scikit format (Each row is a sentence's feature Vector)
+        #Format into scikit format (Each row is a sen
+        featCount = self.getfeatVectorLen(featuresExtracted)
+        featVec = "Feature Vector Length: " + str(self.sentCount) + "x" + str(featCount)
+        print(featVec)
 
         mmapFeats = []
         for i in range(len(self.featureIDs)):
-            mmapFeats.append(np.load(featuresExtracted[i], mmap_mode='r'))
+            csrMat = scipy.io.mmread(featuresExtracted[i])
+            mmapFeats.append(csrMat.tolil())
 
-        for j in range(0, self.sentCount):
-            sentFeats = []
-            for i in range(len(self.featureIDs)):
-                featX = mmapFeats[i]
-                #if Ngram feature take the whole feature vector
-                if 4 <= self.featureIDs[i] <= 7 :
-                    sentFeats.extend(featX[j, :])
-                else:
-                    sentFeats.append(featX[j])
-                featX = 0
-            output.append(sentFeats)
+        output = sparse.hstack(mmapFeats)
+
         mmapFeats = 0
-
-        featVec = "Feature Vector Length: " + str(len(output)) + "x" + str(len(output[0]))
-        print(featVec)
 
         print("Ready to Classify. ")
 
         for afile in featuresExtracted:
             os.remove(afile)
 
-        return np.asarray(output)
+        return output.todense().getA()

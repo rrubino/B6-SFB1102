@@ -6,6 +6,8 @@ Created on Sun Sep 04 14:12:49 2016
 """
 from .featureExtraction import featid, FeatureExtractor
 import numpy as np
+from scipy import sparse
+import scipy.io
 
 
 class SurfaceFeatures(FeatureExtractor):
@@ -13,7 +15,7 @@ class SurfaceFeatures(FeatureExtractor):
     @featid(1)    
     def averageWordLength(self, argString, featOrder):
         '''Find average word length of every sentence and return list. '''
-        aveWordLen = np.zeros(self.preprocessor.getSentCount())
+        aveWordLen = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         i = 0
         for sentence in self.preprocessor.gettokenizeSents():
             if len(sentence) is 0:
@@ -23,22 +25,22 @@ class SurfaceFeatures(FeatureExtractor):
                 aveWordLen[i] = (float(length) / len(sentence))
             i += 1
 
-        fileName = "1-" + str(featOrder) + ".npy"
-        np.save(fileName, aveWordLen)
+        fileName = "1-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, aveWordLen)
         return fileName
 
     @featid(10)
     def sentenceLength(self, argString, featOrder):
         '''Find length of every sentence and return list. '''
 
-        sentLen = np.zeros(self.preprocessor.getSentCount())
+        sentLen = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
         i = 0
         for sentence in self.preprocessor.gettokenizeSents():
             sentLen[i] = (len(sentence))
             i += 1
 
-        fileName = "10-" + str(featOrder) + ".npy"
-        np.save(fileName, sentLen)
+        fileName = "10-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, sentLen)
         return fileName
 
     @featid(8)
@@ -56,7 +58,7 @@ class SurfaceFeatures(FeatureExtractor):
         '''
 
         vowels = ['a', 'e', 'i', 'o', 'u']
-        sylRatios = np.zeros(self.preprocessor.getSentCount())
+        sylRatios = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
         i = 0
         for sentence in self.preprocessor.gettokenizeSents():
             sylCount = 0
@@ -72,6 +74,6 @@ class SurfaceFeatures(FeatureExtractor):
                 sylRatios[i] = (float(sylCount)/len(sentence))
             i += 1
 
-        fileName = "2-" + str(featOrder) + ".npy"
-        np.save(fileName, sylRatios)
+        fileName = "2-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, sylRatios)
         return fileName

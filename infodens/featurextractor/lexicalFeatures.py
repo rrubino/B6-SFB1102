@@ -7,11 +7,13 @@ Created on Thu Sep 15 11:16:36 2016
 from .featureExtraction import featid, FeatureExtractor
 from infodens.preprocessor import preprocess
 import numpy as np
+from scipy import sparse
+import scipy.io
 
 class LexicalFeatures(FeatureExtractor):
     
     def computeDensity(self, taggedSentences, jnrv):
-        densities = np.zeros(self.preprocessor.getSentCount())
+        densities = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
 
         i = 0
@@ -35,8 +37,8 @@ class LexicalFeatures(FeatureExtractor):
         '''
         taggedSents = self.preprocessor.nltkPOStag()
 
-        fileName = "3-" + str(featOrder) + ".npy"
-        np.save(fileName, self.computeDensity(taggedSents, jnrv))
+        fileName = "3-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, self.computeDensity(taggedSents, jnrv))
         return fileName
 
     @featid(11)
@@ -46,7 +48,7 @@ class LexicalFeatures(FeatureExtractor):
         '''
 
         #TODO : Lemmatize tokens?
-        sentRichness = np.zeros(self.preprocessor.getSentCount())
+        sentRichness = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
 
         i = 0
         for sentence in self.preprocessor.gettokenizeSents():
@@ -56,8 +58,8 @@ class LexicalFeatures(FeatureExtractor):
                 sentRichness[i] = (float(len(set(sentence)))/len(sentence))
             i += 1
 
-        fileName = "11-" + str(featOrder) + ".npy"
-        np.save(fileName, sentRichness)
+        fileName = "11-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, sentRichness)
         return fileName
 
     @featid(12)
@@ -67,7 +69,7 @@ class LexicalFeatures(FeatureExtractor):
         '''
         nonLexicalTags = argString.split(',')
 
-        lexicalTokensRatio = np.zeros(self.preprocessor.getSentCount())
+        lexicalTokensRatio = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
         i = 0
         for sentence in self.preprocessor.nltkPOStag():
             lexicalCount = 0
@@ -80,6 +82,6 @@ class LexicalFeatures(FeatureExtractor):
                 lexicalTokensRatio[i] = (float(lexicalCount) / len(sentence))
             i += 1
 
-        fileName = "12-" + str(featOrder) + ".npy"
-        np.save(fileName, lexicalTokensRatio)
+        fileName = "12-" + str(featOrder) + ".mtx"
+        scipy.io.mmwrite(fileName, lexicalTokensRatio)
         return fileName
