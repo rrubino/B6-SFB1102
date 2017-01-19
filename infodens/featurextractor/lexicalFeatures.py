@@ -28,7 +28,7 @@ class LexicalFeatures(FeatureExtractor):
         return densities
 
     @featid(3)        
-    def lexicalDensity(self, argString, featOrder):
+    def lexicalDensity(self, argString):
         jnrv = argString.split(',')
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
@@ -37,12 +37,10 @@ class LexicalFeatures(FeatureExtractor):
         '''
         taggedSents = self.preprocessor.nltkPOStag()
 
-        fileName = "3-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, self.computeDensity(taggedSents, jnrv))
-        return fileName
+        return self.computeDensity(taggedSents, jnrv)
 
     @featid(11)
-    def lexicalRichness(self, argString, featOrder):
+    def lexicalRichness(self, argString):
         '''
         The ratio of unique tokens in the sentence over the sentence length.
         '''
@@ -58,12 +56,10 @@ class LexicalFeatures(FeatureExtractor):
                 sentRichness[i] = (float(len(set(sentence)))/len(sentence))
             i += 1
 
-        fileName = "11-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, sentRichness)
-        return fileName
+        return sentRichness
 
     @featid(12)
-    def lexicalToTokens(self, argString, featOrder):
+    def lexicalToTokens(self, argString):
         '''
         The ratio of lexical words to tokens in the sentence.
         '''
@@ -82,6 +78,4 @@ class LexicalFeatures(FeatureExtractor):
                 lexicalTokensRatio[i] = (float(lexicalCount) / len(sentence))
             i += 1
 
-        fileName = "12-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, lexicalTokensRatio)
-        return fileName
+        return lexicalTokensRatio

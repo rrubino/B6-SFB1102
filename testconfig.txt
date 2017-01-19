@@ -9,7 +9,7 @@ threads : 9
 classifiers : RandomForest
 #3 J,N,V,R
 4 1,100
-#4 2,50
+#4 2,5
 #5 1,10
 #6 1,10
 #7 1,10

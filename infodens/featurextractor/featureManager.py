@@ -10,11 +10,11 @@ from scipy import sparse
 
 
 def runFeatureMethod(mtdCls, featureID,
-                     preprocessor,featureName, featureArgs, featOrder):
+                     preprocessor,featureName, featureArgs):
     """ Run the given feature extractor. """
     instance = mtdCls(preprocessor)
     methd = getattr(instance, featureName)
-    feat = methd(featureArgs, featOrder)
+    feat = methd(featureArgs)
     feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
     print(feateX)
     return feat
@@ -98,14 +98,9 @@ class FeatureManager:
 
     def getfeatVectorLen(self, featuresExtracted):
 
-        mmapFeats = []
-        for i in range(len(self.featureIDs)):
-            csrMat = scipy.io.mmread(featuresExtracted[i])
-            mmapFeats.append(csrMat.tolil())
-
         featsCount = 0
         for i in range(len(self.featureIDs)):
-           featsCount += mmapFeats[i].get_shape()[1]
+           featsCount += featuresExtracted[i].get_shape()[1]
 
         return featsCount
 
@@ -120,7 +115,7 @@ class FeatureManager:
                                                         self.featureIDs[i],
                                                         self.preprocessor,
                                                         self.allFeatureIds[self.featureIDs[i]],
-                                                        self.featureArgs[i], i)
+                                                        self.featureArgs[i])
                                                        for i in range(len(self.featureIDs)))
 
         print("All features extracted. ")
@@ -131,18 +126,8 @@ class FeatureManager:
         featVec = "Feature Vector Length: " + str(self.sentCount) + "x" + str(featCount)
         print(featVec)
 
-        mmapFeats = []
-        for i in range(len(self.featureIDs)):
-            csrMat = scipy.io.mmread(featuresExtracted[i])
-            mmapFeats.append(csrMat.tolil())
-
-        output = sparse.hstack(mmapFeats)
-
-        mmapFeats = 0
+        output = sparse.hstack(featuresExtracted)
 
         print("Ready to Classify. ")
-
-        for afile in featuresExtracted:
-            os.remove(afile)
 
         return output.todense().getA()

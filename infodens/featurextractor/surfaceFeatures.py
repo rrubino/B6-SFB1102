@@ -13,7 +13,7 @@ import scipy.io
 class SurfaceFeatures(FeatureExtractor):
     
     @featid(1)    
-    def averageWordLength(self, argString, featOrder):
+    def averageWordLength(self, argString):
         '''Find average word length of every sentence and return list. '''
         aveWordLen = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         i = 0
@@ -25,12 +25,10 @@ class SurfaceFeatures(FeatureExtractor):
                 aveWordLen[i] = (float(length) / len(sentence))
             i += 1
 
-        fileName = "1-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, aveWordLen)
-        return fileName
+        return aveWordLen
 
     @featid(10)
-    def sentenceLength(self, argString, featOrder):
+    def sentenceLength(self, argString):
         '''Find length of every sentence and return list. '''
 
         sentLen = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
@@ -39,17 +37,15 @@ class SurfaceFeatures(FeatureExtractor):
             sentLen[i] = (len(sentence))
             i += 1
 
-        fileName = "10-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, sentLen)
-        return fileName
+        return sentLen
 
     @featid(8)
-    def parseTreeDepth(self, argString, featOrder):
+    def parseTreeDepth(self, argString):
         '''Find depth of every sentence's parse tree and return list. '''
         self.preprocessor.getParseTrees()
 
     @featid(2)
-    def syllableRatio(self, argString, featOrder):
+    def syllableRatio(self, argString):
         '''
         We approximate this feature by counting the number of vowel-sequences
         that are delimited by consonants or space in a word, normalized by the number of tokens
@@ -74,6 +70,4 @@ class SurfaceFeatures(FeatureExtractor):
                 sylRatios[i] = (float(sylCount)/len(sentence))
             i += 1
 
-        fileName = "2-" + str(featOrder) + ".mtx"
-        scipy.io.mmwrite(fileName, sylRatios)
-        return fileName
+        return sylRatios
