@@ -10,40 +10,16 @@ from .formatWriter import FormatWriter
 class Format:
 
     def __init__(self, fsX, fsy):
-        self.X = fsX.tolist()
-        self.Y = fsy.tolist()
+        self.X = fsX
+        self.Y = fsy
         
     def libsvmFormat(self, fileName):
-
-        writer = FormatWriter()
-        libsvmOutput = []
-        for i in range(len(self.Y)):
-            output_i = []
-            label = self.Y[i]
-            output_i.append(label)            
-            for j in range(len(self.X[i])):
-                output_i.append(str(j+1)+':'+str(self.X[i][j]))
-                
-            libsvmOutput.append(output_i)
-            
-        writer.libsvmwriteToFile(libsvmOutput, fileName)
-        return libsvmOutput
+        aformater = FormatWriter()
+        aformater.libsvmwriteToFile(self.X, self.Y, fileName)
 
     def arrfFormat(self, fileName):
-
         writer = FormatWriter()
-        arrfOutput = []
-        for i in range(len(self.Y)):
-            output_i = []
-            label = self.Y[i]
-            
-            for j in range(len(self.X[i])):
-                output_i.append(self.X[i][j])
-            output_i.append(label)
-                
-            arrfOutput.append(output_i)
-        writer.arrfwriteToFile(arrfOutput, fileName)
-        return arrfOutput
+        writer.arrfwriteToFile(self.X, self.Y, fileName)
 
     def outFormat(self, fileName, formatType):
         if formatType == "libsvm":

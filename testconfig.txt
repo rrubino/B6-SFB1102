@@ -8,7 +8,7 @@ threads : 9
 #classifiers : DecisionTree RandomForest SVM
 classifiers : RandomForest
 #3 J,N,V,R
-4 1,100
+4 1,10
 #4 2,5
 #5 1,10
 #6 1,10
@@ -17,7 +17,7 @@ classifiers : RandomForest
 #11
 #12 CC,DT,WDT,IN,PDT
 
-#output classifier: report1.txt
+output classifier: report1.txt
 #output features: feats.txt arrf
 
 #input files : testSent.txt testSentClasses.txt

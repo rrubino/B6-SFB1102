@@ -14,7 +14,6 @@ import os
 import pickle
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.ensemble import RandomForestClassifier
-#from scipy.stats import randint as sp_randint
 from sklearn.metrics import average_precision_score, precision_score, classification_report
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score, recall_score
@@ -35,7 +34,7 @@ class Classifier(object):
     ytest = []
        
     splitPercent = 0.3
-    shuffle = True
+    shuffleCond = True
        
     model = []
        
@@ -49,21 +48,7 @@ class Classifier(object):
         self.threads = threads
 
     def shuffle(self):
-        indices = [i for i in range(len(self.y))]
-        random.shuffle(indices)
-        newX = np.zeros(self.X.shape)
-        newy = np.zeros(self.y.shape)
-        if len(self.X.shape) == 1:
-            for i in range(len(self.y)):
-                newX[i] = self.X[indices[i]]
-                newy[i] = self.y[indices[i]]
-                
-        else:
-            for i in range(len(self.y)):
-                newX[i, :] = self.X[indices[i],:]
-                newy[i] = self.y[indices[i]]
-        self.X = newX
-        self.y = newy  
+        self.X, self.y = sklearn.utils.shuffle(self.X, self.y)
         
     def splitTrainTest(self):
         self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
@@ -97,8 +82,8 @@ class Classifier(object):
         classifReport +='\nRecall: ' + str(recall_score(self.ytest, y_pred))
         classifReport += '\nF-score: ' + str(f1_score(self.ytest, y_pred))
         classifReport += '\nClassification Report:\n ' + str(classification_report(self.ytest, y_pred))
-        #print(classifReport)
-        return classifReport, accuracy_score(self.ytest, y_pred), precision_score(self.ytest, y_pred), recall_score(self.ytest, y_pred), f1_score(self.ytest, y_pred) 
+
+        return classifReport, accuracy_score(self.ytest, y_pred), precision_score(self.ytest, y_pred), recall_score(self.ytest, y_pred), f1_score(self.ytest, y_pred)
         
     def runClassifier(self):
         """ Run the provided classifier."""
@@ -121,7 +106,7 @@ class Classifier(object):
                     self.splitTrainTest()
                     self.train()
                     self.predict()
-                    clRep, accu, prec, reca, fsco =  self.evaluate()
+                    clRep, accu, prec, reca, fsco = self.evaluate()
                     acc.append(accu)
                     pre.append(prec)
                     rec.append(reca)
@@ -137,6 +122,6 @@ class Classifier(object):
             self.splitTrainTest()
             self.train()
             self.predict()
-            clRep, accu, prec, reca, fsco =  self.evaluate()
-            #print ('Classification Report: ', clRep)
+            clRep, accu, prec, reca, fsco = self.evaluate()
+
         return clRep

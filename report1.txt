@@ -1,13 +1,13 @@
 RandomForest:
-Accuracy: 0.752666666667
-Precision: 0.755558076225
-Recall: 0.743581156508
-F-score: 0.749521773377
+Accuracy: 0.759833333333
+Precision: 0.771106510237
+Recall: 0.741839105898
+F-score: 0.756189724212
 Classification Report:
               precision    recall  f1-score   support
 
-        0.0       0.75      0.76      0.76      9042
-        1.0       0.76      0.74      0.75      8958
+          0       0.75      0.78      0.76      8963
+          1       0.77      0.74      0.76      9037
 
-avg / total       0.75      0.75      0.75     18000
+avg / total       0.76      0.76      0.76     18000
 

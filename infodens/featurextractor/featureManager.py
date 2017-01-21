@@ -126,8 +126,8 @@ class FeatureManager:
         featVec = "Feature Vector Length: " + str(self.sentCount) + "x" + str(featCount)
         print(featVec)
 
-        output = sparse.hstack(featuresExtracted)
+        output = sparse.hstack(featuresExtracted, "lil")
 
         print("Ready to Classify. ")
 
-        return output.todense().getA()
+        return output

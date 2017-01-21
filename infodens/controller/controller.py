@@ -182,7 +182,7 @@ class Controller:
         """Output features if requested."""
 
         if self.featOutput:
-            formatter = format.Format(self.extractedFeats,self.classesList)
+            formatter = format.Format(self.extractedFeats, self.classesList)
             # if format is not set in config, will use a default libsvm output.
             formatter.outFormat(self.featOutput, self.featOutFormat)
         else:
