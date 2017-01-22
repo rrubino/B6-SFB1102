@@ -18,9 +18,9 @@ classifiers : RandomForest
 #12 CC,DT,WDT,IN,PDT
 
 output classifier: report1.txt
-#output features: feats.txt arrf
+output features: feats.txt arff
 
 #input files : testSent.txt testSentClasses.txt
-#input files : testSent2.txt testSentClasses2.txt
-input files : literature.fr literature.classes
+input files : testSent2.txt testSentClasses2.txt
+#input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'

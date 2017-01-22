@@ -15,24 +15,21 @@ class FormatWriter:
     def libsvmwriteToFile(self, X, Y, theFile):
         sklearn.datasets.dump_svmlight_file(X, Y, theFile)
 
-    def arrfwriteToFile(self, X, Y, theFile):
-        #TODO: Clean up
+    def arffwriteToFile(self, X, Y, theFile):
+        #TODO: Use liac-arff
         dims = X.get_shape()
         thefile = open(theFile, 'w')
-        thefile.write('@relation translationese')
-        thefile.write('\n')
-        thefile.write('\n')
+        bufferStr = "@relation translationese\n\n"
+        thefile.write(bufferStr)
         for i in range(dims[1]):
-            thefile.write('@attribute no'+str(i+1)+' real')
-            thefile.write('\n')
-        thefile.write('\n')
-        thefile.write('@data')
-        thefile.write('\n')
+            thefile.write('@attribute no'+str(i+1)+' real' + '\n')
+        thefile.write('\n'+'@data'+'\n')
         for i in range(dims[0]):
+            bufferStr = ""
             for j in range(dims[1]):
-                thefile.write(str(X[i, j])+',')
-            thefile.write(str(Y[i]))
-            thefile.write('\n')
+                bufferStr += str(X[i, j])+','
+            bufferStr += str(Y[i]) + '\n'
+            thefile.write(bufferStr)
         thefile.close()
 
 

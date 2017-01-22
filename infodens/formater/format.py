@@ -17,15 +17,15 @@ class Format:
         aformater = FormatWriter()
         aformater.libsvmwriteToFile(self.X, self.Y, fileName)
 
-    def arrfFormat(self, fileName):
+    def arffFormat(self, fileName):
         writer = FormatWriter()
-        writer.arrfwriteToFile(self.X, self.Y, fileName)
+        writer.arffwriteToFile(self.X, self.Y, fileName)
 
     def outFormat(self, fileName, formatType):
         if formatType == "libsvm":
             self.libsvmFormat(fileName)
-        elif formatType == "arrf":
-            self.arrfFormat(fileName)
+        elif formatType == "arff":
+            self.arffFormat(fileName)
         else:
             self.libsvmFormat(fileName)
             print("Defaulting to libsvm format.")

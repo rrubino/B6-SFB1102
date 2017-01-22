@@ -77,9 +77,9 @@ class Classifier(object):
 
     def evaluate(self):
         y_pred = self.predict()
-        classifReport = 'Accuracy: '+ str(accuracy_score(self.ytest, y_pred))
+        classifReport = 'Accuracy: ' + str(accuracy_score(self.ytest, y_pred))
         classifReport += '\nPrecision: ' + str(precision_score(self.ytest, y_pred))
-        classifReport +='\nRecall: ' + str(recall_score(self.ytest, y_pred))
+        classifReport += '\nRecall: ' + str(recall_score(self.ytest, y_pred))
         classifReport += '\nF-score: ' + str(f1_score(self.ytest, y_pred))
         classifReport += '\nClassification Report:\n ' + str(classification_report(self.ytest, y_pred))
 

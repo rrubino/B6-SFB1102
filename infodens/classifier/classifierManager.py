@@ -32,8 +32,6 @@ class ClassifierManager:
         self.classifyModules = []
         self.threadsCount = threads
         self.returnClassifiers()
-        #print(self.classifyModules)
-        #print(self.availClassifiers)
 
     def checkValidClassifier(self):
         for classifID in self.classifierIDs:
