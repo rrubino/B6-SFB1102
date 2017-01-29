@@ -5,25 +5,7 @@ Created on Aug 24, 2016
 '''
 #from trans.classifier import classifier
 from classifier import Classifier
-import scipy
 
-import random
-import numpy as np
-import sklearn
-#from sklearn.neural_network import MLPClassifier
-
-from sklearn import cross_validation
-from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
-import os
-import pickle
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
-
-
-
-from sklearn.metrics import average_precision_score
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score, recall_score
 from sklearn.neural_network import BernoulliRBM
 
 
@@ -32,7 +14,6 @@ class NeuralNetwork(Classifier):
     classdocs
     '''
 
-    
     classifierName = 'Neural Network'
     activation='relu'
     algorithm='l-bfgs'
@@ -54,8 +35,7 @@ class NeuralNetwork(Classifier):
         Constructor
         ''' 
         Classifier.__init__(self, X, y)
-        
-    
+
     def train(self):
         
         if self.n_foldCV <= 0:
@@ -68,6 +48,3 @@ class NeuralNetwork(Classifier):
             clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf
-            
-            
-    

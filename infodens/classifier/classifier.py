@@ -7,9 +7,7 @@ import scipy
 import numpy as np
 import sklearn
 import random
-from sklearn.svm import SVC
-from sklearn import cross_validation
-from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
+from sklearn import model_selection
 import os
 import pickle
 from sklearn.metrics import precision_recall_fscore_support
@@ -51,7 +49,7 @@ class Classifier(object):
         self.X, self.y = sklearn.utils.shuffle(self.X, self.y)
         
     def splitTrainTest(self):
-        self.Xtrain, self.Xtest, self.ytrain, self.ytest = cross_validation.train_test_split(self.X, self.y, 
+        self.Xtrain, self.Xtest, self.ytrain, self.ytest = model_selection.train_test_split(self.X, self.y,
                                                                                             test_size=self.splitPercent,
                                                                                             random_state=0)
                                                                                             

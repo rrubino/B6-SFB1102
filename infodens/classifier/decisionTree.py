@@ -5,22 +5,9 @@ Created on Aug 23, 2016
 '''
 #from trans.classifier import classifier
 from classifier import Classifier
-import scipy
-
 import random
 import numpy as np
-import sklearn
-from sklearn.svm import SVC
-from sklearn import cross_validation
-from sklearn.grid_search import GridSearchCV, RandomizedSearchCV
-import os
-import pickle
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.ensemble import RandomForestClassifier
-
-from sklearn.metrics import average_precision_score
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import f1_score, recall_score
+from sklearn.model_selection import RandomizedSearchCV
 from sklearn import tree
 
 
