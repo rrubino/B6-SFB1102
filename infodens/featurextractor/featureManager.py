@@ -121,12 +121,13 @@ class FeatureManager:
         print("All features extracted. ")
 
 
-        #Format into scikit format (Each row is a sen
-        featCount = self.getfeatVectorLen(featuresExtracted)
-        featVec = "Feature Vector Length: " + str(self.sentCount) + "x" + str(featCount)
-        print(featVec)
+        #Format into scikit format (Each row is a sen)
 
         output = sparse.hstack(featuresExtracted, "lil")
+
+        featCount = output.get_shape()[1]
+        featVec = "Feature Vector Length: " + str(self.sentCount) + "x" + str(featCount)
+        print(featVec)
 
         print("Ready to Classify. ")
 

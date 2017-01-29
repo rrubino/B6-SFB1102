@@ -5,10 +5,10 @@
 #language model: testSent.txt
 #language : FR
 threads : 9
-classifiers : DecisionTree RandomForest SVM
-#classifiers : RandomForest
+#classifiers : DecisionTree RandomForest SVM
+classifiers : RandomForest
 #3 J,N,V,R
-#4 1,10
+4 1,10
 #4 2,5
 #5 1,10
 #6 1,10
@@ -21,6 +21,6 @@ output classifier: report1.txt
 output features: feats.txt arff
 
 #input files : testSent.txt testSentClasses.txt
-input files : testSent2.txt testSentClasses2.txt
-#input files : literature.fr literature.classes
+#input files : testSent2.txt testSentClasses2.txt
+input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'

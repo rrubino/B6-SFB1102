@@ -22,6 +22,7 @@ class Format:
         writer.arffwriteToFile(self.X, self.Y, fileName)
 
     def outFormat(self, fileName, formatType):
+        print("Writing features to file.")
         if formatType == "libsvm":
             self.libsvmFormat(fileName)
         elif formatType == "arff":
@@ -29,4 +30,6 @@ class Format:
         else:
             self.libsvmFormat(fileName)
             print("Defaulting to libsvm format.")
+        print("Feature file written.")
+
 

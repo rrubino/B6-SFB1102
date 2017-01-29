@@ -14,8 +14,6 @@ class LexicalFeatures(FeatureExtractor):
     
     def computeDensity(self, taggedSentences, jnrv):
         densities = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
-        #jnrv = ['J', 'N', 'R', 'V'] # nouns, adjectives, adverbs or verbs.
-
         i = 0
         for sent in taggedSentences:
             if(len(sent) is 0):

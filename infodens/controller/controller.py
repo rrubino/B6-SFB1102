@@ -148,7 +148,7 @@ class Controller:
             # Extract the classed IDs from the given classes file and Check for
             # Length equality with the sentences.
             preprocessor = preprocess.Preprocess(self.inputClasses)
-            self.classesList = np.asarray(preprocessor.preprocessClassID())
+            self.classesList = preprocessor.preprocessClassID()
             sentLen = len(sentsPrep.getPlainSentences())
             classesLen = len(self.classesList)
             self.numSentences = sentLen
