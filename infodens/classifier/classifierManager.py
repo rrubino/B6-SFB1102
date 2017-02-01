@@ -10,27 +10,22 @@ import sys, inspect
 from os import path
 from .classifier import Classifier
 import difflib
-from joblib import Parallel, delayed
 import multiprocessing
 
 
-def runClassifier(classifierToRun):
-    classifReport = str(type(classifierToRun).__name__)
-    classifReport += ":\n"
-    classifReport += classifierToRun.runClassifier()
-    classifReport += "\n"
-    return classifReport
-
 class ClassifierManager:
 
-    def __init__(self, ids, dSet, labs, threads=1):
+    def __init__(self, ids, dSet, labs, threads=1, cv_folds=1):
         self.classifierIDs = ids
         self.dataSet = dSet
         self.labels = labs
         sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
         self.classifyModules = []
-        self.threadsCount = threads
+        self.cv_folds = cv_folds
+
+        #TODO : Be User defined
+        self.threadsCount = multiprocessing.cpu_count()
         self.returnClassifiers()
 
     def checkValidClassifier(self):
@@ -38,6 +33,13 @@ class ClassifierManager:
             if classifID not in self.availClassifiers:
                 return 0
         return 1
+
+    def runClassifier(self, classifierToRun):
+        classifReport = str(type(classifierToRun).__name__)
+        classifReport += ":\n"
+        classifReport += classifierToRun.runClassifier()
+        classifReport += "\n"
+        return classifReport
 
     def returnClassifiers(self):
         files = (os.listdir("infodens/classifier"))
@@ -60,15 +62,10 @@ class ClassifierManager:
                     break
             classModule = importlib.import_module("infodens.classifier."+module)
             class_ = getattr(classModule, classif)
-            if "SVM" in classif:
-                svmClass = class_(self.dataSet, self.labels, self.threadsCount)
-            else:
-                classifierObjs.append(class_(self.dataSet, self.labels, self.threadsCount))
+            classifierObjs.append(class_(self.dataSet, self.labels, self.threadsCount, self.cv_folds))
 
-        num_cores = multiprocessing.cpu_count()
-        classifReports = Parallel(n_jobs=self.threadsCount)(delayed(runClassifier)(classif)
-                                                    for classif in classifierObjs)
-        if svmClass is not 0:
-            classifReports.append(runClassifier(svmClass))
+        classifReports = []
+        for classif in classifierObjs:
+            classifReports.append(self.runClassifier(classif))
 
         return '\n'.join(classifReports)

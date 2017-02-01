@@ -17,14 +17,7 @@ class Ensemble(Classifier):
         cl1 = RandomForestClassifier(random_state=1)
         listOfClassifiers = [("randomForest", cl1)]
 
-        if self.n_foldCV <= 0:
-            print ('No cross validation required. If required set the parameter to a positive number')
-            clf = VotingClassifier(estimators=listOfClassifiers, voting='hard')
-            clf.fit(self.Xtrain, self.ytrain)
-        else:
-            #Not yet implemented
-            clf = VotingClassifier(estimators=listOfClassifiers, voting='hard')
-            
-            clf.fit(self.Xtrain, self.ytrain)
+        clf = VotingClassifier(estimators=listOfClassifiers, voting='hard')
+        clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf

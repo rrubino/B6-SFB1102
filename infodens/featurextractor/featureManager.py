@@ -110,7 +110,10 @@ class FeatureManager:
         #If number of cores is One, resort to iterative call to take advantage of
         # Preprocessor storing operations.
 
-        featuresExtracted = Parallel(n_jobs=self.threads, mmap_mode='r')(delayed(runFeatureMethod)(
+        # Use the minimum of threads and number of requested features
+        # Don't allocate unneeded processes
+        threadsToUse = len(self.featureIDs) if len(self.featureIDs)< self.threads else self.threads
+        featuresExtracted = Parallel(n_jobs=threadsToUse, mmap_mode='r')(delayed(runFeatureMethod)(
                                                         self.idClassmethod[self.featureIDs[i]],
                                                         self.featureIDs[i],
                                                         self.preprocessor,

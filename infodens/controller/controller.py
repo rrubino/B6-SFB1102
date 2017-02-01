@@ -23,6 +23,7 @@ class Controller:
         self.threadsCount = multiprocessing.cpu_count()
         self.language = 'EN'
         self.numSentences = 0
+        self.cv_folds = 1
         
         #array format of dataset and labels for classifying
         self.extractedFeats = []
@@ -108,6 +109,21 @@ class Controller:
                 else:
                     statusOK = 0
                     print("Number of threads is not a positive integer.")
+            elif "fold" in configLine:
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip().split()
+                if configLine[0].isdigit():
+                    folds = int(configLine[0])
+                    if folds > 0:
+                        self.cv_folds = folds
+
+                    else:
+                        statusOK = 0
+                        print("Number of folds is not a positive integer.")
+                else:
+                    statusOK = 0
+                    print("Number of folds is not a positive integer.")
             else:
                 params = configLine.split()
                 if len(params) == 2 or len(params) == 1:
@@ -194,7 +210,8 @@ class Controller:
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
             classifying = classifierManager.ClassifierManager(
-                          self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount)
+                          self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount,
+                            self.cv_folds)
 
             validClassifiers = classifying.checkValidClassifier()
 

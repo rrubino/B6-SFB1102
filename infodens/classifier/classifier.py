@@ -33,17 +33,17 @@ class Classifier(object):
        
     splitPercent = 0.3
     shuffleCond = True
+    n_foldCV = 0
+    threadCount = 1
        
     model = []
-       
-    n_foldCV = 0  # how many folds cross validation
-       
     classifierName = ''
     
-    def __init__(self, dataX, datay, threads=1):
+    def __init__(self, dataX, datay, threads=1, nCrossValid=2):
         self.X = dataX
         self.y = datay
-        self.threads = threads
+        self.threadCount = threads
+        self.n_foldCV = nCrossValid
 
     def shuffle(self):
         self.X, self.y = sklearn.utils.shuffle(self.X, self.y)
@@ -86,40 +86,21 @@ class Classifier(object):
     def runClassifier(self):
         """ Run the provided classifier."""
         acc = []; pre = []; rec = []; fsc = []
-        if self.X.shape[0] < 100000:
-            if self.classifierName == 'Support Vector Machine':
-                self.shuffle()
-                self.splitTrainTest()
-                self.train()
-                self.predict()
-                clRep, accu, prec, reca, fsco =  self.evaluate()
-                
-                print ('average Accuracy: ', accu)
-                print ('average Precision: ', prec)
-                print ('average Recall: ', reca)
-                print('average F1_score: ', fsco)
-            else:
-                for i in range(10):
-                    self.shuffle()
-                    self.splitTrainTest()
-                    self.train()
-                    self.predict()
-                    clRep, accu, prec, reca, fsco = self.evaluate()
-                    acc.append(accu)
-                    pre.append(prec)
-                    rec.append(reca)
-                    fsc.append(fsco)
-            
-                print ('average Accuracy: ', np.mean(acc))
-                print ('average Precision: ', np.mean(pre))
-                print ('average Recall: ', np.mean(rec))
-                print('average F1_score: ', np.mean(fsc))
-            
-        else:
+        clRep = 0
+        for i in range(self.n_foldCV):
             self.shuffle()
             self.splitTrainTest()
             self.train()
-            self.predict()
+            #self.predict()
             clRep, accu, prec, reca, fsco = self.evaluate()
+            acc.append(accu)
+            pre.append(prec)
+            rec.append(reca)
+            fsc.append(fsco)
+
+        print ('average Accuracy: ', np.mean(acc))
+        print ('average Precision: ', np.mean(pre))
+        print ('average Recall: ', np.mean(rec))
+        print('average F1_score: ', np.mean(fsc))
 
         return clRep

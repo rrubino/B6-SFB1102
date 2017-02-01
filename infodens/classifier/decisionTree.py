@@ -17,27 +17,19 @@ class DecisionTree(Classifier):
     n_estimators = 20
 
     def train(self):
-        
-        if self.n_foldCV <= 0:
-            #print ('No cross validation required. If required set the parameter to a positive number')
-            clf = tree.DecisionTreeClassifier()
-            clf.fit(self.Xtrain, self.ytrain)
-        else:
-            
-            # Set the parameters by cross-validation
-            # specify parameters and distributions to sample from
-            param_dist = {"max_depth": [3, None],
+        # Set the parameters by cross-validation
+        # specify parameters and distributions to sample from
+        param_dist = {"max_depth": [3, None],
                           "max_features": random.randint(1, 11),
                           "min_samples_split": random.randint(1, 11),
                           "min_samples_leaf": random.randint(1, 11),
                           "bootstrap": [True, False],
                           "criterion": ["gini", "entropy"]}
-                    
-                    
-            n_iter_search = 20
-            clf = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                   n_iter=n_iter_search)
+        clf = tree.DecisionTreeClassifier()
+        n_iter_search = 20
+
+        #clf = RandomizedSearchCV(clf, n_iter=n_iter_search, n_jobs=self.threadCount)
             
-            clf.fit(self.Xtrain, self.ytrain)
+        clf.fit(self.Xtrain, self.ytrain)
             
         self.model = clf
