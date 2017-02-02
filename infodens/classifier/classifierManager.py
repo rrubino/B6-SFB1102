@@ -55,7 +55,6 @@ class ClassifierManager:
     def callClassifiers(self):
 
         classifierObjs = []
-        svmClass = 0
         for classif in self.classifierIDs:
             for module in self.classifyModules:
                 if classif.lower() == module.lower():

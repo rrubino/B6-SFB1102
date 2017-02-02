@@ -6,7 +6,7 @@
 #language : FR
 threads : 9
 folds : 2
-#classifiers : DecisionTree RandomForest SVM
+#classifiers : DecisionTree RandomForest SVM AdaBoost Ensemble
 classifiers : RandomForest 
 #3 J,N,V,R
 4 1,1
@@ -18,8 +18,8 @@ classifiers : RandomForest
 #11
 #12 CC,DT,WDT,IN,PDT
 
-#output classifier: report1.txt
-output features: feats.txt arff
+output classifier: report1.txt
+#output features: feats.txt arff
 
 #input files : testSent.txt testSentClasses.txt
 input files : testSent2.txt testSentClasses2.txt

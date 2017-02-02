@@ -31,9 +31,9 @@ class SVM(Classifier):
         print ('SVM Optimizing. This will take a while')
         start_time = time.time()
         clf = GridSearchCV(SVC(C=1), tuned_parameters,
-                           scoring='%s_weighted' % score, n_jobs=self.threadCount)
+                           scoring='%s_weighted' % score, n_jobs=self.threadCount, cv=self.n_foldCV)
         
         clf.fit(self.Xtrain, self.ytrain)
         print('Done with Optimizing. it took ', time.time() - start_time, ' seconds')
                     
-        self.model = clf
+        self.model = clf.best_estimator_

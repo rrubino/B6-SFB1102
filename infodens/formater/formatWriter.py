@@ -15,7 +15,7 @@ class FormatWriter:
         self.className = 'format Writer'
 
     def libsvmwriteToFile(self, X, Y, theFile):
-        sklearn.datasets.dump_svmlight_file(X, Y, theFile)
+        sklearn.datasets.dump_svmlight_file(X, Y, theFile, zero_based=False)
 
     def arffwriteToFile(self, X, Y, theFile):
         #TODO: Fix warning
@@ -28,7 +28,9 @@ class FormatWriter:
         for i in range(dims[1]):
             attribTuple = (str(i), "REAL")
             attrib.append(attribTuple)
-        attrib.append(("y", "REAL"))
+
+        arffClasses = list(map(str, set(Y)))
+        attrib.append(("y", arffClasses))
 
         Y = sparse.coo_matrix(Y).transpose()
         data = sparse.hstack([X, Y], "lil")
