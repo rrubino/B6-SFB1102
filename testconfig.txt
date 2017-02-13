@@ -4,13 +4,13 @@
 #classifiers : RandomForest
 #language model: testSent.txt
 #language : FR
-threads : 9
+threads : 2
 folds : 2
 #classifiers : DecisionTree RandomForest SVM AdaBoost Ensemble
-classifiers : RandomForest 
+classifiers : SVC_linear
 #3 J,N,V,R
-4 1,1
-#4 2,5
+4 1,3
+4 2,2
 #5 1,10
 #6 1,10
 #7 1,10
@@ -18,7 +18,7 @@ classifiers : RandomForest
 #11
 #12 CC,DT,WDT,IN,PDT
 
-output classifier: report1.txt
+#output classifier: report1.txt
 #output features: feats.txt arff
 
 #input files : testSent.txt testSentClasses.txt

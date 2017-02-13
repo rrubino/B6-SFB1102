@@ -101,7 +101,9 @@ class Controller:
                 if configLine[0].isdigit():
                     threads = int(configLine[0])
                     if threads > 0:
-                        self.threadsCount = threads
+                        #handle single thread case
+                        self.threadsCount = threads if threads < 3 else threads-1
+                        print(self.threadsCount)
                     else:
                         statusOK = 0
                         print("Number of threads is not a positive integer.")

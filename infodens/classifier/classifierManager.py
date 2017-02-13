@@ -9,8 +9,6 @@ import imp, os
 import sys, inspect
 from os import path
 from .classifier import Classifier
-import difflib
-import multiprocessing
 
 
 class ClassifierManager:
@@ -23,9 +21,7 @@ class ClassifierManager:
         self.fileName, self.pathname, self.description = imp.find_module('classifier')
         self.classifyModules = []
         self.cv_folds = cv_folds
-
-        #TODO : Be User defined
-        self.threadsCount = multiprocessing.cpu_count()
+        self.threadsCount = threads
         self.returnClassifiers()
 
     def checkValidClassifier(self):
