@@ -103,7 +103,6 @@ class Controller:
                     if threads > 0:
                         #handle single thread case
                         self.threadsCount = threads if threads < 3 else threads-1
-                        print(self.threadsCount)
                     else:
                         statusOK = 0
                         print("Number of threads is not a positive integer.")

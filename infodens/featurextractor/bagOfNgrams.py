@@ -67,7 +67,6 @@ class BagOfNgrams(FeatureExtractor):
             print("Cut-off too high, no ngrams passed it.")
             return []
 
-        #ngramFeatures = np.zeros((len(listOfSentences), numberOfFeatures))
         ngramFeatures = sparse.lil_matrix((len(listOfSentences), numberOfFeatures))
 
         print("Extracting ngram feats.")

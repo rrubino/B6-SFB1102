@@ -12,17 +12,18 @@ import numpy as np
 import time
 
 
-class SVC_linear(Classifier):
+class SVC_rbf(Classifier):
     '''
     classdocs
     '''
 
     classifierName = 'Support Vector Machine'
-    C = np.logspace(-5.0, 5.0, num=10, endpoint=True, base=2)
+    C = np.logspace(-2, 10, 13)
+    gamma = np.logspace(-9, 3, 13)
 
     def train(self):
 
-        tuned_parameters = [{'kernel': ['linear'], 'C': self.C}]
+        tuned_parameters = [{'kernel': ['rbf'], 'C': self.C, 'gamma':self.gamma}]
 
         print ('SVM Optimizing. This will take a while')
         start_time = time.time()
