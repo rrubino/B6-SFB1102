@@ -10,13 +10,14 @@ import nltk
 from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
+import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 
 class Preprocess:
     
     fileName = ''
     
-    def __init__(self,fileName,corpusLM=0,language=0):
+    def __init__(self, fileName, corpusLM=0, language=0):
         self.inputFile = fileName
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
@@ -119,6 +120,13 @@ class Preprocess:
                 self.mixedSents.append(sent)
             
         return self.mixedSents
+
+    def trainWord2Vec(self, vecSize=100):
+        print("Training Word2Vec model...")
+        model = gensim.models.Word2Vec(self.gettokenizeSents(), size=vecSize, min_count=1)
+        print("Word2Vec model done.")
+
+        return model
 
     def buildNgramsType(self, type, n):
         """Build and return given type of ngram."""

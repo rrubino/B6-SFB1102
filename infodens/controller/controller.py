@@ -74,7 +74,6 @@ class Controller:
                 self.inputClasses = configLine[1]
                 print("Input File: ")
                 print(self.inputFile)
-                #print(self.inputClasses)
             elif "output" in configLine:
                 statusOK = self.parseOutputLine(configLine)
             elif "classif" in configLine:
@@ -87,7 +86,6 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.corpusLM = configLine
-                print(self.corpusLM)
             elif "lang" in configLine :
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
