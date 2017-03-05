@@ -85,8 +85,8 @@ class Controller:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
-                self.corpusLM = configLine
-            elif "lang" in configLine :
+                self.corpusLM = configLine[0]
+            elif "lang" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()

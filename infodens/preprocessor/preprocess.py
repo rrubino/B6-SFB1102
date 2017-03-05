@@ -123,7 +123,18 @@ class Preprocess:
 
     def trainWord2Vec(self, vecSize=100):
         print("Training Word2Vec model...")
-        model = gensim.models.Word2Vec(self.gettokenizeSents(), size=vecSize, min_count=1)
+
+        class SentIterator(object):
+            def __init__(self, corpus):
+                self.corpus = corpus
+
+            def __iter__(self):
+                with codecs.open(self.corpus, encoding='utf-8') as corpusFile:
+                    for line in corpusFile:
+                        yield nltk.word_tokenize(line)
+
+        tokenizedCorpus = SentIterator(self.corpusForLM)
+        model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1)
         print("Word2Vec model done.")
 
         return model
