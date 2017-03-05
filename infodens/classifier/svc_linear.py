@@ -5,7 +5,7 @@ Created on Aug 23, 2016
 '''
 
 from .classifier import Classifier
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.model_selection import GridSearchCV
 import numpy as np
 
@@ -22,11 +22,11 @@ class SVC_linear(Classifier):
 
     def train(self):
 
-        tuned_parameters = [{'kernel': ['linear'], 'C': self.C}]
+        tuned_parameters = [{'C': self.C}]
 
         print ('SVM Optimizing. This will take a while')
         start_time = time.time()
-        clf = GridSearchCV(SVC(), tuned_parameters,
+        clf = GridSearchCV(LinearSVC(), tuned_parameters,
                            n_jobs=self.threadCount, cv=self.n_foldCV)
 
         clf.fit(self.Xtrain, self.ytrain)

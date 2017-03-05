@@ -2,8 +2,9 @@
 # This is a comment
 #2
 #classifiers : RandomForest
+#language model: literature.fr
 language model: testSent2.txt
-#language : FR
+language : FR
 threads : 5
 folds : 2
 #classifiers : DecisionTree RandomForest SVM AdaBoost Ensemble
@@ -11,7 +12,7 @@ folds : 2
 #classifiers : SVC_rbf
 classifiers : RandomForest
 #3 J,N,V,R
-#4 1,3
+#4 1,10
 #4 2,2
 #20
 #5 1,10
@@ -20,7 +21,8 @@ classifiers : RandomForest
 #10
 #11
 #12 CC,DT,WDT,IN,PDT
-33
+33 90
+34
 
 #output classifier: report1.txt
 #output features: feats.txt arff

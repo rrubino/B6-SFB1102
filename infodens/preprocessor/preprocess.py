@@ -28,6 +28,7 @@ class Preprocess:
         self.nltkPOSSents = []
         self.lemmatizedSents = []
         self.mixedSents = []
+        self.word2vecModel = 0
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -133,11 +134,21 @@ class Preprocess:
                     for line in corpusFile:
                         yield nltk.word_tokenize(line)
 
-        tokenizedCorpus = SentIterator(self.corpusForLM)
+        if not self.corpusForLM:
+            tokenizedCorpus = SentIterator(self.gettokenizeSents())
+        else:
+            tokenizedCorpus = SentIterator(self.corpusForLM)
+
+
         model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1)
         print("Word2Vec model done.")
 
         return model
+
+    def getWord2vecModel(self, size=100):
+        if not self.word2vecModel:
+            self.word2vecModel = self.trainWord2Vec(size)
+        return self.word2vecModel
 
     def buildNgramsType(self, type, n):
         """Build and return given type of ngram."""
