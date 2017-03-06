@@ -15,10 +15,11 @@ import time
 
 class BagOfNgrams(FeatureExtractor):
 
-    def ngramArgumentCheck(self, argString):
+    def ngramArgumentCheck(self, argString, type):
         status = 1
         n = 0
         freq = 0
+        filePOS = 0
 
         argStringList = argString.split(',')
         if argStringList[0].isdigit():
@@ -32,12 +33,16 @@ class BagOfNgrams(FeatureExtractor):
             else:
                 print('Error: frequency should be an integer')
                 status = 0
+            #POS file
+            if type is "POS" and len(argStringList) > 2:
+                if int(argStringList[2]):
+                    filePOS = argStringList[3]
         else:
             freq = 1
-        return status, n, freq
+        return status, n, freq, filePOS
 
     def ngramExtraction(self, type, argString):
-        status, n, freq = self.ngramArgumentCheck(argString)
+        status, n, freq, filePOS = self.ngramArgumentCheck(argString, type)
         if not status:
             # Error in argument.
             return
@@ -48,8 +53,8 @@ class BagOfNgrams(FeatureExtractor):
             ngramVoc = self.preprocessor.buildTokenNgrams(n)
             listOfSentences = self.preprocessor.gettokenizeSents()
         elif type is "POS":
-            ngramVoc = self.preprocessor.buildPOSNgrams(n)
-            listOfSentences = self.preprocessor.nltkPOStag()
+            ngramVoc = self.preprocessor.buildPOSNgrams(n, filePOS)
+            listOfSentences = self.preprocessor.getPOStagged(filePOS)
         elif type is "lemma":
             ngramVoc = self.preprocessor.buildLemmaNgrams(n)
             listOfSentences = self.preprocessor.getLemmatizedSents()
@@ -92,7 +97,6 @@ class BagOfNgrams(FeatureExtractor):
         Extracts n-gram bag of words features.
         '''
         return self.ngramExtraction("plain", argString)
-
 
     @featid(5)
     def ngramBagOfPOS(self, argString):

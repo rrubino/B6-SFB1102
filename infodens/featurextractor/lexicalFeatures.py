@@ -13,7 +13,8 @@ import scipy.io
 class LexicalFeatures(FeatureExtractor):
     
     def computeDensity(self, taggedSentences, jnrv):
-        densities = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
+
+        densities = sparse.lil_matrix((len(taggedSentences), 1))
         i = 0
         for sent in taggedSentences:
             if(len(sent) is 0):
@@ -27,13 +28,21 @@ class LexicalFeatures(FeatureExtractor):
 
     @featid(3)        
     def lexicalDensity(self, argString):
-        jnrv = argString.split(',')
+        arguments = argString.split(',')
+        filePOS = 0
+        if(int(arguments[0])):
+            # Use file of tagged sents (last argument)
+            filePOS = arguments[-1]
+            jnrv = arguments[1:-1]
+        else:
+            jnrv = arguments[1:]
+
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
         This is computed by dividing the number of tokens tagged with POS tags 
         that do not start with J, N, R or V by the number of tokens in the chunk
         '''
-        taggedSents = self.preprocessor.nltkPOStag()
+        taggedSents = self.preprocessor.getPOStagged(filePOS)
 
         return self.computeDensity(taggedSents, jnrv)
 
@@ -61,11 +70,18 @@ class LexicalFeatures(FeatureExtractor):
         '''
         The ratio of lexical words to tokens in the sentence.
         '''
-        nonLexicalTags = argString.split(',')
+        arguments = argString.split(',')
+        filePOS = 0
+        if(int(arguments[0])):
+            # Use file of tagged sents (last argument)
+            filePOS = arguments[-1]
+            nonLexicalTags = arguments[1:-1]
+        else:
+            nonLexicalTags = arguments[1:]
 
-        lexicalTokensRatio = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
+        lexicalTokensRatio = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         i = 0
-        for sentence in self.preprocessor.nltkPOStag():
+        for sentence in self.preprocessor.getPOStagged(filePOS):
             lexicalCount = 0
             for tagPOS in sentence:
                 if tagPOS not in nonLexicalTags:
