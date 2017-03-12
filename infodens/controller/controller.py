@@ -173,8 +173,8 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.inputFile,self.corpusLM,
-                                             self.language)
+        preprocessor = preprocess.Preprocess(self.inputFile, self.corpusLM,
+                                             self.threadsCount, self.language)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")
             return 0

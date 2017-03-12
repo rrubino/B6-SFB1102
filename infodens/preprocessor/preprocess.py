@@ -17,11 +17,12 @@ class Preprocess:
     
     fileName = ''
     
-    def __init__(self, fileName, corpusLM=0, language=0):
+    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0):
         self.inputFile = fileName
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
         self.sentCount = 0
+        self.threadsCount = nthreads
         self.plainLof = []
         self.tokenSents = []
         self.parseTrees = []
@@ -96,7 +97,6 @@ class Preprocess:
                     self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
                 print("POS tagging done.")
             else:
-
                 with codecs.open(filePOS, encoding='utf-8') as f:
                     lines = f.readlines()
                 # POS from file is not stored but returned directly
@@ -150,8 +150,7 @@ class Preprocess:
         else:
             tokenizedCorpus = SentIterator(self.corpusForLM)
 
-
-        model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1)
+        model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1, workers=self.threadsCount)
         print("Word2Vec model done.")
 
         return model
