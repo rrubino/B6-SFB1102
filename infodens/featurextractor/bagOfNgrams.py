@@ -41,11 +41,31 @@ class BagOfNgrams(FeatureExtractor):
             freq = 1
         return status, n, freq, filePOS
 
+    def preprocessReqHandle(self, type, filePOS):
+        if type is "plain":
+            listOfSentences = self.preprocessor.gettokenizeSents()
+        elif type is "POS":
+            listOfSentences = self.preprocessor.getPOStagged(filePOS)
+        elif type is "lemma":
+            listOfSentences = self.preprocessor.getLemmatizedSents()
+        elif type is "mixed":
+            listOfSentences = self.preprocessor.getMixedSents()
+        else:
+            #Assume plain
+            listOfSentences = self.preprocessor.gettokenizeSents()
+
+        return 1
+
     def ngramExtraction(self, type, argString, preprocessReq):
         status, n, freq, filePOS = self.ngramArgumentCheck(argString, type)
         if not status:
             # Error in argument.
             return
+
+        # Handle preprocessing requests and exit
+        if preprocessReq:
+            self.preprocessReqHandle(type, filePOS)
+            return 1
 
         ngramVoc = []
         listOfSentences = []
@@ -66,10 +86,6 @@ class BagOfNgrams(FeatureExtractor):
             #Assume plain
             finNgram, numberOfFeatures = self.preprocessor.buildTokenNgrams(n, freq)
             listOfSentences = self.preprocessor.gettokenizeSents()
-
-        if preprocessReq:
-            return 1
-
 
         print("Ngrams built.")
 
