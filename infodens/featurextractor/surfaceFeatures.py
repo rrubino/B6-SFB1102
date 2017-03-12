@@ -13,8 +13,17 @@ import scipy.io
 class SurfaceFeatures(FeatureExtractor):
     
     @featid(1)    
-    def averageWordLength(self, argString):
+    def averageWordLength(self, argString, preprocessReq=0):
         '''Find average word length of every sentence and return list. '''
+
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getSentCount()
+            self.preprocessor.gettokenizeSents()
+            return 1
+
+
         aveWordLen = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
 
         i = 0
@@ -29,8 +38,14 @@ class SurfaceFeatures(FeatureExtractor):
         return aveWordLen
 
     @featid(10)
-    def sentenceLength(self, argString):
+    def sentenceLength(self, argString, preprocessReq=0):
         '''Find length of every sentence and return list. '''
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getSentCount()
+            self.preprocessor.gettokenizeSents()
+            return 1
 
         sentLen = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
         i = 0
@@ -41,18 +56,25 @@ class SurfaceFeatures(FeatureExtractor):
         return sentLen
 
     @featid(8)
-    def parseTreeDepth(self, argString):
+    def parseTreeDepth(self, argString, preprocessReq=0):
         '''Find depth of every sentence's parse tree and return list. '''
-        self.preprocessor.getParseTrees()
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getParseTrees()
+            return 1
 
     @featid(2)
-    def syllableRatio(self, argString):
+    def syllableRatio(self, argString, preprocessReq=0):
         '''
         We approximate this feature by counting the number of vowel-sequences
         that are delimited by consonants or space in a word, normalized by the number of tokens
         in the chunk
-        
         '''
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getSentCount()
+            self.preprocessor.gettokenizeSents()
+            return 1
 
         vowels = ['a', 'e', 'i', 'o', 'u']
         sylRatios = sparse.lil_matrix((self.preprocessor.getSentCount(),1))

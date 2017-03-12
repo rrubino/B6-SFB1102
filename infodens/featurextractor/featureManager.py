@@ -10,13 +10,14 @@ from scipy import sparse
 
 
 def runFeatureMethod(mtdCls, featureID,
-                     preprocessor,featureName, featureArgs):
+                     preprocessor,featureName, featureArgs, preprocessReq=0):
     """ Run the given feature extractor. """
     instance = mtdCls(preprocessor)
     methd = getattr(instance, featureName)
-    feat = methd(featureArgs)
+    feat = methd(featureArgs, preprocessReq)
     feateX = "Extracted feature: " + str(featureID) + " - " + str(featureName)
-    print(feateX)
+    if not preprocessReq:
+        print(feateX)
     return feat
 
 class FeatureManager:
@@ -107,8 +108,12 @@ class FeatureManager:
     def callExtractors(self):
         '''Extract all feature Ids and names.  '''
 
-        #If number of cores is One, resort to iterative call to take advantage of
-        # Preprocessor storing operations.
+        # Gather preprocessor requests first
+        for i in range(len(self.featureIDs)):
+            runFeatureMethod(self.idClassmethod[self.featureIDs[i]],
+                             self.featureIDs[i], self.preprocessor,
+                             self.allFeatureIds[self.featureIDs[i]],
+                             self.featureArgs[i], preprocessReq=1)
 
         # Use the minimum of threads and number of requested features
         # Don't allocate unneeded processes

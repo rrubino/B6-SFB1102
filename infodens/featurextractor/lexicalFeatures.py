@@ -27,7 +27,7 @@ class LexicalFeatures(FeatureExtractor):
         return densities
 
     @featid(3)        
-    def lexicalDensity(self, argString):
+    def lexicalDensity(self, argString, preprocessReq=0):
         arguments = argString.split(',')
         filePOS = 0
         if(int(arguments[0])):
@@ -36,6 +36,11 @@ class LexicalFeatures(FeatureExtractor):
             jnrv = arguments[1:-1]
         else:
             jnrv = arguments[1:]
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getPOStagged(filePOS)
+            return 1
 
         '''
         The frequency of tokens that are not nouns, adjectives, adverbs or verbs. 
@@ -47,10 +52,16 @@ class LexicalFeatures(FeatureExtractor):
         return self.computeDensity(taggedSents, jnrv)
 
     @featid(11)
-    def lexicalRichness(self, argString):
+    def lexicalRichness(self, argString, preprocessReq=0):
         '''
         The ratio of unique tokens in the sentence over the sentence length.
         '''
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getSentCount()
+            self.preprocessor.gettokenizeSents()
+            return 1
 
         #TODO : Lemmatize tokens?
         sentRichness = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
@@ -66,18 +77,24 @@ class LexicalFeatures(FeatureExtractor):
         return sentRichness
 
     @featid(12)
-    def lexicalToTokens(self, argString):
+    def lexicalToTokens(self, argString, preprocessReq=0):
         '''
         The ratio of lexical words to tokens in the sentence.
         '''
         arguments = argString.split(',')
         filePOS = 0
-        if(int(arguments[0])):
+        if int(arguments[0]):
             # Use file of tagged sents (last argument)
             filePOS = arguments[-1]
             nonLexicalTags = arguments[1:-1]
         else:
             nonLexicalTags = arguments[1:]
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getSentCount()
+            self.preprocessor.getPOStagged(filePOS)
+            return 1
 
         lexicalTokensRatio = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         i = 0

@@ -27,7 +27,7 @@ class RandomForest(Classifier):
 
         n_iter_search = 4
         estimatorClass = RandomizedSearchCV(clf, param_distributions=param_dist,
-                                  n_iter=n_iter_search, n_jobs=self.threadCount, cv=self.n_foldCV)
+                                  n_iter=n_iter_search, n_jobs=self.threadCount, cv=5)
         estimatorClass.fit(self.Xtrain, self.ytrain)
 
         self.model = estimatorClass.best_estimator_

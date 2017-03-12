@@ -41,7 +41,7 @@ class BagOfNgrams(FeatureExtractor):
             freq = 1
         return status, n, freq, filePOS
 
-    def ngramExtraction(self, type, argString):
+    def ngramExtraction(self, type, argString, preprocessReq):
         status, n, freq, filePOS = self.ngramArgumentCheck(argString, type)
         if not status:
             # Error in argument.
@@ -49,24 +49,29 @@ class BagOfNgrams(FeatureExtractor):
 
         ngramVoc = []
         listOfSentences = []
+
         if type is "plain":
-            ngramVoc = self.preprocessor.buildTokenNgrams(n)
+            finNgram, numberOfFeatures = self.preprocessor.buildTokenNgrams(n, freq)
             listOfSentences = self.preprocessor.gettokenizeSents()
         elif type is "POS":
-            ngramVoc = self.preprocessor.buildPOSNgrams(n, filePOS)
+            finNgram, numberOfFeatures = self.preprocessor.buildPOSNgrams(n, freq, filePOS)
             listOfSentences = self.preprocessor.getPOStagged(filePOS)
         elif type is "lemma":
-            ngramVoc = self.preprocessor.buildLemmaNgrams(n)
+            finNgram, numberOfFeatures = self.preprocessor.buildLemmaNgrams(n, freq)
             listOfSentences = self.preprocessor.getLemmatizedSents()
         elif type is "mixed":
-            ngramVoc = self.preprocessor.buildMixedNgrams(n)
+            finNgram, numberOfFeatures = self.preprocessor.buildMixedNgrams(n, freq)
             listOfSentences = self.preprocessor.getMixedSents()
+        else:
+            #Assume plain
+            finNgram, numberOfFeatures = self.preprocessor.buildTokenNgrams(n, freq)
+            listOfSentences = self.preprocessor.gettokenizeSents()
+
+        if preprocessReq:
+            return 1
+
 
         print("Ngrams built.")
-
-        finNgram, numberOfFeatures = self.preprocessor.ngramMinFreq(ngramVoc, freq)
-
-        print("Cut off done. ")
 
         if numberOfFeatures == 0:
             print("Cut-off too high, no ngrams passed it.")
@@ -92,29 +97,29 @@ class BagOfNgrams(FeatureExtractor):
         return ngramFeatures
 
     @featid(4)
-    def ngramBagOfWords(self, argString):
+    def ngramBagOfWords(self, argString, preprocessReq=0):
         '''
         Extracts n-gram bag of words features.
         '''
-        return self.ngramExtraction("plain", argString)
+        return self.ngramExtraction("plain", argString, preprocessReq)
 
     @featid(5)
-    def ngramBagOfPOS(self, argString):
+    def ngramBagOfPOS(self, argString, preprocessReq=0):
         '''
         Extracts n-gram POS bag of words features.
         '''
-        return self.ngramExtraction("POS", argString)
+        return self.ngramExtraction("POS", argString, preprocessReq)
 
     @featid(6)
-    def ngramBagOfMixedWords(self, argString):
+    def ngramBagOfMixedWords(self, argString, preprocessReq=0):
         '''
         Extracts n-gram mixed bag of words features.
         '''
-        return self.ngramExtraction("mixed", argString)
+        return self.ngramExtraction("mixed", argString, preprocessReq)
 
     @featid(7)
-    def ngramBagOfLemmas(self, argString):
+    def ngramBagOfLemmas(self, argString, preprocessReq=0):
         '''
         Extracts n-gram lemmatized bag of words features.
         '''
-        return self.ngramExtraction("lemma", argString)
+        return self.ngramExtraction("lemma", argString, preprocessReq)

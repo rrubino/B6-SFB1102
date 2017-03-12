@@ -8,8 +8,20 @@ import cv2
 class WordEmbedding(FeatureExtractor):
     
     @featid(33)
-    def word2vecAverage(self, argString):
+    def word2vecAverage(self, argString, preprocessReq=0):
         '''Find average word2vec vector of every sentence. '''
+
+        if len(argString) > 0:
+            vecSize = int(argString)
+        else:
+            #default
+            vecSize = 100
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getWord2vecModel(vecSize)
+            self.preprocessor.gettokenizeSents()
+            return 1
 
         if len(argString) > 0:
             vecSize = int(argString)
@@ -36,7 +48,7 @@ class WordEmbedding(FeatureExtractor):
 
 
     @featid(34)
-    def word2vecMoments(self, argString):
+    def word2vecMoments(self, argString, preprocessReq=0):
         '''Find average word2vec vector of every sentence. '''
 
         if len(argString) > 0:
@@ -44,6 +56,12 @@ class WordEmbedding(FeatureExtractor):
         else:
             #default
             vecSize = 100
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.getWord2vecModel(vecSize)
+            self.preprocessor.gettokenizeSents()
+            return 1
 
         # Uses language Model from config File
         model = self.preprocessor.getWord2vecModel(vecSize)

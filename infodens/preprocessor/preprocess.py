@@ -90,13 +90,17 @@ class Preprocess:
         """ Return POS tagged sentences. """
         if not self.taggedPOSSents:
             if not filePOS:
+                print("POS tagging..")
                 tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
                 for i in range(0, len(tagPOSSents)):
                     self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
+                print("POS tagging done.")
             else:
+
                 with codecs.open(filePOS, encoding='utf-8') as f:
                     lines = f.readlines()
-                self.taggedPOSSents = [nltk.word_tokenize(sent) for sent in lines]
+                # POS from file is not stored but returned directly
+                return [nltk.word_tokenize(sent) for sent in lines]
 
         return self.taggedPOSSents
         
@@ -157,7 +161,7 @@ class Preprocess:
             self.word2vecModel = self.trainWord2Vec(size)
         return self.word2vecModel
 
-    def buildNgramsType(self, type, n, filePOS=0):
+    def buildNgramsType(self, type, n, freq, filePOS=0):
         """Build and return given type of ngram."""
         if type is "plain":
             self.gettokenizeSents()
@@ -178,19 +182,19 @@ class Preprocess:
 
         ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
 
-        return Counter(ngramsOutput)
+        return self.ngramMinFreq(Counter(ngramsOutput), freq)
 
-    def buildTokenNgrams(self, n):
-        return self.buildNgramsType("plain", n)
+    def buildTokenNgrams(self, n, freq):
+        return self.buildNgramsType("plain", n, freq)
 
-    def buildPOSNgrams(self, n, filePOS=0):
-        return self.buildNgramsType("POS", n, filePOS)
+    def buildPOSNgrams(self, n, freq, filePOS=0):
+        return self.buildNgramsType("POS", n, freq, filePOS)
 
-    def buildLemmaNgrams(self, n):
-        return self.buildNgramsType("lemma", n)
+    def buildLemmaNgrams(self, n, freq):
+        return self.buildNgramsType("lemma", n, freq)
         
-    def buildMixedNgrams(self, n):
-        return self.buildNgramsType("mixed", n)
+    def buildMixedNgrams(self, n, freq):
+        return self.buildNgramsType("mixed", n, freq)
         
     def ngramMinFreq(self, anNgram, freq):
         indexOfngram = 0

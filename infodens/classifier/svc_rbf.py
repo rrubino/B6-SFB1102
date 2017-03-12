@@ -28,7 +28,7 @@ class SVC_rbf(Classifier):
         print ('SVM Optimizing. This will take a while')
         start_time = time.time()
         clf = GridSearchCV(SVC(), tuned_parameters,
-                           n_jobs=self.threadCount, cv=self.n_foldCV)
+                           n_jobs=self.threadCount, cv=5)
 
         clf.fit(self.Xtrain, self.ytrain)
         print('Done with Optimizing. it took ', time.time() -
