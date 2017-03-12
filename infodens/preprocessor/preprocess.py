@@ -29,7 +29,7 @@ class Preprocess:
         self.taggedPOSSents = []
         self.lemmatizedSents = []
         self.mixedSents = []
-        self.word2vecModel = 0
+        self.word2vecModel = {}
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -156,9 +156,9 @@ class Preprocess:
         return model
 
     def getWord2vecModel(self, size=100):
-        if not self.word2vecModel:
-            self.word2vecModel = self.trainWord2Vec(size)
-        return self.word2vecModel
+        if size not in self.word2vecModel.keys():
+            self.word2vecModel[size] = self.trainWord2Vec(size)
+        return self.word2vecModel[size]
 
     def buildNgramsType(self, type, n, freq, filePOS=0):
         """Build and return given type of ngram."""
