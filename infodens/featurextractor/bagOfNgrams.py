@@ -139,3 +139,16 @@ class BagOfNgrams(FeatureExtractor):
         Extracts n-gram lemmatized bag of words features.
         '''
         return self.ngramExtraction("lemma", argString, preprocessReq)
+
+    @featid(17)
+    def langModelFeat(self, argString, preprocessReq=0):
+        '''
+        Extracts n-gram lemmatized bag of words features.
+        '''
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            self.preprocessor.buildLanguageModel()
+            return 1
+
+        return sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
+

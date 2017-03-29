@@ -11,21 +11,22 @@ folds : 1
 classifiers : SVC_linear
 #classifiers : SVC_rbf
 #classifiers : RandomForest
-3 0,J,N,V,R
-3 1,J,N,V,R,testSent2.txt
-4 1,1
-4 2,2
+#3 0,J,N,V,R
+#3 1,J,N,V,R,testSent2.txt
+#4 1,1
+#4 2,2
 #20
-5 1,10
-5 1,10,1,testSent2.txt
-6 1,10
-7 1,10
-10
-11
-12 0,CC,DT,WDT,IN,PDT
-12 1,CC,DT,WDT,IN,PDT,testSent2.txt
-33 100
-34
+#5 1,10
+#5 1,10,1,testSent2.txt
+#6 1,10
+#7 1,10
+#10
+#11
+#12 0,CC,DT,WDT,IN,PDT
+#12 1,CC,DT,WDT,IN,PDT,testSent2.txt
+#33 100
+#34
+17
 
 #output classifier: report1.txt
 #output features: feats.txt arff

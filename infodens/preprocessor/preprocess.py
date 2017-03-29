@@ -12,6 +12,8 @@ from nltk import ngrams
 from collections import Counter
 import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
+import subprocess
+import os.path
 
 class Preprocess:
     
@@ -30,6 +32,7 @@ class Preprocess:
         self.lemmatizedSents = []
         self.mixedSents = []
         self.word2vecModel = {}
+        self.langModelFiles = []
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -82,10 +85,30 @@ class Preprocess:
             self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
         return
 
-    def buildLanguageModel(self):
+    def buildLanguageModel(self, ngram=3):
         """Build a language model from given corpus."""
+
+        langModelFile = str(self.corpusForLM) + "_langModel" + str(ngram)
+        binaryLib = "ngram-count"
+
         if not self.corpusForLM:
             print("Corpus for Language model not defined.")
+        elif langModelFile in self.langModelFiles:
+            return langModelFile
+        elif not os.path.isfile(binaryLib+".exe"):
+            print("Binary not available.")
+            return 0
+        else:
+            #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
+            commandToRun = binaryLib + " -text " + str(self.corpusForLM)
+            commandToRun += " -lm " + langModelFile
+            commandToRun += " -order " + str(ngram)
+            #commandToRun += " -write " + "ngram"
+            print("Building Language Model...")
+            subprocess.call(commandToRun)
+            print("Language Model done.")
+            return langModelFile
+
 
     def getPOStagged(self, filePOS=0):
         """ Return POS tagged sentences. """
