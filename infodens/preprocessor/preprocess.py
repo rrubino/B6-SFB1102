@@ -14,6 +14,7 @@ import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 import os.path
+import platform
 
 class Preprocess:
     
@@ -64,6 +65,9 @@ class Preprocess:
         self.getPlainSentences()
         return self.sentCount
 
+    def getInputFileName(self):
+        return self.inputFile
+
     def getPlainSentences(self):
         """Return sentences as read from file."""
         if not self.plainLof:
@@ -100,7 +104,10 @@ class Preprocess:
             return 0
         else:
             #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-            commandToRun = binaryLib + " -text " + str(self.corpusForLM)
+            commandToRun = ""
+            #if "Linux" in platform.system():
+            #    commandToRun += "./"
+            commandToRun += binaryLib + " -text " + str(self.corpusForLM)
             commandToRun += " -lm " + langModelFile
             commandToRun += " -order " + str(ngram)
             #commandToRun += " -write " + "ngram"
@@ -108,7 +115,6 @@ class Preprocess:
             subprocess.call(commandToRun)
             print("Language Model done.")
             return langModelFile
-
 
     def getPOStagged(self, filePOS=0):
         """ Return POS tagged sentences. """
