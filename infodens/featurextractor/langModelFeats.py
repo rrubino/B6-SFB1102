@@ -38,29 +38,34 @@ class LangModel(FeatureExtractor):
         Extracts n-gram lemmatized bag of words features.
         '''
         ngramOrder = 3
-        if argString:
-            ngramOrder = int(argString)
+        langModel = 0
+        # Binary1/0,ngramOrder,LMFilePath(ifBinary1)
+        arguments = argString.split(',')
+        if(int(arguments[0])):
+            # Use file of tagged sents (last argument)
+            langModel = arguments[-1]
 
+        ngramOrder = int(arguments[1])
         if preprocessReq:
             # Request all preprocessing functions to be prepared
-            self.preprocessor.buildLanguageModel(ngramOrder)
+            if not langModel:
+                self.preprocessor.buildLanguageModel(ngramOrder)
             self.preprocessor.getInputFileName()
             return 1
 
         sentsFile = self.preprocessor.getInputFileName()
-        langModel = self.preprocessor.buildLanguageModel(ngramOrder)
+        if not langModel:
+            langModel = self.preprocessor.buildLanguageModel(ngramOrder)
 
         pplFile = "tempLang{0}{1}.ppl".format(sentsFile, ngramOrder)
         command = "ngram -order {0} -lm {1} -ppl {2} -debug 1 -unk> {3}".format(ngramOrder, langModel,
                                                                                 sentsFile, pplFile)
 
-        #if "Linux" in platform.system():
-
         subprocess.call(command, shell=True)
         probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
         os.remove(pplFile)
 
-        print(probab[0])
+        #print(probab[0])
 
         return sparse.lil_matrix(probab)
 

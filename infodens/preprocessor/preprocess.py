@@ -99,7 +99,6 @@ class Preprocess:
         langModelFile = "{0}_langModel{1}".format(self.corpusForLM, ngram)
         #binaryLib = "{0}\\ngram-count".format(self.srilmBinaries)
         binaryLib = "ngram-count"
-        print(binaryLib)
         # if "Linux" in platform.system():
         #    commandToRun += "./"
         if not self.corpusForLM:
