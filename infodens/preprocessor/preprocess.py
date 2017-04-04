@@ -13,14 +13,17 @@ from collections import Counter
 import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
-import os.path
-import platform
+import os
+try:  # py3
+    from shlex import quote
+except ImportError:  # py2
+    from pipes import quote
 
 class Preprocess:
     
     fileName = ''
     
-    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0):
+    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0, srilmpath=os.getcwd()):
         self.inputFile = fileName
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
@@ -34,6 +37,7 @@ class Preprocess:
         self.mixedSents = []
         self.word2vecModel = {}
         self.langModelFiles = []
+        self.srilmBinaries = srilmpath
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -92,28 +96,28 @@ class Preprocess:
     def buildLanguageModel(self, ngram=3):
         """Build a language model from given corpus."""
 
-        langModelFile = str(self.corpusForLM) + "_langModel" + str(ngram)
+        langModelFile = "{0}_langModel{1}".format(self.corpusForLM, ngram)
+        #binaryLib = "{0}\\ngram-count".format(self.srilmBinaries)
         binaryLib = "ngram-count"
-
+        print(binaryLib)
+        # if "Linux" in platform.system():
+        #    commandToRun += "./"
         if not self.corpusForLM:
             print("Corpus for Language model not defined.")
         elif langModelFile in self.langModelFiles:
             return langModelFile
-        elif not os.path.isfile(binaryLib+".exe"):
-            print("Binary not available.")
-            return 0
         else:
+            #corpusAbsolute = "{0}\\{1}".format(os.getcwd(), self.corpusForLM)
             #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-            commandToRun = ""
-            #if "Linux" in platform.system():
-            #    commandToRun += "./"
-            commandToRun += binaryLib + " -text " + str(self.corpusForLM)
-            commandToRun += " -lm " + langModelFile
-            commandToRun += " -order " + str(ngram)
-            #commandToRun += " -write " + "ngram"
-            print("Building Language Model...")
-            subprocess.call(commandToRun)
+            commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, self.corpusForLM,
+                                                                      langModelFile, ngram)
+            print("Building Language Model..")
+            #commandToRun = quote(commandToRun)
+            #print(commandToRun)
+            subprocess.call(commandToRun, shell=True)
             print("Language Model done.")
+            self.langModelFiles.append(langModelFile)
+
             return langModelFile
 
     def getPOStagged(self, filePOS=0):

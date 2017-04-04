@@ -2,8 +2,10 @@ from ..featurextractor import featureManager as featman
 from ..preprocessor import preprocess
 from ..classifier import classifierManager
 from ..formater import format
+from sklearn import preprocessing as skpreprocess
 import multiprocessing
 import numpy as np
+import os.path
 
 class Controller:
     """Read and parse the config file, init a FeatureManager,
@@ -23,6 +25,7 @@ class Controller:
         self.threadsCount = multiprocessing.cpu_count()
         self.language = 'EN'
         self.numSentences = 0
+        self.srilmBinPath = 0
         self.cv_folds = 1
         
         #array format of dataset and labels for classifying
@@ -65,7 +68,7 @@ class Controller:
             elif configLine[0] is '#':
                 # Line is comment
                 continue
-            elif "input" in configLine:
+            elif "input files" in configLine:
                 # Extract input files
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -86,6 +89,14 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.corpusLM = configLine[0]
+            elif "SRILM" in configLine or "srilm" in configLine:
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip()
+                self.srilmBinPath = configLine
+                if not os.path.isdir(self.srilmBinPath):
+                    statusOK = 0
+                    print("Invalid SRILM binaries path.")
             elif "lang" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -174,7 +185,7 @@ class Controller:
     def manageFeatures(self):
         """Init and call a feature manager. """
         preprocessor = preprocess.Preprocess(self.inputFile, self.corpusLM,
-                                             self.threadsCount, self.language)
+                                             self.threadsCount, self.language, self.srilmBinPath)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")
             return 0
@@ -184,14 +195,18 @@ class Controller:
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
                 # Continue to call features
-                # preprocessor.buildLanguageModel()
                 self.extractedFeats = manageFeatures.callExtractors()
                 self.outputFeatures()
+                self.scaleFeatures()
                 return 1
             else:
                 # terminate
                 print("Requested Feature ID not available.")
                 return 0
+
+    def scaleFeatures(self):
+        scaler = skpreprocess.MaxAbsScaler(copy=False)
+        self.extractedFeats = scaler.fit_transform(self.extractedFeats)
 
     def outputFeatures(self):
         """Output features if requested."""

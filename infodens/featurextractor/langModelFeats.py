@@ -7,6 +7,7 @@ Created on Sun Sep 04 14:12:49 2016
 from .featureExtraction import featid, FeatureExtractor
 from scipy import sparse
 import scipy.io
+import numpy as np
 import platform
 import subprocess
 import os
@@ -15,18 +16,21 @@ import codecs
 
 class LangModel(FeatureExtractor):
 
-    def extractValues(self, srilmOutput, i, sentCount):
-        tmp = []
+    def extractValues(self, srilmOutput, sentCount):
+        feats = []
         with codecs.open(srilmOutput, encoding='utf-8') as sents:
-            for line in sents.readlines():
+            for line in sents:
                 if "logprob=" in line:
                     line = str(line).strip().split(" ")
-                    if len(tmp) < sentCount:
-                        if line[i] != "undefined":
-                            tmp.append(float(line[i]))
-                        else:
-                            tmp.append(0.0)
-        return tmp
+                    if len(feats) < sentCount:
+                        tmp = []
+                        for i in [3, 5, 7]:
+                            if line[i] != "undefined":
+                                tmp.append(np.float32(line[i]))
+                            else:
+                                tmp.append(np.float32(0.0))
+                        feats.append(tmp)
+        return feats
 
     @featid(17)
     def langModelFeat(self, argString, preprocessReq=0):
@@ -46,21 +50,17 @@ class LangModel(FeatureExtractor):
         sentsFile = self.preprocessor.getInputFileName()
         langModel = self.preprocessor.buildLanguageModel(ngramOrder)
 
-        command = ""
-        command += "ngram -order " + str(ngramOrder) + " -lm "
-        command += langModel + " -ppl " + sentsFile + " -debug 1 -unk"
+        pplFile = "tempLang{0}{1}.ppl".format(sentsFile, ngramOrder)
+        command = "ngram -order {0} -lm {1} -ppl {2} -debug 1 -unk> {3}".format(ngramOrder, langModel,
+                                                                                sentsFile, pplFile)
 
-        pplFile = "tempLang" + sentsFile + ".ppl"
-        if "Linux" in platform.system():
-            command += "> " + pplFile
-        else:
-            command += "> " + pplFile
+        #if "Linux" in platform.system():
 
         subprocess.call(command, shell=True)
-        probab = self.extractValues(pplFile, 3, self.preprocessor.getSentCount())
+        probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
         os.remove(pplFile)
 
         print(probab[0])
 
-        return sparse.lil_matrix(probab).transpose()
+        return sparse.lil_matrix(probab)
 
