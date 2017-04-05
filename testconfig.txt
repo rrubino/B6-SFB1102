@@ -24,10 +24,10 @@ classifiers : SVC_linear
 #10
 #11
 #12 0,CC,DT,WDT,IN,PDT
-#12 1,CC,DT,WDT,IN,PDT,testSent2.txt
+12 1,CC,DT,WDT,IN,PDT,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt
 #33 100
 #34
-17 1,2,testSent2.txt_langModel2
+17 1,2,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_langModel3.lm
 17 0,3
 
 #output classifier: report1.txt

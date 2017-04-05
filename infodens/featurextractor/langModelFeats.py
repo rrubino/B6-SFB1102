@@ -43,7 +43,7 @@ class LangModel(FeatureExtractor):
         arguments = argString.split(',')
         if(int(arguments[0])):
             # Use file of tagged sents (last argument)
-            langModel = arguments[-1]
+            langModel = "\"{0}\"".format(arguments[-1])
 
         ngramOrder = int(arguments[1])
         if preprocessReq:
@@ -51,15 +51,18 @@ class LangModel(FeatureExtractor):
             if not langModel:
                 self.preprocessor.buildLanguageModel(ngramOrder)
             self.preprocessor.getInputFileName()
+            self.preprocessor.getBinariesPath()
             return 1
 
         sentsFile = self.preprocessor.getInputFileName()
+        srilmBinary = self.preprocessor.getBinariesPath()
+
         if not langModel:
             langModel = self.preprocessor.buildLanguageModel(ngramOrder)
 
         pplFile = "tempLang{0}{1}.ppl".format(sentsFile, ngramOrder)
-        command = "ngram -order {0} -lm {1} -ppl {2} -debug 1 -unk> {3}".format(ngramOrder, langModel,
-                                                                                sentsFile, pplFile)
+        command = "\"{0}\\ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
+                                                                                     langModel, sentsFile, pplFile)
 
         subprocess.call(command, shell=True)
         probab = self.extractValues(pplFile, self.preprocessor.getSentCount())

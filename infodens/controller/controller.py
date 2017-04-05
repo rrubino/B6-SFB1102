@@ -135,7 +135,7 @@ class Controller:
                     statusOK = 0
                     print("Number of folds is not a positive integer.")
             else:
-                params = configLine.split()
+                params = str(configLine).split(' ', 1)
                 if len(params) == 2 or len(params) == 1:
                     if params[0].isdigit():
                         self.featureIDs.append(int(params[0]))
