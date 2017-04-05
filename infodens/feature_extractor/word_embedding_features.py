@@ -1,4 +1,4 @@
-from .feature_extractor import featid, Feature_Extractor
+from .feature_extractor import featid, Feature_extractor
 import numpy as np
 from scipy import sparse
 import scipy.io
@@ -6,7 +6,7 @@ from sklearn.preprocessing import scale as skScale
 import cv2
 
 
-class Word_Embedding_Features(Feature_Extractor):
+class Word_embedding_features(Feature_extractor):
     
     @featid(33)
     def word2vecAverage(self, argString, preprocessReq=0):

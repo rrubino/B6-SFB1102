@@ -20,7 +20,7 @@ def runFeatureMethod(mtdCls, featureID,
         print(feateX)
     return feat
 
-class Feature_Manager:
+class Feature_manager:
     """ Validate the config feature requests,
     And call the necessary feature extractors.
     """

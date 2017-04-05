@@ -4,7 +4,7 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .feature_extractor import featid, Feature_Extractor
+from .feature_extractor import featid, Feature_extractor
 from collections import Counter
 from nltk import ngrams
 import numpy as np
@@ -13,7 +13,7 @@ import scipy.io
 import time
 
 
-class BagOfNgramsFeatures(Feature_Extractor):
+class Bag_of_ngrams_features(Feature_extractor):
 
     def ngramArgumentCheck(self, argString, type):
         status = 1

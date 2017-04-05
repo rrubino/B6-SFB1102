@@ -9,7 +9,7 @@ import sklearn
 import arff
 from scipy import sparse
 
-class Format_Writer:
+class Format_writer:
     
     def __init__(self):
         self.className = 'format Writer'

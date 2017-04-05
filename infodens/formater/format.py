@@ -4,7 +4,7 @@ Created on Wed Aug 31 12:32:17 2016
 
 @author: admin
 """
-from .format_writer import Format_Writer
+from .format_writer import Format_writer
         
 
 class Format:
@@ -14,11 +14,11 @@ class Format:
         self.Y = fsy
         
     def libsvmFormat(self, fileName):
-        aformater = Format_Writer()
+        aformater = Format_writer()
         aformater.libsvmwriteToFile(self.X, self.Y, fileName)
 
     def arffFormat(self, fileName):
-        writer = Format_Writer()
+        writer = Format_writer()
         writer.arffwriteToFile(self.X, self.Y, fileName)
 
     def outFormat(self, fileName, formatType):

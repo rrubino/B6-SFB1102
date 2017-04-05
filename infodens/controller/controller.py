@@ -190,7 +190,7 @@ class Controller:
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.Feature_Manager(self.numSentences, self.featureIDs, self.featargs,
+            manageFeatures = featman.Feature_manager(self.numSentences, self.featureIDs, self.featargs,
                                                     preprocessor, self.threadsCount)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
@@ -223,7 +223,7 @@ class Controller:
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
-            classifying = classifier_manager.Classifier_Manager(
+            classifying = classifier_manager.Classifier_manager(
                           self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount,
                             self.cv_folds)
 

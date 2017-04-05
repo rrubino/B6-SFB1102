@@ -14,7 +14,7 @@ def featid(fid):
     return tags_decorator
 
 
-class Feature_Extractor(object):
+class Feature_extractor(object):
 
     def __init__(self, preprocessed):
         '''

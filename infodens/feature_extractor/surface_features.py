@@ -4,13 +4,13 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .feature_extractor import featid, Feature_Extractor
+from .feature_extractor import featid, Feature_extractor
 import numpy as np
 from scipy import sparse
 import scipy.io
 
 
-class Surface_Features(Feature_Extractor):
+class Surface_features(Feature_extractor):
     
     @featid(1)    
     def averageWordLength(self, argString, preprocessReq=0):

@@ -11,7 +11,7 @@ from os import path
 from .classifier import Classifier
 
 
-class Classifier_Manager:
+class Classifier_manager:
 
     def __init__(self, ids, dSet, labs, threads=1, cv_folds=1):
         self.classifierIDs = ids
