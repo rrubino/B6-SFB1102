@@ -31,7 +31,7 @@ classifiers : SVC_linear
 17 0,3
 
 #output classifier: report1.txt
-#output features: feats.txt arff
+output features: feats.txt libsvm
 
 #input files : testSent.txt testSentClasses.txt
 #Input files cannot contain spaces.
