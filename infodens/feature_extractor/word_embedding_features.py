@@ -6,7 +6,7 @@ from sklearn.preprocessing import scale as skScale
 import cv2
 
 
-class WordEmbedding_Features(Feature_Extractor):
+class Word_Embedding_Features(Feature_Extractor):
     
     @featid(33)
     def word2vecAverage(self, argString, preprocessReq=0):

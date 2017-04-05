@@ -14,7 +14,7 @@ import os
 import codecs
 
 
-class LangModel_Features(Feature_Extractor):
+class Lang_Model_Features(Feature_Extractor):
 
     def extractValues(self, srilmOutput, sentCount):
         feats = []
