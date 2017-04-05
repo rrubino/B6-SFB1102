@@ -8,7 +8,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import AdaBoostClassifier
 
 
-class AdaBoost(Classifier):
+class Ada_Boost(Classifier):
     '''
     classdocs
     '''

@@ -8,13 +8,13 @@ srilm path : C:\Users\Gilanios 2\Documents\GitHub\srilm-1.7.2\bin\Debug
 operating language : FR
 threads : 3
 folds : 1
-#classifiers : DecisionTree RandomForest SVM AdaBoost Ensemble
+#classifiers : Decision_Tree Random_Forest Ada_Boost Ensemble
 classifiers : SVC_linear
 #classifiers : SVC_rbf
-#classifiers : RandomForest
+#classifiers : Random_Forest
 #3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-#4 1,1
+4 1,1
 #4 2,2
 #20
 #5 1,10
@@ -24,7 +24,7 @@ classifiers : SVC_linear
 #10
 #11
 #12 0,CC,DT,WDT,IN,PDT
-12 1,CC,DT,WDT,IN,PDT,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt
+#12 1,CC,DT,WDT,IN,PDT,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt
 #33 100
 #34
 17 1,2,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_langModel3.lm

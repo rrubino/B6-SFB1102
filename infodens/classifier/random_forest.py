@@ -12,7 +12,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.ensemble import RandomForestClassifier
 
 
-class RandomForest(Classifier):
+class Random_Forest(Classifier):
     
     classifierName = 'Random Forest'
     n_estimators = 20

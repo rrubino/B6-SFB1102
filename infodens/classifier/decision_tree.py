@@ -9,7 +9,7 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn import tree
 
 
-class DecisionTree(Classifier):
+class Decision_Tree(Classifier):
 
     classifierName = 'Decision Tree'
     n_estimators = 20

@@ -1,6 +1,6 @@
-from ..featurextractor import featureManager as featman
+from ..feature_extractor import feature_manager as featman
 from ..preprocessor import preprocess
-from ..classifier import classifierManager
+from ..classifier import classifier_manager
 from ..formater import format
 from sklearn import preprocessing as skpreprocess
 import multiprocessing
@@ -190,7 +190,7 @@ class Controller:
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.FeatureManager(self.numSentences, self.featureIDs, self.featargs,
+            manageFeatures = featman.Feature_Manager(self.numSentences, self.featureIDs, self.featargs,
                                                     preprocessor, self.threadsCount)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
@@ -223,7 +223,7 @@ class Controller:
 
         if self.inputClasses and self.classifiersList:
             # Classify if the parameters needed are specified
-            classifying = classifierManager.ClassifierManager(
+            classifying = classifier_manager.Classifier_Manager(
                           self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount,
                             self.cv_folds)
 

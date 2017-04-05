@@ -20,7 +20,7 @@ def runFeatureMethod(mtdCls, featureID,
         print(feateX)
     return feat
 
-class FeatureManager:
+class Feature_Manager:
     """ Validate the config feature requests,
     And call the necessary feature extractors.
     """
@@ -36,7 +36,7 @@ class FeatureManager:
         '''
         
         sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ) )
-        self.fileName, self.pathname, self.description = imp.find_module('featurextractor')
+        self.fileName, self.pathname, self.description = imp.find_module('feature_extractor')
 
         self.idClassmethod, self.allFeatureIds = self.idClassDictionary()
 
@@ -74,22 +74,22 @@ class FeatureManager:
         '''
         possFeatureClasses = set([os.path.splitext(module)[0]
                                   for module in os.listdir(self.pathname) if module.endswith('.py')])
-        possFeatureClasses.discard('featureExtraction')
+        possFeatureClasses.discard('feature_extractor')
         possFeatureClasses.discard('__init__')
-        possFeatureClasses.discard('featuremanager')
+        possFeatureClasses.discard('feature_manager')
 
         # All feature Ids
         allFeatureIds = {};  featureIds = {};  idClassmethod = {}
         
         for eachName in possFeatureClasses:
             
-            modd = __import__('featurextractor.'+eachName)
+            modd = __import__('feature_extractor.'+eachName)
             modul = getattr(modd, eachName)
             clsmembers = inspect.getmembers(modul, inspect.isclass)
 
             if len(clsmembers) > 0:
-                clsmembers = [m for m in clsmembers if m[1].__module__.startswith('featurextractor') and
-                             m[0] is not 'FeatureExtractor']
+                clsmembers = [m for m in clsmembers if m[1].__module__.startswith('feature_extractor') and
+                             m[0] is not 'Feature_Extractor']
                 for i in range(0, len(clsmembers)):
                     featureIds = self.methodsWithDecorator(clsmembers[i][1], 'featid')
                     allFeatureIds.update(featureIds)

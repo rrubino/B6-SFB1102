@@ -13,7 +13,8 @@ def featid(fid):
         return func_wrapper
     return tags_decorator
 
-class FeatureExtractor(object):
+
+class Feature_Extractor(object):
 
     def __init__(self, preprocessed):
         '''

@@ -1,6 +1,4 @@
-import sys
 from infodens.controller.controller import Controller
-import profile
 
 # TODO: Reformat to use sys arguments for config file.
 

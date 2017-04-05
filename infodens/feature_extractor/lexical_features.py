@@ -4,13 +4,13 @@ Created on Thu Sep 15 11:16:36 2016
 
 @author: admin
 """
-from .featureExtraction import featid, FeatureExtractor
+from .feature_extractor import featid, Feature_Extractor
 from infodens.preprocessor import preprocess
 import numpy as np
 from scipy import sparse
 import scipy.io
 
-class LexicalFeatures(FeatureExtractor):
+class Lexical_Features(Feature_Extractor):
     
     def computeDensity(self, taggedSentences, jnrv):
 

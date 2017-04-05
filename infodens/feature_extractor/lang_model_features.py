@@ -4,7 +4,7 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .featureExtraction import featid, FeatureExtractor
+from .feature_extractor import featid, Feature_Extractor
 from scipy import sparse
 import scipy.io
 import numpy as np
@@ -14,7 +14,7 @@ import os
 import codecs
 
 
-class LangModel(FeatureExtractor):
+class LangModel_Features(Feature_Extractor):
 
     def extractValues(self, srilmOutput, sentCount):
         feats = []
