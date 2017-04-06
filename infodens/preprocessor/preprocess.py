@@ -14,10 +14,6 @@ import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 import os
-try:  # py3
-    from shlex import quote
-except ImportError:  # py2
-    from pipes import quote
 
 class Preprocess:
     
@@ -99,22 +95,19 @@ class Preprocess:
     def buildLanguageModel(self, ngram=3):
         """Build a language model from given corpus."""
 
-        langModelFile = "\"{0}\"\\{1}_langModel{2}.lm".format(os.getcwd(), self.corpusForLM, ngram)
-        binaryLib = ("\"{0}\\ngram-count\"".format(self.srilmBinaries))
-        #binaryLib = "ngram-count"
-        # if "Linux" in platform.system():
-        #    commandToRun += "./"
+        langModelFile = "\"{0}{1}_langModel{2}.lm\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM, ngram)
+        binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
+
         if not self.corpusForLM:
             print("Corpus for Language model not defined.")
         elif langModelFile in self.langModelFiles:
             return langModelFile
         else:
-            corpusAbsolute = "\"{0}\\{1}\"".format(os.getcwd(), self.corpusForLM)
+            corpusAbsolute = "\"{0}{1}\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM)
             #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
             commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, corpusAbsolute,
                                                                       langModelFile, ngram)
             print("Building Language Model..")
-            #commandToRun = quote(commandToRun)
             #print(commandToRun)
             subprocess.call(commandToRun, shell=True)
             print("Language Model done.")

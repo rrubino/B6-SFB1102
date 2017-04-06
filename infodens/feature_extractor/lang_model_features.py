@@ -8,7 +8,6 @@ from .feature_extractor import featid, Feature_extractor
 from scipy import sparse
 import scipy.io
 import numpy as np
-import platform
 import subprocess
 import os
 import codecs
@@ -61,7 +60,7 @@ class Lang_model_features(Feature_extractor):
             langModel = self.preprocessor.buildLanguageModel(ngramOrder)
 
         pplFile = "tempLang{0}{1}.ppl".format(sentsFile, ngramOrder)
-        command = "\"{0}\\ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
+        command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
                                                                                      langModel, sentsFile, pplFile)
 
         subprocess.call(command, shell=True)

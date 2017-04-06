@@ -97,6 +97,8 @@ class Controller:
 				if not os.path.isdir(self.srilmBinPath):
 					statusOK = 0
 					print("Invalid SRILM binaries path.")
+				else:
+					self.srilmBinPath = os.path.join(self.srilmBinPath, '')
 			elif "operating language" in configLine:
 				startInp = configLine.index(':')
 				configLine = configLine[startInp + 1:]
