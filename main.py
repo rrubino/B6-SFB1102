@@ -11,7 +11,7 @@ def infodensRun(configFile):
     if status != 0:
         print("Requested features: ")
         print(featIds)
-        if (classifiersList):
+        if classifiersList:
             print("Requested classifiers: ")
             print(classifiersList)
         # Manages feature Extraction
@@ -26,6 +26,7 @@ def infodensRun(configFile):
     else:
         print("Error in Config file.")
         return 0
+
 
 def main():
     infodensRun("testconfig.txt")

@@ -13,62 +13,31 @@ from collections import Counter
 import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
-from preprocess_services import Preprocess_Services
 import os
 
-class Preprocess:
-    
-    fileName = ''
-    
-    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0, srilmpath=os.getcwd()):
-        self.inputFile = fileName
-        self.corpusForLM = corpusLM
-        self.operatingLanguage = language
-        self.sentCount = 0
-        self.threadsCount = nthreads
-        self.plainLof = []
-        self.tokenSents = []
-        self.parseTrees = []
-        self.taggedPOSSents = []
-        self.lemmatizedSents = []
-        self.mixedSents = []
-        self.word2vecModel = {}
-        self.langModelFiles = []
-        self.srilmBinaries = srilmpath
-        self.prep_servs = Preprocess_Services()
 
-    def getLanguageMode(self):
-        """Return the current language mode."""
-        return self.operatingLanguage
+class Preprocess_Services:
 
-    def setLanguageMode(self, lang):
-        """Set language mode for preprocessing operations."""
-        self.operatingLanguage = lang
+    def preprocessBySentence(self, inputFile):
+        """Load the input file which was specified at Init of object."""
+        lines = []
+        with codecs.open(inputFile, encoding='utf-8') as f:
+            lines = f.readlines()
+        return lines
 
-    def getSentCount(self):
-        self.getPlainSentences()
-        return self.sentCount
+    def preprocessByBlock(self, fileName, blockSize):
+        pass
 
-    def getInputFileName(self):
-        return self.inputFile
+    def preprocessClassID(self, inputClasses):
+        """ Extract from each line the integer for class ID. Requires init with Classes file."""
+        with codecs.open(inputClasses, encoding='utf-8') as f:
+            lines = f.readlines()
+        ids = [int(id) for id in lines]
+        return ids
 
-    def getBinariesPath(self):
-        return self.srilmBinaries
-
-    def getPlainSentences(self):
-        """Return sentences as read from file."""
-        if not self.plainLof:
-            self.plainLof = self.prep_servs.preprocessBySentence(self.inputFile)
-            self.sentCount = len(self.plainLof)
-        return self.plainLof
-
-    def gettokenizeSents(self):
-        """Return tokenized sentences."""
-        if not self.tokenSents:
-            #print("tokenizing")
-            self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
-
-        return self.tokenSents
+    def getFileTokens(self, fileOfTokens):
+        """Return tokens from file"""
+        return [nltk.word_tokenize(sent) for sent in self.preprocessBySentence(fileOfTokens)]
 
     def getParseTrees(self):
         """Return parse trees of each sentence."""
@@ -145,13 +114,24 @@ class Preprocess:
             
         return self.mixedSents
 
-    def getWord2vecModel(self, size=100):
-        if not self.corpusForLM:
-            print("Corpus not provided...")
-            return 0
-        if size not in self.word2vecModel.keys():
-            self.word2vecModel[size] = self.prep_servs.trainWord2Vec(size, self.corpusForLM, self.threadsCount)
-        return self.word2vecModel[size]
+    def trainWord2Vec(self, vecSize, corpus, threadsCount):
+        print("Training Word2Vec model...")
+
+        class SentIterator(object):
+            def __init__(self, corpus):
+                self.corpus = corpus
+
+            def __iter__(self):
+                with codecs.open(self.corpus, encoding='utf-8') as corpusFile:
+                    for line in corpusFile:
+                        yield nltk.word_tokenize(line)
+
+        tokenizedCorpus = SentIterator(corpus)
+
+        model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1, workers=threadsCount)
+        print("Word2Vec model done.")
+
+        return model
 
     def buildNgramsType(self, type, n, freq, filePOS=0):
         """Build and return given type of ngram."""

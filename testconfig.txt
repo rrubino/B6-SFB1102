@@ -1,6 +1,6 @@
-1
+#1
 # This is a comment
-2
+#2
 #classifiers : RandomForest
 #language model: literature.fr
 language model: testSent2.txt
@@ -14,7 +14,7 @@ classifiers : SVC_linear
 #classifiers : Random_Forest
 #3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-4 1,1
+#4 1,1
 #4 2,2
 #20
 #5 1,10
