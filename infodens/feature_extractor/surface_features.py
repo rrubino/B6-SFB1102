@@ -16,13 +16,11 @@ class Surface_features(Feature_extractor):
     def averageWordLength(self, argString, preprocessReq=0):
         '''Find average word length of every sentence and return list. '''
 
-
         if preprocessReq:
             # Request all preprocessing functions to be prepared
             self.preprocessor.getSentCount()
             self.preprocessor.gettokenizeSents()
             return 1
-
 
         aveWordLen = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
 
@@ -77,7 +75,7 @@ class Surface_features(Feature_extractor):
             return 1
 
         vowels = ['a', 'e', 'i', 'o', 'u']
-        sylRatios = sparse.lil_matrix((self.preprocessor.getSentCount(),1))
+        sylRatios = sparse.lil_matrix((self.preprocessor.getSentCount(), 1))
         j = 0
         for sentence in self.preprocessor.gettokenizeSents():
             sylCount = 0

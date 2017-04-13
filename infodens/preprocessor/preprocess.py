@@ -16,6 +16,7 @@ import subprocess
 from preprocess_services import Preprocess_Services
 import os
 
+
 class Preprocess:
     
     fileName = ''
@@ -65,9 +66,7 @@ class Preprocess:
     def gettokenizeSents(self):
         """Return tokenized sentences."""
         if not self.tokenSents:
-            #print("tokenizing")
             self.tokenSents = [nltk.word_tokenize(sent) for sent in self.getPlainSentences()]
-
         return self.tokenSents
 
     def getParseTrees(self):
@@ -99,20 +98,18 @@ class Preprocess:
 
             return langModelFile
 
-    def getPOStagged(self, filePOS=0):
-        """ Return POS tagged sentences. """
+    def getPOStagged(self, filePOS=""):
+        """ Return POS tagged sentences from Input file or tokens. """
+        if filePOS:
+            # Return tokens from POS file give
+            return self.prep_servs.getFileTokens(filePOS)
+
         if not self.taggedPOSSents:
-            if not filePOS:
-                print("POS tagging..")
-                tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
-                for i in range(0, len(tagPOSSents)):
-                    self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
-                print("POS tagging done.")
-            else:
-                with codecs.open(filePOS, encoding='utf-8') as f:
-                    lines = f.readlines()
-                # POS from file is not stored but returned directly
-                return [nltk.word_tokenize(sent) for sent in lines]
+            print("POS tagging..")
+            tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
+            for i in range(0, len(tagPOSSents)):
+                self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
+            print("POS tagging done.")
 
         return self.taggedPOSSents
         
@@ -174,7 +171,7 @@ class Preprocess:
 
         ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
 
-        return self.ngramMinFreq(Counter(ngramsOutput), freq)
+        return self.prep_servs.ngramMinFreq(Counter(ngramsOutput), freq)
 
     def buildTokenNgrams(self, n, freq):
         return self.buildNgramsType("plain", n, freq)
@@ -187,14 +184,4 @@ class Preprocess:
         
     def buildMixedNgrams(self, n, freq):
         return self.buildNgramsType("mixed", n, freq)
-        
-    def ngramMinFreq(self, anNgram, freq):
-        indexOfngram = 0
-        finalNgram = {}
-        """Return anNgram with entries that have frequency greater or equal freq"""
-        for k in anNgram.keys():
-            if anNgram[k] >= freq:
-                finalNgram[k] = indexOfngram
-                indexOfngram += 1
 
-        return finalNgram, indexOfngram

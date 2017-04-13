@@ -18,6 +18,9 @@ import os
 
 class Preprocess_Services:
 
+    def __init__(self):
+        pass
+
     def preprocessBySentence(self, inputFile):
         """Load the input file which was specified at Init of object."""
         lines = []
@@ -39,11 +42,23 @@ class Preprocess_Services:
         """Return tokens from file"""
         return [nltk.word_tokenize(sent) for sent in self.preprocessBySentence(fileOfTokens)]
 
-    def getParseTrees(self):
-        """Return parse trees of each sentence."""
-        if not self.parseTrees:
-            self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
-        return
+    def dumpTokensTofile(self, dumpFile, tokenSents):
+        """ Dump tokens into file"""
+        if not os.path.isfile(dumpfile):
+            outFile = open(dumpfile, 'w')
+            for sent in tokenSents:
+                outFile.write("%s\n" % " ".join(sent))
+            outFile.close()
+
+    def tagPOSfromFile(self, filePOS):
+        """ Return POS tagged sentences from given File """
+        taggedPOSSents = []
+        print("POS tagging..")
+        tagPOSSents = nltk.pos_tag_sents(self.getFileTokens(filePOS))
+        for i in range(0, len(tagPOSSents)):
+            taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
+        print("POS tagging done.")
+        return taggedPOSSents
 
     def buildLanguageModel(self, ngram=3):
         """Build a language model from given corpus."""
@@ -68,52 +83,6 @@ class Preprocess_Services:
 
             return langModelFile
 
-    def getPOStagged(self, filePOS=0):
-        """ Return POS tagged sentences. """
-        if not self.taggedPOSSents:
-            if not filePOS:
-                print("POS tagging..")
-                tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
-                for i in range(0, len(tagPOSSents)):
-                    self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
-                print("POS tagging done.")
-            else:
-                with codecs.open(filePOS, encoding='utf-8') as f:
-                    lines = f.readlines()
-                # POS from file is not stored but returned directly
-                return [nltk.word_tokenize(sent) for sent in lines]
-
-        return self.taggedPOSSents
-        
-    def getLemmatizedSents(self):
-        """Lemmatize and return sentences."""
-        if not self.lemmatizedSents:
-            self.gettokenizeSents()
-            lemmatizer = WordNetLemmatizer()
-            for i in range(0, len(self.tokenSents)):
-                lemmatized = [lemmatizer.lemmatize(a) for a in self.tokenSents[i]]
-                self.lemmatizedSents.append(lemmatized)
-
-        return self.lemmatizedSents
-        
-    def getMixedSents(self):
-        """Build and return mixed sentences (POS for J,N,V, or R)"""
-        if not self.mixedSents:
-            self.getPOStagged()
-            for i in range(len(self.tokenSents)):
-                sent = []
-                for j in range(len(self.tokenSents[i])):
-                    if self.taggedPOSSents[i][j].startswith('J') or \
-                            self.taggedPOSSents[i][j].startswith('N') or \
-                            self.taggedPOSSents[i][j].startswith('V') or \
-                            self.taggedPOSSents[i][j].startswith('R'):
-                        sent.append(self.taggedPOSSents[i][j])
-                    else:
-                        sent.append(self.tokenSents[i][j])
-                self.mixedSents.append(sent)
-            
-        return self.mixedSents
-
     def trainWord2Vec(self, vecSize, corpus, threadsCount):
         print("Training Word2Vec model...")
 
@@ -133,41 +102,6 @@ class Preprocess_Services:
 
         return model
 
-    def buildNgramsType(self, type, n, freq, filePOS=0):
-        """Build and return given type of ngram."""
-        if type is "plain":
-            self.gettokenizeSents()
-            ngramsList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
-        elif type is "POS":
-            self.getPOStagged(filePOS)
-            ngramsList = [list(ngrams(self.taggedPOSSents[i], n)) for i in range(len(self.taggedPOSSents))]
-        elif type is "lemma":
-            self.getLemmatizedSents()
-            ngramsList = [list(ngrams(self.lemmatizedSents[i], n)) for i in range(len(self.lemmatizedSents))]
-        elif type is "mixed":
-            self.getMixedSents()
-            ngramsList = [list(ngrams(self.mixedSents[i], n)) for i in range(len(self.mixedSents))]
-        else:
-            #treat as plain
-            self.gettokenizeSents()
-            ngramsList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
-
-        ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
-
-        return self.ngramMinFreq(Counter(ngramsOutput), freq)
-
-    def buildTokenNgrams(self, n, freq):
-        return self.buildNgramsType("plain", n, freq)
-
-    def buildPOSNgrams(self, n, freq, filePOS=0):
-        return self.buildNgramsType("POS", n, freq, filePOS)
-
-    def buildLemmaNgrams(self, n, freq):
-        return self.buildNgramsType("lemma", n, freq)
-        
-    def buildMixedNgrams(self, n, freq):
-        return self.buildNgramsType("mixed", n, freq)
-        
     def ngramMinFreq(self, anNgram, freq):
         indexOfngram = 0
         finalNgram = {}

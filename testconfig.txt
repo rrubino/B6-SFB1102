@@ -1,6 +1,6 @@
-#1
+1
 # This is a comment
-#2
+2
 #classifiers : RandomForest
 #language model: literature.fr
 language model: testSent2.txt
@@ -12,20 +12,20 @@ folds : 1
 classifiers : SVC_linear
 #classifiers : SVC_rbf
 #classifiers : Random_Forest
-#3 0,J,N,V,R
+3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-#4 1,1
+4 1,1
 #4 2,2
 #20
-#5 1,10
-#5 1,10,1,testSent2.txt
-#6 1,10
-#7 1,10
-#10
-#11
-#12 0,CC,DT,WDT,IN,PDT
-#12 1,CC,DT,WDT,IN,PDT,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt
-#33 100
+5 1,10
+5 1,10,1,testSent2.txt
+6 1,10
+7 1,10
+10
+11
+12 0,CC,DT,WDT,IN,PDT
+12 1,CC,DT,WDT,IN,PDT,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt
+33 100
 #34
 #17 1,2,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_langModel3.lm
 17 0,3
