@@ -14,12 +14,13 @@ import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 import os
+import time
 
 
 class Preprocess_Services:
 
-    def __init__(self):
-        pass
+    def __init__(self, srilmBinaries=""):
+        self.srilmBinaries = srilmBinaries
 
     def preprocessBySentence(self, inputFile):
         """Load the input file which was specified at Init of object."""
@@ -60,28 +61,21 @@ class Preprocess_Services:
         print("POS tagging done.")
         return taggedPOSSents
 
-    def buildLanguageModel(self, ngram=3):
+    def languageModelBuilder(self, ngram, corpus, langModelFile):
         """Build a language model from given corpus."""
 
-        langModelFile = "\"{0}{1}_langModel{2}.lm\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM, ngram)
         binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
 
-        if not self.corpusForLM:
-            print("Corpus for Language model not defined.")
-        elif langModelFile in self.langModelFiles:
-            return langModelFile
-        else:
-            corpusAbsolute = "\"{0}{1}\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM)
-            #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-            commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, corpusAbsolute,
-                                                                      langModelFile, ngram)
-            print("Building Language Model..")
-            #print(commandToRun)
-            subprocess.call(commandToRun, shell=True)
-            print("Language Model done.")
-            self.langModelFiles.append(langModelFile)
+        # ./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
+        commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, corpus,
+                                                                                 langModelFile, ngram)
 
-            return langModelFile
+        print("Building Language Model..")
+        #print(commandToRun)
+        subprocess.call(commandToRun, shell=True)
+        print("Language Model done.")
+
+        return langModelFile
 
     def trainWord2Vec(self, vecSize, corpus, threadsCount):
         print("Training Word2Vec model...")

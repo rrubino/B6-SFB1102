@@ -14,6 +14,7 @@ import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 from preprocess_services import Preprocess_Services
+import time
 import os
 
 
@@ -36,7 +37,7 @@ class Preprocess:
         self.word2vecModel = {}
         self.langModelFiles = []
         self.srilmBinaries = srilmpath
-        self.prep_servs = Preprocess_Services()
+        self.prep_servs = Preprocess_Services(srilmpath)
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -75,27 +76,29 @@ class Preprocess:
             self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
         return
 
-    def buildLanguageModel(self, ngram=3):
+    def buildLanguageModel(self, ngram=3, corpus=""):
         """Build a language model from given corpus."""
 
-        langModelFile = "\"{0}{1}_langModel{2}.lm\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM, ngram)
-        binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
-
-        if not self.corpusForLM:
+        if not self.corpusForLM and not corpus:
             print("Corpus for Language model not defined.")
-        elif langModelFile in self.langModelFiles:
-            return langModelFile
-        else:
-            corpusAbsolute = "\"{0}{1}\"".format(os.path.join(os.getcwd(), ''), self.corpusForLM)
-            #./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-            commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, corpusAbsolute,
-                                                                      langModelFile, ngram)
-            print("Building Language Model..")
-            #print(commandToRun)
-            subprocess.call(commandToRun, shell=True)
-            print("Language Model done.")
-            self.langModelFiles.append(langModelFile)
+            return 0
+        elif self.corpusForLM and not corpus:
+            testCWDCorpus = "{0}{1}".format(os.path.join(os.getcwd(), ''), self.corpusForLM)
+            if os.path.isfile(testCWDCorpus):
+                # File in CWD, add directory to path
+                corpus = testCWDCorpus
+            else:
+                # Use as is
+                corpus = self.corpusForLM
 
+        langModelFile = "{0}_langModel{1}.lm".format(os.path.basename(corpus), ngram)
+        # Wrap to handle spaces in path
+        corpus = "\"{0}\"".format(corpus)
+
+        if langModelFile not in self.langModelFiles:
+            self.prep_servs.languageModelBuilder(ngram, corpus, langModelFile)
+            self.langModelFiles.append(langModelFile)
+        else:
             return langModelFile
 
     def getPOStagged(self, filePOS=""):

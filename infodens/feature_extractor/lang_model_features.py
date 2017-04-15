@@ -45,10 +45,11 @@ class Lang_model_features(Feature_extractor):
             langModel = "\"{0}\"".format(arguments[-1])
 
         ngramOrder = int(arguments[1])
+
         if preprocessReq:
             # Request all preprocessing functions to be prepared
             if not langModel:
-                self.preprocessor.buildLanguageModel(ngramOrder)
+                langModel = self.preprocessor.buildLanguageModel(ngramOrder)
             self.preprocessor.getInputFileName()
             self.preprocessor.getBinariesPath()
             return 1
@@ -62,6 +63,8 @@ class Lang_model_features(Feature_extractor):
         pplFile = "tempLang{0}{1}.ppl".format(sentsFile, ngramOrder)
         command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
                                                                                      langModel, sentsFile, pplFile)
+
+        #print(command)
 
         subprocess.call(command, shell=True)
         probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
