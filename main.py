@@ -2,6 +2,7 @@ from infodens.controller.controller import Controller
 
 # TODO: Reformat to use sys arguments for config file.
 
+
 def infodensRun(configFile):
     # Init a Controller.
     control = Controller(configFile)

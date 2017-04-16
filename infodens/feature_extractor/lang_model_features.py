@@ -34,7 +34,7 @@ class Lang_model_features(Feature_extractor):
     @featid(17)
     def langModelFeat(self, argString, preprocessReq=0):
         '''
-        Extracts n-gram lemmatized bag of words features.
+        Extracts n-gram Language Model preplexity features.
         '''
         ngramOrder = 3
         langModel = 0
@@ -71,6 +71,83 @@ class Lang_model_features(Feature_extractor):
         os.remove(pplFile)
 
         #print(probab[0])
+
+        return sparse.lil_matrix(probab)
+
+
+    @featid(18)
+    def langModelPOSFeat(self, argString, preprocessReq=0):
+        '''
+        Extracts n-gram POS language model preplexity features.
+        '''
+        ngramOrder = 3
+        langModel = ""
+        taggedInput = ""
+        taggedCorpus = ""
+        # TaggedInput1/0,LM0/1,taggedCorpus0/1,ngramOrder(,TaggedPOSfile(ifTaggedInp1),
+        # LMFilePath(ifLM1),taggedCorpus(if LM0&TaggedCorpus1))
+        arguments = argString.split(',')
+        if int(arguments[0]):
+            # Use file of tagged sents (last argument)
+            taggedInput = "\"{0}\"".format(arguments[4])
+        if int(arguments[1]):
+            # Next argument
+            langModel = "\"{0}\"".format(arguments[4+int(arguments[0])])
+        elif int(arguments[2]):
+            taggedCorpus = "\"{0}\"".format(arguments[4+int(arguments[0])])
+
+        ngramOrder = int(arguments[3])
+
+        if preprocessReq:
+            # Request all preprocessing functions to be prepared
+            if not taggedInput:
+                taggedInput = self.prep_servs.dumpTokensTofile(dumpFile="taggedInput18.txt",
+                                                 tokenSents=self.preprocessor.getPOStagged())
+            if not langModel:
+                if not taggedCorpus:
+                    taggedCorpus = self.prep_servs.dumpTokensTofile(dumpFile="taggedCorpus18.txt",
+                                                     tokenSents=self.prep_servs.tagPOSfromFile(
+                                                         self.preprocessor.getCorpusLMName()
+                                                     ))
+
+                # If tagged corpus is empty, just use
+                langModel = self.preprocessor.buildLanguageModel(ngramOrder, taggedCorpus, False)
+
+            outFile = open("tempfiles18.txt", 'w')
+            outFile.write(taggedInput+"\n")
+            outFile.write(taggedCorpus+"\n")
+            outFile.write(langModel)
+            outFile.close()
+
+            return 1
+
+        # Retrieve preprocessing results
+        with codecs.open("tempfiles18.txt", mode="r") as f:
+            lines = f.readlines()
+        taggedInput = lines[0].strip()
+        langModel = lines[2].strip()
+
+        os.remove("tempfiles18.txt")
+
+        srilmBinary = self.preprocessor.getBinariesPath()
+
+        #pplFile = "tempLang{0}{1}.ppl".format(taggedInput, ngramOrder)
+        pplFile = "tempLang{0}{1}.ppl".format("input18", ngramOrder)
+
+        command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
+                                                                                       langModel, taggedInput, pplFile)
+
+        #print(command)
+
+        subprocess.call(command, shell=True)
+        probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
+        os.remove(pplFile)
+
+        #for tempFile in lines:
+        #    os.remove(tempFile.strip())
+
+
+        # print(probab[0])
 
         return sparse.lil_matrix(probab)
 

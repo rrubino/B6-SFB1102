@@ -45,11 +45,12 @@ class Preprocess_Services:
 
     def dumpTokensTofile(self, dumpFile, tokenSents):
         """ Dump tokens into file"""
-        if not os.path.isfile(dumpfile):
-            outFile = open(dumpfile, 'w')
+        if not os.path.isfile(dumpFile):
+            outFile = open(dumpFile, 'w')
             for sent in tokenSents:
                 outFile.write("%s\n" % " ".join(sent))
             outFile.close()
+        return dumpFile
 
     def tagPOSfromFile(self, filePOS):
         """ Return POS tagged sentences from given File """
@@ -61,14 +62,19 @@ class Preprocess_Services:
         print("POS tagging done.")
         return taggedPOSSents
 
-    def languageModelBuilder(self, ngram, corpus, langModelFile):
+    def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
 
         binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
+        discount = ""
 
+        if kndiscount:
+            discount = " -kndiscount"
+
+        print(langModelFile)
         # ./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-        commandToRun = "{0} -text {1} -lm {2} -order {3} -kndiscount".format(binaryLib, corpus,
-                                                                                 langModelFile, ngram)
+        commandToRun = "{0} -text {1} -lm {2} -order {3}{4}".format(binaryLib, corpus,
+                                                                                 langModelFile, ngram, discount)
 
         print("Building Language Model..")
         #print(commandToRun)

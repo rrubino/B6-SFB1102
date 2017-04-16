@@ -54,6 +54,9 @@ class Preprocess:
     def getInputFileName(self):
         return self.inputFile
 
+    def getCorpusLMName(self):
+        return self.corpusForLM
+
     def getBinariesPath(self):
         return self.srilmBinaries
 
@@ -76,7 +79,7 @@ class Preprocess:
             self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
         return
 
-    def buildLanguageModel(self, ngram=3, corpus=""):
+    def buildLanguageModel(self, ngram=3, corpus="", discounting=True):
         """Build a language model from given corpus."""
 
         if not self.corpusForLM and not corpus:
@@ -91,15 +94,18 @@ class Preprocess:
                 # Use as is
                 corpus = self.corpusForLM
 
+        # remove any quotes
+        corpus = corpus.replace("\"", "")
         langModelFile = "{0}_langModel{1}.lm".format(os.path.basename(corpus), ngram)
         # Wrap to handle spaces in path
-        corpus = "\"{0}\"".format(corpus)
+        if not corpus.endswith("\""):
+            corpus = "\"{0}\"".format(corpus)
 
         if langModelFile not in self.langModelFiles:
-            self.prep_servs.languageModelBuilder(ngram, corpus, langModelFile)
+            self.prep_servs.languageModelBuilder(ngram, corpus, langModelFile, kndiscount=discounting)
             self.langModelFiles.append(langModelFile)
-        else:
-            return langModelFile
+
+        return langModelFile
 
     def getPOStagged(self, filePOS=""):
         """ Return POS tagged sentences from Input file or tokens. """
