@@ -1,9 +1,6 @@
-from .feature_extractor import featid, Feature_extractor
+from infodens.feature_extractor.feature_extractor import featid, Feature_extractor
 import numpy as np
 from scipy import sparse
-import scipy.io
-from sklearn.preprocessing import scale as skScale
-import cv2
 
 
 class Word_embedding_features(Feature_extractor):
@@ -73,6 +70,7 @@ class Word_embedding_features(Feature_extractor):
             for word in sentence:
                 vecImage.append(model[word])
 
+            import cv2
             huMoments.append(cv2.HuMoments(cv2.moments(np.asarray(vecImage))).flatten())
 
         return sparse.lil_matrix(huMoments)

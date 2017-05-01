@@ -5,7 +5,7 @@ Created on Sun Sep 04 14:42:43 2016
 @author: admin
 """
 import inspect
-from preprocessor.preprocess_services import Preprocess_Services
+from infodens.preprocessor.preprocess_services import Preprocess_Services
 
 def featid(fid):
     def tags_decorator(func):

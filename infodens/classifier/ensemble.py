@@ -3,7 +3,7 @@ Created on Aug 23, 2016
 
 @author: admin
 '''
-from classifier import Classifier
+from infodens.classifier.classifier import Classifier
 from sklearn.ensemble import VotingClassifier, RandomForestClassifier
 
 

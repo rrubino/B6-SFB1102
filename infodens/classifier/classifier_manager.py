@@ -8,7 +8,7 @@ import importlib
 import imp, os
 import sys, inspect
 from os import path
-from .classifier import Classifier
+from infodens.classifier.classifier import Classifier
 
 
 class Classifier_manager:

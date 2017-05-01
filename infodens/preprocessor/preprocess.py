@@ -4,16 +4,12 @@ Created on Tue Aug 30 15:19:12 2016
 
 @author: admin
 """
-import codecs
-import time
 import nltk
-from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 from preprocess_services import Preprocess_Services
-import time
 import os
 
 
@@ -74,6 +70,7 @@ class Preprocess:
 
     def getParseTrees(self):
         """Return parse trees of each sentence."""
+        from pattern.en import parsetree
         if not self.parseTrees:
             self.parseTrees = [parsetree(sent) for sent in self.getPlainSentences()]
         return

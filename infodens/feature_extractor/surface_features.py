@@ -4,10 +4,8 @@ Created on Sun Sep 04 14:12:49 2016
 
 @author: admin
 """
-from .feature_extractor import featid, Feature_extractor
-import numpy as np
+from infodens.feature_extractor.feature_extractor import featid, Feature_extractor
 from scipy import sparse
-import scipy.io
 
 
 class Surface_features(Feature_extractor):

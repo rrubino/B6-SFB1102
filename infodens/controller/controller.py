@@ -1,11 +1,8 @@
-from ..feature_extractor import feature_manager as featman
-from ..preprocessor import preprocess
-from ..preprocessor.preprocess_services import Preprocess_Services
-from ..classifier import classifier_manager
-from ..formater import format
-from sklearn import preprocessing as skpreprocess
-import multiprocessing
-import numpy as np
+from infodens.feature_extractor import feature_manager as featman
+from infodens.preprocessor import preprocess
+from infodens.preprocessor.preprocess_services import Preprocess_Services
+from infodens.classifier import classifier_manager
+from infodens.formater import format
 import os.path
 
 
@@ -24,7 +21,7 @@ class Controller:
         self.corpusLM = 0
         self.featOutput = 0
         self.featOutFormat = 0
-        self.threadsCount = multiprocessing.cpu_count()
+        self.threadsCount = 1
         self.language = 'eng'
         self.numSentences = 0
         self.srilmBinPath = 0
@@ -209,6 +206,7 @@ class Controller:
                 return 0
 
     def scaleFeatures(self):
+        from sklearn import preprocessing as skpreprocess
         scaler = skpreprocess.MaxAbsScaler(copy=False)
         self.extractedFeats = scaler.fit_transform(self.extractedFeats)
 

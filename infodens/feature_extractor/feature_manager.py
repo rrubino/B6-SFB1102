@@ -4,8 +4,6 @@ import sys, inspect
 from os import path
 from joblib import Parallel, delayed
 import itertools
-import numpy as np
-import scipy.io
 from scipy import sparse
 
 

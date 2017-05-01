@@ -5,15 +5,9 @@ Created on Tue Aug 30 15:19:12 2016
 @author: admin
 """
 import codecs
-import time
 import nltk
-from pattern.en import parsetree
-from nltk import ngrams
-from collections import Counter
-from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 import os
-import time
 
 
 class Preprocess_Services:

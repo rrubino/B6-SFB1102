@@ -4,7 +4,7 @@ Created on Aug 23, 2016
 @author: admin
 '''
 
-from .classifier import Classifier
+from infodens.classifier.classifier import Classifier
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import GridSearchCV
 import numpy as np
