@@ -25,7 +25,7 @@ class Controller:
         self.featOutput = 0
         self.featOutFormat = 0
         self.threadsCount = multiprocessing.cpu_count()
-        self.language = 'EN'
+        self.language = 'eng'
         self.numSentences = 0
         self.srilmBinPath = 0
         self.cv_folds = 1
@@ -106,7 +106,7 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.language = configLine
-                print(self.language)
+                #print(self.language)
             elif "thread" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]

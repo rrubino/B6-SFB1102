@@ -10,7 +10,6 @@ import nltk
 from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
-import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 import os
@@ -19,8 +18,9 @@ import time
 
 class Preprocess_Services:
 
-    def __init__(self, srilmBinaries=""):
+    def __init__(self, srilmBinaries="", lang="eng"):
         self.srilmBinaries = srilmBinaries
+        self.operatingLanguage = lang
 
     def preprocessBySentence(self, inputFile):
         """Load the input file which was specified at Init of object."""
@@ -56,7 +56,7 @@ class Preprocess_Services:
         """ Return POS tagged sentences from given File """
         taggedPOSSents = []
         print("POS tagging..")
-        tagPOSSents = nltk.pos_tag_sents(self.getFileTokens(filePOS))
+        tagPOSSents = nltk.pos_tag_sents(self.getFileTokens(filePOS),lang=self.operatingLanguage)
         for i in range(0, len(tagPOSSents)):
             taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
         print("POS tagging done.")
@@ -71,7 +71,7 @@ class Preprocess_Services:
         if kndiscount:
             discount = " -kndiscount"
 
-        print(langModelFile)
+        #print(langModelFile)
         # ./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
         commandToRun = "{0} -text {1} -lm {2} -order {3}{4}".format(binaryLib, corpus,
                                                                                  langModelFile, ngram, discount)
@@ -84,6 +84,7 @@ class Preprocess_Services:
         return langModelFile
 
     def trainWord2Vec(self, vecSize, corpus, threadsCount):
+        import gensim
         print("Training Word2Vec model...")
 
         class SentIterator(object):

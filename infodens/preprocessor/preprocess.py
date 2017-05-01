@@ -10,7 +10,6 @@ import nltk
 from pattern.en import parsetree
 from nltk import ngrams
 from collections import Counter
-import gensim
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
 from preprocess_services import Preprocess_Services
@@ -37,7 +36,7 @@ class Preprocess:
         self.word2vecModel = {}
         self.langModelFiles = []
         self.srilmBinaries = srilmpath
-        self.prep_servs = Preprocess_Services(srilmpath)
+        self.prep_servs = Preprocess_Services(srilmpath, language)
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -115,7 +114,7 @@ class Preprocess:
 
         if not self.taggedPOSSents:
             print("POS tagging..")
-            tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents())
+            tagPOSSents = nltk.pos_tag_sents(self.gettokenizeSents(), lang=self.operatingLanguage)
             for i in range(0, len(tagPOSSents)):
                 self.taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
             print("POS tagging done.")

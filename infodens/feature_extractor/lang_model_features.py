@@ -6,7 +6,7 @@ Created on Sun Sep 04 14:12:49 2016
 """
 from .feature_extractor import featid, Feature_extractor
 from scipy import sparse
-import scipy.io
+import time
 import numpy as np
 import subprocess
 import os
@@ -101,11 +101,13 @@ class Lang_model_features(Feature_extractor):
         if preprocessReq:
             # Request all preprocessing functions to be prepared
             if not taggedInput:
-                taggedInput = self.prep_servs.dumpTokensTofile(dumpFile="taggedInput18.txt",
+                taggedInput = self.prep_servs.dumpTokensTofile(
+                                            dumpFile="{0}_tagged_Input.txt".format(self.preprocessor.getInputFileName()),
                                                  tokenSents=self.preprocessor.getPOStagged())
             if not langModel:
                 if not taggedCorpus:
-                    taggedCorpus = self.prep_servs.dumpTokensTofile(dumpFile="taggedCorpus18.txt",
+                    taggedCorpus = self.prep_servs.dumpTokensTofile(
+                                        dumpFile="{0}_tagged_Corpus.txt".format(self.preprocessor.getCorpusLMName()),
                                                      tokenSents=self.prep_servs.tagPOSfromFile(
                                                          self.preprocessor.getCorpusLMName()
                                                      ))
@@ -113,41 +115,25 @@ class Lang_model_features(Feature_extractor):
                 # If tagged corpus is empty, just use
                 langModel = self.preprocessor.buildLanguageModel(ngramOrder, taggedCorpus, False)
 
-            outFile = open("tempfiles18.txt", 'w')
-            outFile.write(taggedInput+"\n")
-            outFile.write(taggedCorpus+"\n")
-            outFile.write(langModel)
-            outFile.close()
-
             return 1
 
-        # Retrieve preprocessing results
-        with codecs.open("tempfiles18.txt", mode="r") as f:
-            lines = f.readlines()
-        taggedInput = lines[0].strip()
-        langModel = lines[2].strip()
-
-        os.remove("tempfiles18.txt")
+        if not taggedInput:
+            taggedInput = "{0}_tagged_Input.txt".format(self.preprocessor.getInputFileName())
+        if not langModel:
+            if not taggedCorpus:
+                taggedCorpus = "{0}_tagged_Corpus.txt".format(self.preprocessor.getCorpusLMName())
+            langModel = self.preprocessor.buildLanguageModel(ngramOrder, taggedCorpus, False)
 
         srilmBinary = self.preprocessor.getBinariesPath()
 
-        #pplFile = "tempLang{0}{1}.ppl".format(taggedInput, ngramOrder)
         pplFile = "tempLang{0}{1}.ppl".format("input18", ngramOrder)
 
         command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
                                                                                        langModel, taggedInput, pplFile)
 
-        #print(command)
-
         subprocess.call(command, shell=True)
         probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
         os.remove(pplFile)
-
-        #for tempFile in lines:
-        #    os.remove(tempFile.strip())
-
-
-        # print(probab[0])
 
         return sparse.lil_matrix(probab)
 
