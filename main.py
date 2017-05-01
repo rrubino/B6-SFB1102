@@ -1,5 +1,5 @@
 from infodens.controller.controller import Controller
-
+import sys
 # TODO: Reformat to use sys arguments for config file.
 
 
@@ -34,4 +34,6 @@ def main():
 
 
 if __name__ == '__main__':
+    import platform
+    print("Running Python {0}".format(platform.python_version()))
     main()
