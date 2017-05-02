@@ -7,12 +7,12 @@ Created on Sun Sep 04 14:42:43 2016
 import inspect
 from infodens.preprocessor.preprocess_services import Preprocess_Services
 
-def featid(fid):
-    def tags_decorator(func):
-        def func_wrapper(*args, **kwargs):
-            return func(*args, **kwargs)
-        return func_wrapper
-    return tags_decorator
+
+def featid(func_id):
+    def decorator(f):
+        f.__name__ = str(func_id)
+        return f
+    return decorator
 
 
 class Feature_extractor(object):

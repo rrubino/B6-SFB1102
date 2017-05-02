@@ -5,6 +5,7 @@ from os import path
 from joblib import Parallel, delayed
 import itertools
 from scipy import sparse
+from infodens.feature_extractor.feature_extractor import featid
 
 
 def runFeatureMethod(mtdCls, featureID,
@@ -17,6 +18,7 @@ def runFeatureMethod(mtdCls, featureID,
     if not preprocessReq:
         print(feateX)
     return feat
+
 
 class Feature_manager:
     """ Validate the config feature requests,
@@ -46,23 +48,20 @@ class Feature_manager:
                 return 0
         return 1
 
-    def methodsWithDecorator(self, cls, decoratorName):
+    def methodsWithDecorator(self, cls):
         '''
-        find all methods decorated in class cls with decoratorname and has id in idsToSelect
+        find all methods in clst
         
         '''
         theMethods = {}
-        sourceFile = inspect.getsourcefile(cls)
-        f = open(sourceFile, 'r')
-        sourcelines = f.readlines()
 
-        for i,line in enumerate(sourcelines):
-            line = line.strip()
-            if line.split('(')[0].strip() == '@'+decoratorName:
-                theId = int(line.split('(')[1].split(')')[0])
-                nextLine = sourcelines[i+1]
-                name = nextLine.split('def')[1].split('(')[0].strip()
-                theMethods[theId] = name
+        things = inspect.getmembers(cls, predicate=inspect.ismethod)
+
+        for method in things:
+            if method[0] is not "__init__":
+                featFunc = getattr(cls, method[0])
+                if featFunc.__name__.isdigit() :
+                    theMethods[int(featFunc.__name__)] = method[0]
 
         return theMethods
 
@@ -78,7 +77,7 @@ class Feature_manager:
 
         # All feature Ids
         allFeatureIds = {};  featureIds = {};  idClassmethod = {}
-        
+
         for eachName in possFeatureClasses:
             
             modd = __import__('feature_extractor.'+eachName)
@@ -89,7 +88,7 @@ class Feature_manager:
                 clsmembers = [m for m in clsmembers if m[1].__module__.startswith('feature_extractor') and
                              m[0] is not 'Feature_Extractor']
                 for i in range(0, len(clsmembers)):
-                    featureIds = self.methodsWithDecorator(clsmembers[i][1], 'featid')
+                    featureIds = self.methodsWithDecorator(clsmembers[i][1])
                     allFeatureIds.update(featureIds)
                     idClassmethod.update({k: clsmembers[i][1] for k in featureIds.keys()})
 
