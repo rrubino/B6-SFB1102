@@ -2,8 +2,7 @@
 # This is a comment
 2
 #classifiers : RandomForest
-#language model: literature.fr
-language model: testSent2.txt
+training corpus: data\testSent2.txt
 srilm path : C:\Users\Gilanios 2\Documents\GitHub\srilm-1.7.2\bin\Debug
 operating language : eng
 threads : 3
@@ -12,7 +11,7 @@ folds : 1
 classifiers : SVC_linear
 #classifiers : SVC_rbf
 #classifiers : Random_Forest
-3 0,J,N,V,R
+#3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
 4 1,1
 #4 2,2
@@ -35,8 +34,6 @@ classifiers : SVC_linear
 #output classifier: report1.txt
 #output features: feats.txt libsvm
 
-#input files : testSent.txt testSentClasses.txt
-#Input files cannot contain spaces.
-input files : testSent2.txt testSentClasses2.txt
+input files : data\testSent2.txt data\testSentClasses2.txt
 #input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'

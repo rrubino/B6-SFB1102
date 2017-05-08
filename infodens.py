@@ -1,7 +1,5 @@
 from infodens.controller.controller import Controller
 import sys
-# TODO: Reformat to use sys arguments for config file.
-
 
 def infodensRun(configFile):
     # Init a Controller.
@@ -29,11 +27,14 @@ def infodensRun(configFile):
         return 0
 
 
-def main():
-    infodensRun("testconfig.txt")
-
-
 if __name__ == '__main__':
     import platform
     print("Running Python {0}".format(platform.python_version()))
-    main()
+
+    if len(sys.argv) > 1:
+        config = sys.argv[1]
+    else:
+        config = "testconfig.txt"
+
+    print("Config file: {0}".format(config))
+    infodensRun(config)

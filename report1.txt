@@ -1,5 +1,0 @@
-SVM:
-Average Accuracy: 0.825472222222
-Average Precision: 0.814885478339
-Average Recall: 0.841681928748
-Average F-score: 0.828065101931

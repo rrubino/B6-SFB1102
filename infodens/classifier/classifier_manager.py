@@ -25,6 +25,7 @@ class Classifier_manager:
         self.returnClassifiers()
 
     def checkValidClassifier(self):
+        #print(self.availClassifiers)
         for classifID in self.classifierIDs:
             if classifID not in self.availClassifiers:
                 return 0

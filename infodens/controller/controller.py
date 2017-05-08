@@ -83,7 +83,7 @@ class Controller:
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.classifiersList = configLine
-            elif "model" in configLine:
+            elif "training corpus" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
