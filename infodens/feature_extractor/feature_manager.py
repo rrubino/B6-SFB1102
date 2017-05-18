@@ -51,7 +51,7 @@ class Feature_manager:
         '''
         theMethods = {}
 
-        things = inspect.getmembers(cls, predicate=inspect.ismethod)
+        things = inspect.getmembers(cls(None), predicate=inspect.ismethod)
 
         for method in things:
             if method[0] is not "__init__":
