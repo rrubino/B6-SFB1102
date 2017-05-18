@@ -1,11 +1,10 @@
 import importlib
-import imp, os
+import os
 import sys, inspect
-from os import path
 from joblib import Parallel, delayed
 import itertools
 from scipy import sparse
-from infodens.feature_extractor.feature_extractor import featid
+import infodens.feature_extractor.feature_extractor as feat_extr
 
 
 def runFeatureMethod(mtdCls, featureID,
@@ -31,12 +30,9 @@ class Feature_manager:
         self.preprocessor = preprocessed
         self.threads = threadsCount
         self.sentCount = sentCount
-        '''
-        Import the featurextraction package at this point. It will be needed by most of the methods.
-        '''
-        
-        sys.path.append(path.dirname( path.dirname( path.abspath(__file__) ) ) )
-        self.fileName, self.pathname, self.description = imp.find_module('feature_extractor')
+
+        sys.path.append(os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
+        self.pathname = os.path.dirname(os.path.abspath(feat_extr.__file__))
 
         self.idClassmethod, self.allFeatureIds = self.idClassDictionary()
 
