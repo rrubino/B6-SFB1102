@@ -6,7 +6,6 @@ Created on Thu Sep 15 08:39:18 2016
 """
 
 import sklearn
-import arff
 from scipy import sparse
 
 class Format_writer:
@@ -19,6 +18,7 @@ class Format_writer:
 
     def arffwriteToFile(self, X, Y, theFile):
         #TODO: Fix warning
+        import arff
 
         arffFeatObj = {'description': 'infodens feats', 'relation': 'translationese'}
         dims = X.get_shape()

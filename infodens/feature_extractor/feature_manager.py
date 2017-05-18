@@ -44,7 +44,7 @@ class Feature_manager:
         ''' Check if requested feature exists. '''
         for featID in self.featureIDs:
             if featID not in self.allFeatureIds:
-                print(featID)
+                print("The requested feature {0} is not available!".format(featID))
                 return 0
         return 1
 
@@ -60,8 +60,10 @@ class Feature_manager:
         for method in things:
             if method[0] is not "__init__":
                 featFunc = getattr(cls, method[0])
-                if featFunc.__name__.isdigit() :
-                    theMethods[int(featFunc.__name__)] = method[0]
+                if "_featid_" in featFunc.__name__:
+                    idstart = featFunc.__name__.index("_featid_") + len("_featid_")
+                    featid = int(featFunc.__name__[idstart:])
+                    theMethods[featid] = method[0]
 
         return theMethods
 

@@ -9,7 +9,7 @@ from nltk import ngrams
 from collections import Counter
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
-from preprocess_services import Preprocess_Services
+from infodens.preprocessor.preprocess_services import Preprocess_Services
 import os
 
 
