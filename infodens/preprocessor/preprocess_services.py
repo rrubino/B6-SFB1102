@@ -60,16 +60,18 @@ class Preprocess_Services:
     def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
 
-        binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
-        discount = ""
-
-        if kndiscount:
-            discount = " -kndiscount"
-
-        #print(langModelFile)
-        # ./ngram-count -text [corpus] -lm [output_language_model] -order 3 -write [output_ngram_file_path]
-        commandToRun = "{0} -text {1} -lm {2} -order {3}{4}".format(binaryLib, corpus,
-                                                                                 langModelFile, ngram, discount)
+        if not self.kenlmBins:
+            #No Kenlm use SRILM
+            binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))
+            discount = ""
+            if kndiscount:
+                discount = " -kndiscount"
+            commandToRun = "{0} -text {1} -lm {2} -order {3}{4}".format(binaryLib, corpus,
+                                                                                     langModelFile, ngram, discount)
+        else:
+            binaryLib = ("\"{0}lmplz\"".format(self.kenlmBins))
+            print(corpus)
+            commandToRun = "{0} -o {1} <{2} >{3}".format(binaryLib, ngram, corpus, langModelFile)
 
         print("Building Language Model..")
         #print(commandToRun)
