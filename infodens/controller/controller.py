@@ -25,6 +25,7 @@ class Controller:
         self.language = 'eng'
         self.numSentences = 0
         self.srilmBinPath = 0
+        self.kenlmBinPath = 0
         self.cv_folds = 1
         
         #array format of dataset and labels for classifying
@@ -98,6 +99,16 @@ class Controller:
                     print("Invalid SRILM binaries path.")
                 else:
                     self.srilmBinPath = os.path.join(self.srilmBinPath, '')
+            elif "kenlm" in configLine:
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip()
+                self.kenlmBinPath = configLine
+                if not os.path.isdir(self.kenlmBinPath):
+                    statusOK = 0
+                    print("Invalid KenLm binaries path.")
+                else:
+                    self.kenlmBinPath = os.path.join(self.kenlmBinPath, '')
             elif "operating language" in configLine:
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
@@ -186,7 +197,8 @@ class Controller:
     def manageFeatures(self):
         """Init and call a feature manager. """
         preprocessor = preprocess.Preprocess(self.inputFile, self.corpusLM,
-                                             self.threadsCount, self.language, self.srilmBinPath)
+                                             self.threadsCount, self.language, self.srilmBinPath,
+                                             self.kenlmBinPath)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")
             return 0

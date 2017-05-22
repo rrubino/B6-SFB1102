@@ -54,7 +54,7 @@ class Lang_model_features(Feature_extractor):
             return 1
 
         sentsFile = self.preprocessor.getInputFileName()
-        srilmBinary = self.preprocessor.getBinariesPath()
+        srilmBinary, kenlm = self.preprocessor.getBinariesPath()
 
         if not langModel:
             langModel = self.preprocessor.buildLanguageModel(ngramOrder)
@@ -123,7 +123,7 @@ class Lang_model_features(Feature_extractor):
                 taggedCorpus = "{0}_tagged_Corpus.txt".format(self.preprocessor.getCorpusLMName())
             langModel = self.preprocessor.buildLanguageModel(ngramOrder, taggedCorpus, False)
 
-        srilmBinary = self.preprocessor.getBinariesPath()
+        srilmBinary, kenlm = self.preprocessor.getBinariesPath()
 
         pplFile = "tempLang{0}{1}.ppl".format(os.path.basename(taggedInput), ngramOrder)
 

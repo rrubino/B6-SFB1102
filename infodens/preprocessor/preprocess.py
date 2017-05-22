@@ -17,7 +17,8 @@ class Preprocess:
     
     fileName = ''
     
-    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0, srilmpath=os.getcwd()):
+    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0, srilmpath="",
+                 kenlmbins=""):
         self.inputFile = fileName
         self.corpusForLM = corpusLM
         self.operatingLanguage = language
@@ -32,7 +33,9 @@ class Preprocess:
         self.word2vecModel = {}
         self.langModelFiles = []
         self.srilmBinaries = srilmpath
-        self.prep_servs = Preprocess_Services(srilmpath, language)
+        self.kenlmbins = kenlmbins
+        self.prep_servs = Preprocess_Services(srilmBinaries=srilmpath, kenlmBins=kenlmbins,
+                                              lang=language)
 
     def getLanguageMode(self):
         """Return the current language mode."""
@@ -53,7 +56,7 @@ class Preprocess:
         return self.corpusForLM
 
     def getBinariesPath(self):
-        return self.srilmBinaries
+        return self.srilmBinaries, self.kenlmbins
 
     def getPlainSentences(self):
         """Return sentences as read from file."""

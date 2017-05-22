@@ -12,8 +12,9 @@ import os
 
 class Preprocess_Services:
 
-    def __init__(self, srilmBinaries="", lang="eng"):
+    def __init__(self, srilmBinaries="", kenlmBins="", lang="eng"):
         self.srilmBinaries = srilmBinaries
+        self.kenlmBins = kenlmBins
         self.operatingLanguage = lang
 
     def preprocessBySentence(self, inputFile):
