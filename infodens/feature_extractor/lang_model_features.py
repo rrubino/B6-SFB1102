@@ -11,7 +11,6 @@ import subprocess
 import os
 import codecs
 
-
 class Lang_model_features(Feature_extractor):
 
     def extractValues(self, srilmOutput, sentCount):
@@ -40,7 +39,7 @@ class Lang_model_features(Feature_extractor):
         # Binary1/0,ngramOrder,LMFilePath(ifBinary1)
         arguments = argString.split(',')
         if(int(arguments[0])):
-            # Use file of tagged sents (last argument)
+            # Use given langModel
             langModel = "\"{0}\"".format(arguments[-1])
 
         ngramOrder = int(arguments[1])
@@ -59,19 +58,24 @@ class Lang_model_features(Feature_extractor):
         if not langModel:
             langModel = self.preprocessor.buildLanguageModel(ngramOrder)
 
-        pplFile = "tempLang{0}{1}.ppl".format(os.path.basename(sentsFile), ngramOrder)
-        command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
-                                                                                     langModel, sentsFile, pplFile)
+        if srilmBinary:
+            pplFile = "tempLang{0}{1}.ppl".format(os.path.basename(sentsFile), ngramOrder)
+            command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
+                                                                                         langModel, sentsFile, pplFile)
 
-        #print(command)
+            subprocess.call(command, shell=True)
+            probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
+            os.remove(pplFile)
+            return sparse.lil_matrix(probab)
 
-        subprocess.call(command, shell=True)
-        probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
-        os.remove(pplFile)
-
-        #print(probab[0])
-
-        return sparse.lil_matrix(probab)
+        else:
+            import pynlpl.lm.lm as pineApple
+            arpaLM = pineApple.ARPALanguageModel(langModel[1:-1])
+            probab = []
+            for sent in self.preprocessor.gettokenizeSents():
+                probab.append([arpaLM.score(sent)])
+            output = sparse.lil_matrix(probab)
+            return output
 
 
     @featid(18)
@@ -125,14 +129,23 @@ class Lang_model_features(Feature_extractor):
 
         srilmBinary, kenlm = self.preprocessor.getBinariesPath()
 
-        pplFile = "tempLang{0}{1}.ppl".format(os.path.basename(taggedInput), ngramOrder)
+        if srilmBinary:
+            pplFile = "tempLang{0}{1}.ppl".format(os.path.basename(taggedInput), ngramOrder)
 
-        command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
-                                                                                       langModel, taggedInput, pplFile)
+            command = "\"{0}ngram\" -order {1} -lm {2} -ppl {3} -debug 1 -unk> {4}".format(srilmBinary, ngramOrder,
+                                                                                           langModel, taggedInput, pplFile)
 
-        subprocess.call(command, shell=True)
-        probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
-        os.remove(pplFile)
-
-        return sparse.lil_matrix(probab)
+            subprocess.call(command, shell=True)
+            probab = self.extractValues(pplFile, self.preprocessor.getSentCount())
+            os.remove(pplFile)
+            return sparse.lil_matrix(probab)
+        else:
+            import pynlpl.lm.lm as pineApple
+            arpaLM = pineApple.ARPALanguageModel(langModel[1:-1])
+            probab = []
+            # TODO: get Tokenized POS (from taggedInput)
+            for sent in self.preprocessor.gettokenizeSents():
+                probab.append([arpaLM.score(sent)])
+            output = sparse.lil_matrix(probab)
+            return output
 

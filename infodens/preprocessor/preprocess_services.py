@@ -66,7 +66,7 @@ class Preprocess_Services:
             discount = ""
             if kndiscount:
                 discount = " -kndiscount"
-            commandToRun = "{0} -text {1} -lm {2} -order {3}{4}".format(binaryLib, corpus,
+            commandToRun = "{0} -text {1} -lm {2} -unk -order {3}{4}".format(binaryLib, corpus,
                                                                                      langModelFile, ngram, discount)
         else:
             binaryLib = ("\"{0}lmplz\"".format(self.kenlmBins))
