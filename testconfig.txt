@@ -1,6 +1,6 @@
-1
+#1
 # This is a comment
-2
+#2
 #classifiers : RandomForest
 training corpus: data\testSent2.txt
 #srilm path : C:\Users\Gilanios 2\Documents\GitHub\srilm-1.7.2\bin\Debug
@@ -13,8 +13,8 @@ classifiers : SVC_linear
 #classifiers : Random_Forest
 #3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-4 1,1
-4 2,2
+#4 1,1
+#4 2,2
 #20
 #5 1,10
 #5 1,10,1,testSent2.txt
