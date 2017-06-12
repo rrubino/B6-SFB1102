@@ -158,3 +158,7 @@ class Lang_model_features(Feature_extractor):
             output = sparse.lil_matrix(probab)
             return output
 
+    @featid(19)
+    def quantileNgramSurprisal(self, argString, preprocessReq=0):
+
+        return 0

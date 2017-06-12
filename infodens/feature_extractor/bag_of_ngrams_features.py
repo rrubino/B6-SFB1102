@@ -64,25 +64,19 @@ class Bag_of_ngrams_features(Feature_extractor):
             self.preprocessReqHandle(type, filePOS)
             return 1
 
-        ngramVoc = []
-        listOfSentences = []
-
         if type is "plain":
-            finNgram, numberOfFeatures = self.preprocessor.buildTokenNgrams(n, freq)
             listOfSentences = self.preprocessor.gettokenizeSents()
         elif type is "POS":
-            finNgram, numberOfFeatures = self.preprocessor.buildPOSNgrams(n, freq, filePOS)
             listOfSentences = self.preprocessor.getPOStagged(filePOS)
         elif type is "lemma":
-            finNgram, numberOfFeatures = self.preprocessor.buildLemmaNgrams(n, freq)
             listOfSentences = self.preprocessor.getLemmatizedSents()
         elif type is "mixed":
-            finNgram, numberOfFeatures = self.preprocessor.buildMixedNgrams(n, freq)
             listOfSentences = self.preprocessor.getMixedSents()
         else:
             #Assume plain
-            finNgram, numberOfFeatures = self.preprocessor.buildTokenNgrams(n, freq)
             listOfSentences = self.preprocessor.gettokenizeSents()
+
+        finNgram, numberOfFeatures = self.preprocessor.prep_servs.buildNgrams(n, freq, listOfSentences)
 
         print("Ngrams built.")
 

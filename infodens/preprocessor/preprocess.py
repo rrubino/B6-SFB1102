@@ -5,7 +5,6 @@ Created on Tue Aug 30 15:19:12 2016
 @author: admin
 """
 import nltk
-from nltk import ngrams
 from collections import Counter
 from nltk.stem.wordnet import WordNetLemmatizer
 import subprocess
@@ -158,38 +157,4 @@ class Preprocess:
             self.word2vecModel[size] = self.prep_servs.trainWord2Vec(size, self.corpusForLM, self.threadsCount)
         return self.word2vecModel[size]
 
-    def buildNgramsType(self, type, n, freq, filePOS=0):
-        """Build and return given type of ngram."""
-        if type is "plain":
-            self.gettokenizeSents()
-            ngramsList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
-        elif type is "POS":
-            self.getPOStagged(filePOS)
-            ngramsList = [list(ngrams(self.taggedPOSSents[i], n)) for i in range(len(self.taggedPOSSents))]
-        elif type is "lemma":
-            self.getLemmatizedSents()
-            ngramsList = [list(ngrams(self.lemmatizedSents[i], n)) for i in range(len(self.lemmatizedSents))]
-        elif type is "mixed":
-            self.getMixedSents()
-            ngramsList = [list(ngrams(self.mixedSents[i], n)) for i in range(len(self.mixedSents))]
-        else:
-            #treat as plain
-            self.gettokenizeSents()
-            ngramsList = [list(ngrams(self.tokenSents[i], n)) for i in range(len(self.tokenSents))]
-
-        ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
-
-        return self.prep_servs.ngramMinFreq(Counter(ngramsOutput), freq)
-
-    def buildTokenNgrams(self, n, freq):
-        return self.buildNgramsType("plain", n, freq)
-
-    def buildPOSNgrams(self, n, freq, filePOS=0):
-        return self.buildNgramsType("POS", n, freq, filePOS)
-
-    def buildLemmaNgrams(self, n, freq):
-        return self.buildNgramsType("lemma", n, freq)
-        
-    def buildMixedNgrams(self, n, freq):
-        return self.buildNgramsType("mixed", n, freq)
 

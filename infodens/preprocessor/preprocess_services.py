@@ -8,6 +8,7 @@ import codecs
 import nltk
 import subprocess
 import os
+from collections import Counter
 
 
 class Preprocess_Services:
@@ -56,6 +57,12 @@ class Preprocess_Services:
             taggedPOSSents.append([wordAndTag[1] for wordAndTag in tagPOSSents[i]])
         print("POS tagging done.")
         return taggedPOSSents
+
+    def buildNgrams(self, n, freq, tokens):
+        """Build and return ngrams from given tokens."""
+        ngramsList = [list(nltk.ngrams(tokens[i], n)) for i in range(len(tokens))]
+        ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
+        return self.ngramMinFreq(Counter(ngramsOutput), freq)
 
     def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
