@@ -69,7 +69,7 @@ class Preprocess_Services:
     #     else:
     #         return ngramsDict, len(ngramsDict)
 
-    def buildNgrams(self, n, freq, tokens, returnCounts=False):
+    def buildNgrams(self, n, freq, tokens, indexing=True):
         """Build and return ngrams from given tokens."""
         ngramsDict = defaultdict(int)
         for sent in tokens:
@@ -77,10 +77,7 @@ class Preprocess_Services:
             for anNgram in ngramsList:
                 ngramsDict[anNgram] += 1
 
-        if not returnCounts:
-            return self.ngramMinFreq(ngramsDict, freq)
-        else:
-            return ngramsDict, len(ngramsDict)
+        return self.ngramMinFreq(ngramsDict, freq, indexing)
 
     def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
@@ -125,13 +122,18 @@ class Preprocess_Services:
 
         return model
 
-    def ngramMinFreq(self, anNgram, freq):
+    def ngramMinFreq(self, anNgram, freq, indexing=True):
         indexOfngram = 0
         finalNgram = {}
         """Return anNgram with entries that have frequency greater or equal freq"""
-        for k in anNgram.keys():
-            if anNgram[k] >= freq:
-                finalNgram[k] = indexOfngram
-                indexOfngram += 1
+        if indexing:
+            for k in anNgram.keys():
+                if anNgram[k] >= freq:
+                    finalNgram[k] = indexOfngram
+                    indexOfngram += 1
+        else:
+            for k in anNgram.keys():
+                if anNgram[k] >= freq:
+                    finalNgram[k] = anNgram[k]
 
-        return finalNgram, indexOfngram
+        return finalNgram, len(finalNgram)

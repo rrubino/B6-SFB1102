@@ -8,10 +8,12 @@ from infodens.feature_extractor.feature_extractor import featid, Feature_extract
 from scipy import sparse
 import numpy as np
 from collections import Counter
+import operator
 from nltk import ngrams
 import subprocess
 import os
 import codecs
+
 
 class Lang_model_features(Feature_extractor):
 
@@ -88,7 +90,6 @@ class Lang_model_features(Feature_extractor):
                 output = sparse.lil_matrix(probab)
                 return output
 
-
     @featid(18)
     def langModelPOSFeat(self, argString, preprocessReq=0):
         '''
@@ -160,19 +161,20 @@ class Lang_model_features(Feature_extractor):
             output = sparse.lil_matrix(probab)
             return output
 
-    def getSplits(counts, sumcounts):
+    def getSplits(self, counts, sumcounts):
         splits = []
         tmpsum = 0
         prevsum = 0
-        for i in range(len(counts)):
+
+        for i in range(0, len(counts)):
             tmpsum += counts[i]
-            if tmpsum > s:
-                if np.abs(s - prevsum) <= np.abs(s - tmpsum):
-                    splits.append(str(i))
+            if tmpsum > sumcounts:
+                if np.abs(sumcounts - prevsum) <= np.abs(sumcounts - tmpsum):
                     tmpsum = counts[i]
+                    splits.append(i)
                 else:
-                    splits.append(str(i + 1))
                     tmpsum = 0
+                    splits.append(i + 1)
             prevsum = tmpsum
         return splits
 
@@ -201,7 +203,7 @@ class Lang_model_features(Feature_extractor):
             # splits
             if len(argStringList) > 2:
                 if argStringList[2].isdigit():
-                    splits = argStringList[2]
+                    splits = int(argStringList[2])
                 else:
                     print('Error: splits should be an integer')
                     status = 0
@@ -224,9 +226,7 @@ class Lang_model_features(Feature_extractor):
         tokensCorpus = self.preprocessor.prep_servs.getFileTokens(self.preprocessor.getCorpusLMName())
 
         finNgram, numberOfFeatures = self.preprocessor.prep_servs.buildNgrams(n, freq,
-                                                                              tokensCorpus, returnCounts=True)
-
-        print(finNgram)
+                                                                              tokensCorpus, indexing=False)
 
         print("Ngrams built.")
 
@@ -234,19 +234,49 @@ class Lang_model_features(Feature_extractor):
             print("Cut-off too high, no ngrams passed it.")
             return []
 
+        listNgrams = sorted(finNgram.items(), key=operator.itemgetter(1), reverse=True)
+        #print(listNgrams)
+        ngramsKeys, ngramCounts = zip(*listNgrams)
+
+        ngramCounts = list(ngramCounts)
+        ngramsKeys = list(ngramsKeys)
+
+        indecesSplit = self.getSplits(ngramCounts, splits)
+        print(indecesSplit)
+
+        splitIndex = 0
+        quantile = 1
+        finNgram = {}
+        for i in range(0, len(ngramsKeys)):
+            #print(indecesSplit[splitIndex])
+            if splitIndex < len(indecesSplit) and i >= indecesSplit[splitIndex]:
+                quantile += 1
+                splitIndex += 1
+            finNgram[ngramsKeys[i]] = quantile
+
+        #print(finNgram)
+        #print(quantile)
+
         listOfSentences = self.preprocessor.gettokenizeSents()
-        ngramFeatures = sparse.lil_matrix((len(listOfSentences), numberOfFeatures))
+        ngramFeatures = sparse.lil_matrix((len(listOfSentences), quantile))
 
         print("Extracting ngram feats.")
 
         for i in range(len(listOfSentences)):
             ngramsVocab = Counter(ngrams(listOfSentences[i], n))
-            lenSent = len(listOfSentences[i])
+            lenSent = 0
             for ngramEntry in ngramsVocab:
                 ## Keys
                 ngramIndex = finNgram.get(ngramEntry, -1)
                 if ngramIndex >= 0:
-                    ngramFeatures[i, ngramIndex] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
+                    ngramIndex -= 1
+                    toAdd = ngramsVocab[ngramEntry] #*finNgram[ngramEntry]
+                    ngramFeatures[i, ngramIndex] += toAdd
+                    lenSent += toAdd
+                for j in range(0, quantile):
+                    ngramFeatures[i, j] /= lenSent
+
+        #print(ngramFeatures)
 
         print("Finished ngram features.")
         ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
