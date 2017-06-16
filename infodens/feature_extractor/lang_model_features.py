@@ -218,7 +218,7 @@ class Lang_model_features(Feature_extractor):
             self.preprocessor.gettokenizeSents()
             return 1
 
-        status, n, freq, splits = self.ngramArgCheck(argString)
+        status, n, freq, splitSum = self.ngramArgCheck(argString)
         if not status:
             # Error in argument.
             return
@@ -235,27 +235,22 @@ class Lang_model_features(Feature_extractor):
             return []
 
         listNgrams = sorted(finNgram.items(), key=operator.itemgetter(1), reverse=True)
-        #print(listNgrams)
         ngramsKeys, ngramCounts = zip(*listNgrams)
 
         ngramCounts = list(ngramCounts)
         ngramsKeys = list(ngramsKeys)
 
-        indecesSplit = self.getSplits(ngramCounts, splits)
-        print(indecesSplit)
+        indecesSplit = self.getSplits(ngramCounts, splitSum)
+        #print(indecesSplit)
 
         splitIndex = 0
         quantile = 1
         finNgram = {}
         for i in range(0, len(ngramsKeys)):
-            #print(indecesSplit[splitIndex])
             if splitIndex < len(indecesSplit) and i >= indecesSplit[splitIndex]:
                 quantile += 1
                 splitIndex += 1
             finNgram[ngramsKeys[i]] = quantile
-
-        #print(finNgram)
-        #print(quantile)
 
         listOfSentences = self.preprocessor.gettokenizeSents()
         ngramFeatures = sparse.lil_matrix((len(listOfSentences), quantile))
@@ -270,13 +265,13 @@ class Lang_model_features(Feature_extractor):
                 ngramIndex = finNgram.get(ngramEntry, -1)
                 if ngramIndex >= 0:
                     ngramIndex -= 1
-                    toAdd = ngramsVocab[ngramEntry] #*finNgram[ngramEntry]
+                    toAdd = ngramsVocab[ngramEntry]
                     ngramFeatures[i, ngramIndex] += toAdd
                     lenSent += toAdd
+
+            if lenSent:
                 for j in range(0, quantile):
                     ngramFeatures[i, j] /= lenSent
-
-        #print(ngramFeatures)
 
         print("Finished ngram features.")
         ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)

@@ -13,8 +13,8 @@ classifiers : SVC_linear
 #classifiers : Random_Forest
 #3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-#4 1,1
-#4 2,2
+4 1,1
+4 2,1
 #20
 #5 1,10
 #5 1,10,1,testSent2.txt
@@ -30,7 +30,8 @@ classifiers : SVC_linear
 #17 0,3
 #18 0,0,0,3
 #18 1,0,1,3,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_tagged_Input.txt,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_tagged_Corpus.txt
-19 1,1,10000
+19 1,1,1000
+19 2,1,1000
 
 #output classifier: report1.txt
 #output features: feats.txt libsvm
