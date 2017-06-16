@@ -7,6 +7,8 @@ Created on Sun Sep 04 14:12:49 2016
 from infodens.feature_extractor.feature_extractor import featid, Feature_extractor
 from scipy import sparse
 import numpy as np
+from collections import Counter
+from nltk import ngrams
 import subprocess
 import os
 import codecs
@@ -158,7 +160,96 @@ class Lang_model_features(Feature_extractor):
             output = sparse.lil_matrix(probab)
             return output
 
+    def getSplits(counts, sumcounts):
+        splits = []
+        tmpsum = 0
+        prevsum = 0
+        for i in range(len(counts)):
+            tmpsum += counts[i]
+            if tmpsum > s:
+                if np.abs(s - prevsum) <= np.abs(s - tmpsum):
+                    splits.append(str(i))
+                    tmpsum = counts[i]
+                else:
+                    splits.append(str(i + 1))
+                    tmpsum = 0
+            prevsum = tmpsum
+        return splits
+
+    def ngramArgCheck(self, argString):
+
+        #format : 1,2,5
+
+        status = 1
+        n = 0
+        freq = 1
+        #default of 4 splits
+        splits = 4
+
+        argStringList = argString.split(',')
+        if argStringList[0].isdigit():
+            n = int(argStringList[0])
+        else:
+            print('Error: n should be an integer')
+            status = 0
+        if len(argStringList) > 1:
+            if argStringList[1].isdigit():
+                freq = int(argStringList[1])
+            else:
+                print('Error: frequency should be an integer')
+                status = 0
+            # splits
+            if len(argStringList) > 2:
+                if argStringList[2].isdigit():
+                    splits = argStringList[2]
+                else:
+                    print('Error: splits should be an integer')
+                    status = 0
+
+        return status, n, freq, splits
+
     @featid(19)
     def quantileNgramSurprisal(self, argString, preprocessReq=0):
 
-        return 0
+        # Handle preprocessing requests and exit
+        if preprocessReq:
+            self.preprocessor.gettokenizeSents()
+            return 1
+
+        status, n, freq, splits = self.ngramArgCheck(argString)
+        if not status:
+            # Error in argument.
+            return
+
+        tokensCorpus = self.preprocessor.prep_servs.getFileTokens(self.preprocessor.getCorpusLMName())
+
+        finNgram, numberOfFeatures = self.preprocessor.prep_servs.buildNgrams(n, freq,
+                                                                              tokensCorpus, returnCounts=True)
+
+        print(finNgram)
+
+        print("Ngrams built.")
+
+        if numberOfFeatures == 0:
+            print("Cut-off too high, no ngrams passed it.")
+            return []
+
+        listOfSentences = self.preprocessor.gettokenizeSents()
+        ngramFeatures = sparse.lil_matrix((len(listOfSentences), numberOfFeatures))
+
+        print("Extracting ngram feats.")
+
+        for i in range(len(listOfSentences)):
+            ngramsVocab = Counter(ngrams(listOfSentences[i], n))
+            lenSent = len(listOfSentences[i])
+            for ngramEntry in ngramsVocab:
+                ## Keys
+                ngramIndex = finNgram.get(ngramEntry, -1)
+                if ngramIndex >= 0:
+                    ngramFeatures[i, ngramIndex] = round((float(ngramsVocab[ngramEntry]) / lenSent), 2)
+
+        print("Finished ngram features.")
+        ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
+        print(ngramLength)
+
+        return ngramFeatures

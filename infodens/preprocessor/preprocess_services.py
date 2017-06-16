@@ -9,6 +9,7 @@ import nltk
 import subprocess
 import os
 from collections import Counter
+from collections import defaultdict
 
 
 class Preprocess_Services:
@@ -58,11 +59,28 @@ class Preprocess_Services:
         print("POS tagging done.")
         return taggedPOSSents
 
-    def buildNgrams(self, n, freq, tokens):
+    # def buildNgrams(self, n, freq, tokens, returnCounts=False):
+    #     """Build and return ngrams from given tokens."""
+    #     ngramsList = [list(nltk.ngrams(tokens[i], n)) for i in range(len(tokens))]
+    #     ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
+    #     ngramsDict = Counter(ngramsOutput)
+    #     if not returnCounts:
+    #         return self.ngramMinFreq(ngramsDict, freq)
+    #     else:
+    #         return ngramsDict, len(ngramsDict)
+
+    def buildNgrams(self, n, freq, tokens, returnCounts=False):
         """Build and return ngrams from given tokens."""
-        ngramsList = [list(nltk.ngrams(tokens[i], n)) for i in range(len(tokens))]
-        ngramsOutput = [item for sublist in ngramsList for item in sublist]  # flatten the list
-        return self.ngramMinFreq(Counter(ngramsOutput), freq)
+        ngramsDict = defaultdict(int)
+        for sent in tokens:
+            ngramsList = list(nltk.ngrams(sent, n))
+            for anNgram in ngramsList:
+                ngramsDict[anNgram] += 1
+
+        if not returnCounts:
+            return self.ngramMinFreq(ngramsDict, freq)
+        else:
+            return ngramsDict, len(ngramsDict)
 
     def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
