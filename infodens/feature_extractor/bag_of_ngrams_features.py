@@ -90,8 +90,8 @@ class Bag_of_ngrams_features(Feature_extractor):
 
         for i in range(len(listOfSentences)):
             ngramsVocab = Counter(ngrams(listOfSentences[i], n))
-            lenSent = len(listOfSentences[i])
-            # Bug? not lenSent but ngram count
+            lenSent = len(ngramsVocab)
+
             for ngramEntry in ngramsVocab:
                 ## Keys
                 ngramIndex = finNgram.get(ngramEntry, -1)

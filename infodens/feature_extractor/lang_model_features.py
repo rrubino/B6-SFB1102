@@ -161,7 +161,7 @@ class Lang_model_features(Feature_extractor):
             output = sparse.lil_matrix(probab)
             return output
 
-    def getSplits(self, counts, sumcounts):
+    def getSplits(self, counts, sumcounts, splitCount):
         splits = []
         tmpsum = 0
         prevsum = 0
@@ -175,6 +175,8 @@ class Lang_model_features(Feature_extractor):
                 else:
                     tmpsum = 0
                     splits.append(i + 1)
+                if len(splits) == splitCount-1:
+                    return splits
             prevsum = tmpsum
         return splits
 
@@ -218,7 +220,7 @@ class Lang_model_features(Feature_extractor):
             self.preprocessor.gettokenizeSents()
             return 1
 
-        status, n, freq, splitSum = self.ngramArgCheck(argString)
+        status, n, freq, nQuantas = self.ngramArgCheck(argString)
         if not status:
             # Error in argument.
             return
@@ -238,14 +240,17 @@ class Lang_model_features(Feature_extractor):
         ngramsKeys, ngramCounts = zip(*listNgrams)
 
         ngramCounts = list(ngramCounts)
+        splitSum = int(sum(ngramCounts)/nQuantas)
+
         ngramsKeys = list(ngramsKeys)
 
-        indecesSplit = self.getSplits(ngramCounts, splitSum)
+        indecesSplit = self.getSplits(ngramCounts, splitSum, nQuantas)
         #print(indecesSplit)
 
         splitIndex = 0
         quantile = 1
         finNgram = {}
+
         for i in range(0, len(ngramsKeys)):
             if splitIndex < len(indecesSplit) and i >= indecesSplit[splitIndex]:
                 quantile += 1
@@ -274,7 +279,5 @@ class Lang_model_features(Feature_extractor):
                     ngramFeatures[i, j] /= lenSent
 
         print("Finished ngram features.")
-        ngramLength = "Ngram feature vector length: " + str(numberOfFeatures)
-        print(ngramLength)
 
         return ngramFeatures
