@@ -3,6 +3,7 @@ from infodens.preprocessor import preprocess
 from infodens.preprocessor.preprocess_services import Preprocess_Services
 from infodens.classifier import classifier_manager
 from infodens.formater import format
+from configurator import Configurator
 import os.path
 
 
@@ -12,158 +13,12 @@ class Controller:
 
     def __init__(self, configFile =None):
         self.config = configFile
-        self.featureIDs = []
-        self.featargs = []
-        self.inputClasses = []
-        self.classifiersList = []
-        self.inputFile = 0
-        self.classifReport = 0
-        self.corpusLM = 0
-        self.featOutput = 0
-        self.featOutFormat = 0
-        self.threadsCount = 1
-        self.language = 'eng'
-        self.numSentences = 0
-        self.srilmBinPath = 0
-        self.kenlmBinPath = 0
-        self.cv_folds = 1
-        
+        self.configurator = Configurator()
+
         #array format of dataset and labels for classifying
+        self.numSentences = 0
         self.extractedFeats = []
         self.classesList = []
-
-    def parseOutputLine(self, line):
-        status = 1
-        startInp = line.index(':')
-        outputLine = line[startInp + 1:]
-        outputLine = outputLine.strip().split()
-        if "classif" in line and not self.classifReport :
-            self.classifReport = outputLine[0]
-        elif "feat" in line and not self.featOutput:
-            if len(outputLine) == 2:
-                self.featOutput = outputLine[0]
-                self.featOutFormat = outputLine[1]
-            elif len(outputLine) == 1:
-                self.featOutput = outputLine[0]
-            else:
-                status = 0
-                print("Incorrect number of output params, should be exactly 2")
-        else:
-            print("Unsupported output type")
-            status = 0
-
-        return status
-
-    def parseConfig(self, configFile):
-        """Parse the config file lines.      """
-        statusOK = 1
-
-        for configLine in configFile:
-            configLine = configLine.strip()
-            if not statusOK:
-                break
-            if len(configLine) < 1:
-                # Line is empty
-                continue
-            elif configLine[0] is '#':
-                # Line is comment
-                continue
-            elif "input files" in configLine:
-                # Extract input files
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                self.inputFile = configLine[0]
-                self.inputClasses = configLine[1]
-                print("Input File: ")
-                print(self.inputFile)
-            elif "output" in configLine:
-                statusOK = self.parseOutputLine(configLine)
-            elif "classif" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                self.classifiersList = configLine
-            elif "training corpus" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                self.corpusLM = configLine[0]
-            elif "SRILM" in configLine or "srilm" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip()
-                self.srilmBinPath = configLine
-                if not os.path.isdir(self.srilmBinPath):
-                    statusOK = 0
-                    print("Invalid SRILM binaries path.")
-                else:
-                    self.srilmBinPath = os.path.join(self.srilmBinPath, '')
-            elif "kenlm" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip()
-                self.kenlmBinPath = configLine
-                if not os.path.isdir(self.kenlmBinPath):
-                    statusOK = 0
-                    print("Invalid KenLm binaries path.")
-                else:
-                    self.kenlmBinPath = os.path.join(self.kenlmBinPath, '')
-            elif "operating language" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                self.language = configLine
-                #print(self.language)
-            elif "thread" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                if configLine[0].isdigit():
-                    threads = int(configLine[0])
-                    if threads > 0:
-                        #handle single thread case
-                        self.threadsCount = threads if threads < 3 else threads-1
-                    else:
-                        statusOK = 0
-                        print("Number of threads is not a positive integer.")
-                    #print(self.threadsCount)
-                else:
-                    statusOK = 0
-                    print("Number of threads is not a positive integer.")
-            elif "fold" in configLine:
-                startInp = configLine.index(':')
-                configLine = configLine[startInp + 1:]
-                configLine = configLine.strip().split()
-                if configLine[0].isdigit():
-                    folds = int(configLine[0])
-                    if folds > 0:
-                        self.cv_folds = folds
-
-                    else:
-                        statusOK = 0
-                        print("Number of folds is not a positive integer.")
-                else:
-                    statusOK = 0
-                    print("Number of folds is not a positive integer.")
-            else:
-                params = str(configLine).split(' ', 1)
-                if len(params) == 2 or len(params) == 1:
-                    if params[0].isdigit():
-                        self.featureIDs.append(int(params[0]))
-                        if len(params) == 2:
-                            self.featargs.append(params[1])
-                        else:
-                            self.featargs.append([])
-                    else:
-                        statusOK = 0
-                        print("Feature ID is not a Number")
-                else:
-                    # Incorrect number/value of params
-                    statusOK = 0
-                    print("Incorrect number of params, max 2 parameters.")
-
-        return statusOK
 
     def loadConfig(self):
         """Read the config file, extract the featureIDs and
@@ -173,20 +28,20 @@ class Controller:
         # Extract featureID and feature Argument string
         with open(self.config) as config:
             # Parse the config file
-            statusOK = self.parseConfig(config)
+            statusOK = self.configurator.parseConfig(config)
 
-            if self.inputFile is 0 and statusOK:
+            if self.configurator.inputFile is 0 and statusOK:
                 print("Error, Input file not found.")
                 statusOK = 0
 
-        return statusOK, self.featureIDs, self.classifiersList
+        return statusOK, self.configurator.featureIDs, self.configurator.classifiersList
 
     def classesSentsMismatch(self, sentsPrep):
-        if self.inputClasses:
+        if self.configurator.inputClasses:
             # Extract the classed IDs from the given classes file and Check for
             # Length equality with the sentences.
             prep_serv = Preprocess_Services()
-            self.classesList = prep_serv.preprocessClassID(self.inputClasses)
+            self.classesList = prep_serv.preprocessClassID(self.configurator.inputClasses)
             sentLen = len(sentsPrep.getPlainSentences())
             classesLen = len(self.classesList)
             self.numSentences = sentLen
@@ -196,15 +51,16 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.inputFile, self.corpusLM,
-                                             self.threadsCount, self.language, self.srilmBinPath,
-                                             self.kenlmBinPath)
+        preprocessor = preprocess.Preprocess(self.configurator.inputFile, self.configurator.corpusLM,
+                                             self.configurator.threadsCount, self.configurator.language,
+                                             self.configurator.srilmBinPath, self.configurator.kenlmBinPath)
         if self.classesSentsMismatch(preprocessor):
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.Feature_manager(self.numSentences, self.featureIDs, self.featargs,
-                                                    preprocessor, self.threadsCount)
+            manageFeatures = featman.Feature_manager(self.numSentences, self.configurator.featureIDs,
+                                                     self.configurator.featargs, preprocessor,
+                                                     self.configurator.threadsCount)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
                 # Continue to call features
@@ -225,21 +81,21 @@ class Controller:
     def outputFeatures(self):
         """Output features if requested."""
 
-        if self.featOutput:
+        if self.configurator.featOutput:
             formatter = format.Format(self.extractedFeats, self.classesList)
             # if format is not set in config, will use a default libsvm output.
-            formatter.outFormat(self.featOutput, self.featOutFormat)
+            formatter.outFormat(self.configurator.featOutput, self.configurator.featOutFormat)
         else:
             print("Feature output was not specified.")
 
     def classifyFeats(self):
         """Instantiate a classifier Manager then run it. """
 
-        if self.inputClasses and self.classifiersList:
+        if self.configurator.inputClasses and self.configurator.classifiersList:
             # Classify if the parameters needed are specified
             classifying = classifier_manager.Classifier_manager(
-                          self.classifiersList, self.extractedFeats, self.classesList, self.threadsCount,
-                            self.cv_folds)
+                          self.configurator.classifiersList, self.extractedFeats, self.classesList,
+                            self.configurator.threadsCount, self.configurator.cv_folds)
 
             validClassifiers = classifying.checkValidClassifier()
 
@@ -248,8 +104,8 @@ class Controller:
                 reportOfClassif = classifying.callClassifiers()
                 print(reportOfClassif)
                 # Write output if file specified
-                if self.classifReport:
-                    with open(self.classifReport, 'w') as classifOut:
+                if self.configurator.classifReport:
+                    with open(self.configurator.classifReport, 'w') as classifOut:
                         classifOut.write(reportOfClassif)
                 return 0
             else:

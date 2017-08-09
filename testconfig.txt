@@ -1,4 +1,4 @@
-#1
+1
 # This is a comment
 #2
 #classifiers : RandomForest
@@ -33,8 +33,8 @@ classifiers : SVC_linear
 #19 1,1,4
 #19 2,1,4
 
-#output classifier: report1.txt
-#output features: feats.txt libsvm
+output classifier: report1.txt
+output features: feats.txt libsvm
 
 input files : data\testSent2.txt data\testSentClasses2.txt
 #input files : literature.fr literature.classes
