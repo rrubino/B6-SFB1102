@@ -1,6 +1,7 @@
 from infodens.controller.controller import Controller
 import sys
 
+
 def infodensRun(configFile):
     # Init a Controller.
     control = Controller(configFile)

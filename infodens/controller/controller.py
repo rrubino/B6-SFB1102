@@ -3,7 +3,7 @@ from infodens.preprocessor import preprocess
 from infodens.preprocessor.preprocess_services import Preprocess_Services
 from infodens.classifier import classifier_manager
 from infodens.formater import format
-from configurator import Configurator
+from infodens.controller.configurator import Configurator
 import os.path
 
 

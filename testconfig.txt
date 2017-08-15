@@ -36,6 +36,6 @@ classifiers : SVC_linear
 output classifier: report1.txt
 output features: feats.txt libsvm
 
-input files : data\testSent2.txt data\testSentClasses2.txt
+input files : data/testSent2.txt data/testSentClasses2.txt
 #input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'
