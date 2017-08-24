@@ -1,5 +1,4 @@
 from infodens.feature_extractor import feature_manager as featman
-from infodens.preprocessor import preprocess
 from infodens.preprocessor.preprocess_services import Preprocess_Services
 from infodens.classifier import classifier_manager
 from infodens.formater import format
@@ -36,13 +35,13 @@ class Controller:
 
         return statusOK, self.configurator.featureIDs, self.configurator.classifiersList
 
-    def classesSentsMismatch(self, sentsPrep):
+    def classesSentsMismatch(self):
         if self.configurator.inputClasses:
             # Extract the classed IDs from the given classes file and Check for
             # Length equality with the sentences.
             prep_serv = Preprocess_Services()
             self.classesList = prep_serv.preprocessClassID(self.configurator.inputClasses)
-            sentLen = len(sentsPrep.getPlainSentences())
+            sentLen = len(prep_serv.preprocessBySentence(self.configurator.inputFile))
             classesLen = len(self.classesList)
             self.numSentences = sentLen
             if sentLen != classesLen:
@@ -51,16 +50,11 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        preprocessor = preprocess.Preprocess(self.configurator.inputFile, self.configurator.corpusLM,
-                                             self.configurator.threadsCount, self.configurator.language,
-                                             self.configurator.srilmBinPath, self.configurator.kenlmBinPath)
-        if self.classesSentsMismatch(preprocessor):
+        if self.classesSentsMismatch():
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:
-            manageFeatures = featman.Feature_manager(self.numSentences, self.configurator.featureIDs,
-                                                     self.configurator.featargs, preprocessor,
-                                                     self.configurator.threadsCount)
+            manageFeatures = featman.Feature_manager(self.numSentences, self.configurator)
             validFeats = manageFeatures.checkFeatValidity()
             if validFeats:
                 # Continue to call features

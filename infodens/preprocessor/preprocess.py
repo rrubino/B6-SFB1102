@@ -16,13 +16,13 @@ class Preprocess:
     
     fileName = ''
     
-    def __init__(self, fileName, corpusLM=0, nthreads=1, language=0, srilmpath="",
-                 kenlmbins=""):
-        self.inputFile = fileName
-        self.corpusForLM = corpusLM
-        self.operatingLanguage = language
+    def __init__(self, configurator):
+
+        self.inputFile = configurator.inputFile
+        self.corpusForLM = configurator.corpusLM
+        self.operatingLanguage = configurator.language
         self.sentCount = 0
-        self.threadsCount = nthreads
+        self.threadsCount = configurator.threadsCount
         self.plainLof = []
         self.tokenSents = []
         self.parseTrees = []
@@ -31,10 +31,11 @@ class Preprocess:
         self.mixedSents = []
         self.word2vecModel = {}
         self.langModelFiles = []
-        self.srilmBinaries = srilmpath
-        self.kenlmbins = kenlmbins
-        self.prep_servs = Preprocess_Services(srilmBinaries=srilmpath, kenlmBins=kenlmbins,
-                                              lang=language)
+        self.srilmBinaries = configurator.srilmBinPath
+        self.kenlmbins = configurator.kenlmBinPath
+        self.prep_servs = Preprocess_Services(srilmBinaries=configurator.srilmBinPath,
+                                              kenlmBins=configurator.kenlmBinPath,
+                                              lang=configurator.language)
 
     def getLanguageMode(self):
         """Return the current language mode."""

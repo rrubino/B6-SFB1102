@@ -4,6 +4,7 @@ import sys, inspect
 from joblib import Parallel, delayed
 import itertools
 from scipy import sparse
+from infodens.preprocessor import preprocess
 import infodens.feature_extractor.feature_extractor as feat_extr
 
 
@@ -24,11 +25,11 @@ class Feature_manager:
     And call the necessary feature extractors.
     """
 
-    def __init__(self, sentCount, featureIDs, featureArgs, preprocessed, threadsCount):
-        self.featureIDs = featureIDs
-        self.featureArgs = featureArgs
-        self.preprocessor = preprocessed
-        self.threads = threadsCount
+    def __init__(self, sentCount, configurator):
+        self.featureIDs = configurator.featureIDs
+        self.featureArgs = configurator.featargs
+        self.preprocessor = preprocess.Preprocess(configurator)
+        self.threads = configurator.threadsCount
         self.sentCount = sentCount
 
         sys.path.append(os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
