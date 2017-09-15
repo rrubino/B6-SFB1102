@@ -21,7 +21,7 @@ python infodens.py democonfig.txt
 The mandatory parameters for the config file are:
 
 ```
-input files : inputText classes
+input files : inputText
 
 featId1 argString1
 featId2 argString2
@@ -29,12 +29,46 @@ featId2 argString2
 .
 featIdN argStringN
 ```
-where "inputText" is the name of the file containing the sentences (one sentence per line) for which the features will be generated and "classes" which specifies the corresponding class label of each sentence.
+where "inputText" is the name of the file containing the sentences (one sentence per line) for which the features will be generated.
 
 The required features are then called by their IDs and after a white space the arguments of that feature are specified if needed.
 
-The current supported features are described in the following table.
+The current supported features are described in the table below.
 
+Optional parameters are shown below with description:
+
+```
+# Specifies the path for the file containing the class labels.
+# Each line gives the label to the corresponding input sentence
+# This parameter has to be specified for classification, and feature output
+input classes:  data/testSentClasses2.txt
+
+# Here you provide the corpus to be used for building language models and word embeddings
+training corpus: data/testSent2.txt
+
+# If SRILM is prefered for building language models, provide the binaries' path here
+srilm path : srilm/bin
+
+# ISO 639 code of the language of the files
+operating language : eng
+
+# The maximum number of processes to run
+threads : 3
+
+# How many folds of Cross validation
+folds : 1
+
+# Provide the classifiers required seprated by space
+#classifiers : Decision_Tree Random_Forest Ada_Boost Ensemble
+classifiers : SVC_linear
+
+# The classification report output
+output classifier: report1.txt
+
+# feature output file and format (libsvm and arff supported)
+output features: feats.txt libsvm
+
+```
 
 # List of Features:
 
