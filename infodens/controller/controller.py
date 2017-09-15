@@ -29,8 +29,10 @@ class Controller:
             # Parse the config file
             statusOK = self.configurator.parseConfig(config)
 
-            if self.configurator.inputFile is 0 and statusOK:
-                print("Error, Input file not found.")
+            if (not self.configurator.inputFile and statusOK) or\
+                    (not self.configurator.inputClasses and
+                         (self.configurator.classifiersList or self.configurator.featOutput)):
+                print("Error, Missing input files.")
                 statusOK = 0
 
         return statusOK, self.configurator.featureIDs, self.configurator.classifiersList
@@ -50,7 +52,7 @@ class Controller:
 
     def manageFeatures(self):
         """Init and call a feature manager. """
-        if self.classesSentsMismatch():
+        if self.configurator.inputClasses and self.classesSentsMismatch():
             print("Classes and Sentences length differ. Quiting. ")
             return 0
         else:

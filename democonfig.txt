@@ -1,5 +1,6 @@
 # Here we specify the input files, text and classes
-input files : data\testSent2.txt data\testSentClasses2.txt
+input file : data\testSent2.txt
+input classes: data\testSentClasses2.txt
 
 # We also specify a corpus for building LMs or Embeddings
 training corpus: data\testSent2.txt

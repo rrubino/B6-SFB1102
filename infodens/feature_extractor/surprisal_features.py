@@ -38,7 +38,6 @@ class Surprisal_features(Feature_extractor):
                             else:
                                 tmp.append(np.float32(0.0))
                         feats.append(tmp)
-        print(feats)
         return feats
 
     @featid(20)

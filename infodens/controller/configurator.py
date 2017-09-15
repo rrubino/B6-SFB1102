@@ -56,15 +56,22 @@ class Configurator:
             elif configLine[0] is '#':
                 # Line is comment
                 continue
-            elif "input files" in configLine:
-                # Extract input files
+            elif "input file" in configLine:
+                # Extract input file
                 startInp = configLine.index(':')
                 configLine = configLine[startInp + 1:]
                 configLine = configLine.strip().split()
                 self.inputFile = configLine[0]
-                self.inputClasses = configLine[1]
-                print("Input File: ")
+                print("Input file: ")
                 print(self.inputFile)
+            elif "input class" in configLine:
+                # Extract input classes file
+                startInp = configLine.index(':')
+                configLine = configLine[startInp + 1:]
+                configLine = configLine.strip().split()
+                self.inputClasses = configLine[0]
+                #print("Input classes: ")
+                #print(self.inputClasses)
             elif "output" in configLine:
                 statusOK = self.parseOutputLine(configLine)
             elif "classif" in configLine:
