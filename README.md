@@ -24,10 +24,10 @@ The mandatory parameters for the config file are:
 input files : inputText classes
 
 featId1 argString1
-featId1 argString2
+featId2 argString2
 .
 .
-.
+featIdN argStringN
 ```
 where "inputText" is the name of the file containing the sentences (one sentence per line) for which the features will be generated and "classes" which specifies the corresponding class label of each sentence.
 
