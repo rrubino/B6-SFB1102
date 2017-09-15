@@ -9,15 +9,15 @@ class Configurator:
         self.featargs = []
         self.inputClasses = []
         self.classifiersList = []
-        self.inputFile = 0
-        self.classifReport = 0
-        self.corpusLM = 0
-        self.featOutput = 0
-        self.featOutFormat = 0
+        self.inputFile = ""
+        self.classifReport = ""
+        self.corpusLM = ""
+        self.featOutput = ""
+        self.featOutFormat = ""
         self.threadsCount = 1
         self.language = 'eng'
-        self.srilmBinPath = 0
-        self.kenlmBinPath = 0
+        self.srilmBinPath = ""
+        self.kenlmBinPath = ""
         self.cv_folds = 1
 
     def parseOutputLine(self, line):
