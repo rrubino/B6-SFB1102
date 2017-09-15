@@ -1,8 +1,39 @@
-# B6-SFB1102
-Repository for the B6 project of SFB1102 -- http://www.sfb1102.uni-saarland.de
+
+# INFODENS
+
+This toolkit provides a quick way to generate features from text, and expedites the development of feature engineering tasks.
 
 
-infodens
+# Setup & Requirements
+
+The tool is written entirely in Python (2.x or 3.x supported) so it runs without compilation. However, you still need to install the required dependencies which are listed in the Wiki. If you are using Windows, you might find it easier to install a Python distribution like Anaconda or Canopy.
+
+# Running the toolkit
+
+The toolkit takes a configuration file as an input in which all the required parameters are specified.
+
+To run it:
+
+```
+python infodens.py democonfig.txt
+```
+
+The mandatory parameters for the config file are:
+
+```
+input files : inputText classes
+
+featId1 argString1
+featId1 argString2
+.
+.
+.
+```
+where "inputText" is the name of the file containing the sentences (one sentence per line) for which the features will be generated and "classes" which specifies the corresponding class label of each sentence.
+
+The required features are then called by their IDs and after a white space the arguments of that feature are specified if needed.
+
+The current supported features are described in the following table.
 
 
 # List of Features:
@@ -23,3 +54,8 @@ Perplexity language model | 17 | Using SRILM's ngram or KenLM to build a languag
 Perplexity language model POS | 18 | Using SRILM's ngram or KenLM to build a language model then compute the sentence scores (log probabilities) and perplexities for POS tagged sentences | Example: 0,1,0,3,models\myLM.lm <li> Tagged input flag (1/0) </li> <li> Given LM flag (0/1) </li> <li> Given tagged Corpus flag (0/1) </li> <li> Ngram order of model and feature </li> <li> Tagged POS file path (if Tagged inp. flag) </li> <li> LM file Path (if LM flag) </li> <li> Tagged Corpus path (if no LM flag but Tagged Corpus flag) </li>
 Quantile ngram surprisal | 19 | calculates the surprisal ngram | Example: 1,1,4 <li> N in ngram </li> <li> Cutoff frequency </li> <li> Number of quantiles </li>
 Word vector average | 33 | Trains a word2vec model (gensim) and gets the average of all word vectors per sentence | Example: 200 <li> Vector length (default 100) </li>
+
+
+# B6-SFB1102
+This toolkit is part of the B6 project of SFB1102 -- http://www.sfb1102.uni-saarland.de
+
