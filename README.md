@@ -70,6 +70,11 @@ output features: feats.txt libsvm
 
 ```
 
+# Developer's guide
+
+The tool is mainly designed to ease the tasks of feature engineering, the Wiki contains a simple guide to help researchers code their own features. We also hope to encourage researchers and developers to adapt the code to their needs, for example even change the preprocesser and configurator and use the skeleton of the toolkit for other tasks.
+
+
 # List of Features:
 
 Feature Name | ID | Description | Argument string
