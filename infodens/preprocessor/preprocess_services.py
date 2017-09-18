@@ -82,6 +82,10 @@ class Preprocess_Services:
     def languageModelBuilder(self, ngram, corpus, langModelFile, kndiscount=True):
         """Build a language model from given corpus."""
 
+        if not self.kenlmBins and not self.srilmBinaries:
+            print("No Language modeling tools provided!")
+            exit()
+
         if not self.kenlmBins:
             #No Kenlm use SRILM
             binaryLib = ("\"{0}ngram-count\"".format(self.srilmBinaries))

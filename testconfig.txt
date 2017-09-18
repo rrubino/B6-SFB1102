@@ -3,7 +3,7 @@
 #2
 #classifiers : RandomForest
 training corpus: data/testSent2.txt
-srilm path : /home/gilani/Documents/Github/srilm-1.7.2/bin/i686-m64
+#srilm path : /home/gilani/Documents/Github/srilm-1.7.2/bin/i686-m64
 #kenlm : /home/gilani/Documents/Github/kenlm/build/bin
 operating language : eng
 threads : 3
@@ -14,8 +14,8 @@ classifiers : SVC_linear
 #classifiers : Random_Forest
 #3 0,J,N,V,R
 #3 1,J,N,V,R,testSent2.txt
-4 1,1
-4 2,1
+#4 1,1
+#4 2,1
 #20
 #5 1,10
 #5 1,10,1,testSent2.txt
@@ -31,7 +31,7 @@ classifiers : SVC_linear
 17 0,3
 #18 0,0,0,3
 #18 1,0,1,3,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_tagged_Input.txt,C:\Users\Gilanios 2\Documents\GitHub\B6-SFB1102\testSent2.txt_tagged_Corpus.txt
-19 1,1,4
+#19 1,1,4
 #19 2,1,4
 20 0,3
 #21 0,0,0,3

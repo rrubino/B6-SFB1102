@@ -25,18 +25,13 @@ class Surprisal_features(Feature_extractor):
                 if "logprob=" in line:
                     line = str(line).strip().split(" ")
                     if len(feats) < sentCount:
-                        tmp = []
+                        tmp = 0.0
                         if line[3] != "undefined":
                             log10Prob = -float(line[3])
                             log2prob = -np.float32(math.log(10 ** log10Prob, 2))
-                            tmp.append(log2prob)
+                            tmp = log2prob
                         else:
-                            tmp.append(np.float32(0.0))
-                        for i in [5, 7]:
-                            if line[i] != "undefined":
-                                tmp.append(np.float32(line[i]))
-                            else:
-                                tmp.append(np.float32(0.0))
+                            tmp = np.float32(0.0)
                         feats.append(tmp)
         return feats
 
