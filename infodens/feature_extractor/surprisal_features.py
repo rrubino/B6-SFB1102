@@ -82,7 +82,7 @@ class Surprisal_features(Feature_extractor):
             try:
                 __import__('imp').find_module('kenlm')
                 import kenlm
-                model = kenlm.Model(langModel[1:-1])
+                model = kenlm.Model(langModel)
                 probab = []
                 for sent in self.preprocessor.getPlainSentences():
                     log10Prob = model.score(sent, bos=True, eos=True)
@@ -92,7 +92,7 @@ class Surprisal_features(Feature_extractor):
                 return output
             except ImportError:
                 import pynlpl.lm.lm as pineApple
-                arpaLM = pineApple.ARPALanguageModel(langModel[1:-1])
+                arpaLM = pineApple.ARPALanguageModel(langModel)
                 probab = []
                 for sent in self.preprocessor.gettokenizeSents():
                     log10Prob = arpaLM.score(sent)
@@ -166,7 +166,7 @@ class Surprisal_features(Feature_extractor):
             try:
                 __import__('imp').find_module('kenlm')
                 import kenlm
-                model = kenlm.Model(langModel[1:-1])
+                model = kenlm.Model(langModel)
                 probab = []
                 for sent in self.preprocessor.getPOStagged():
                     log10Prob = model.score(sent, bos=True, eos=True)
@@ -176,7 +176,7 @@ class Surprisal_features(Feature_extractor):
                 return output
             except ImportError:
                 import pynlpl.lm.lm as pineApple
-                arpaLM = pineApple.ARPALanguageModel(langModel[1:-1])
+                arpaLM = pineApple.ARPALanguageModel(langModel)
                 probab = []
                 for sent in self.preprocessor.getPOStagged():
                     log10Prob = arpaLM.score(sent)
