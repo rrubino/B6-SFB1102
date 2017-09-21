@@ -33,7 +33,7 @@ class Preprocess_Services:
         """ Extract from each line the integer for class ID. Requires init with Classes file."""
         with codecs.open(inputClasses, encoding='utf-8') as f:
             lines = f.readlines()
-        ids = [int(id) for id in lines]
+        ids = [float(id) for id in lines]
         return ids
 
     def getFileTokens(self, fileOfTokens):
