@@ -9,8 +9,8 @@ operating language : eng
 threads : 3
 folds : 1
 #classifiers : Decision_Tree Random_Forest Ada_Boost Ensemble
-classifiers : SVC_linear 
-#classifiers: SVR_linear
+#classifiers : SVC_linear 
+classifiers: SVR_linear
 #classifiers : SVC_rbf
 #classifiers : Random_Forest
 #3 0,J,N,V,R
@@ -41,7 +41,7 @@ classifiers : SVC_linear
 #output features: feats.txt libsvm
 
 input file : data/testSent2.txt
-input classes:  data/testSentClasses2.txt
-#input classes: data/testSentRegres2.txt
+#input classes:  data/testSentClasses2.txt
+input classes: data/testSentRegres2.txt
 #input files : literature.fr literature.classes
 # input and classifiers are parsed after ':'
