@@ -20,6 +20,16 @@ def runFeatureMethod(mtdCls, featureID,
     return feat
 
 
+def mergeFeats(featMatrices):
+
+    output = sparse.hstack(featMatrices, "lil")
+
+    featVec = "Final feature vector dimensions: {0}".format(output.get_shape())
+    print(featVec)
+
+    return output
+
+
 class Feature_manager:
     """ Validate the config feature requests,
     And call the necessary feature extractors.
@@ -35,6 +45,7 @@ class Feature_manager:
         sys.path.append(os.path.dirname( os.path.dirname( os.path.abspath(__file__) ) ) )
         self.pathname = os.path.dirname(os.path.abspath(feat_extr.__file__))
 
+        # Make class variable
         self.idClassmethod, self.allFeatureIds = self.idClassDictionary()
 
     def checkFeatValidity(self):
@@ -130,7 +141,5 @@ class Feature_manager:
         featCount = output.get_shape()[1]
         featVec = "Feature vector dimensions: " + str(self.sentCount) + "x" + str(featCount)
         print(featVec)
-
-        print("Ready to Classify. ")
 
         return output

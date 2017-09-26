@@ -32,10 +32,13 @@ if __name__ == '__main__':
     import platform
     print("Running Python {0}".format(platform.python_version()))
 
-    if len(sys.argv) > 1:
-        config = sys.argv[1]
-    else:
-        config = "testconfig.txt"
+    config = []
 
-    print("Config file: {0}".format(config))
+    if len(sys.argv) > 1:
+        config = sys.argv[1:]
+    else:
+        config.append("testconfig.txt")
+
+
+    print("Config file(s): {0}".format(config))
     infodensRun(config)
