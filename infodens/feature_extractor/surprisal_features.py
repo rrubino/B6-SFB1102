@@ -28,7 +28,7 @@ class Surprisal_features(Feature_extractor):
                         tmp = 0.0
                         if line[3] != "undefined":
                             log10Prob = -float(line[3])
-                            log2prob = -np.float32(math.log(10 ** log10Prob, 2))
+                            log2prob = log10Prob/math.log(2,10)
                             tmp = log2prob
                         else:
                             tmp = np.float32(0.0)
@@ -81,7 +81,7 @@ class Surprisal_features(Feature_extractor):
                 probab = []
                 for sent in self.preprocessor.getPlainSentences():
                     log10Prob = model.score(sent, bos=True, eos=True)
-                    log2prob = math.log(10**log10Prob, 2)
+                    log2prob = log10Prob / math.log(2, 10)
                     probab.append([log2prob])
                 output = sparse.lil_matrix(probab)
                 return output
@@ -91,7 +91,7 @@ class Surprisal_features(Feature_extractor):
                 probab = []
                 for sent in self.preprocessor.gettokenizeSents():
                     log10Prob = arpaLM.score(sent)
-                    log2prob = math.log(10**log10Prob, 2)
+                    log2prob = log10Prob / math.log(2, 10)
                     probab.append([log2prob])
                 output = sparse.lil_matrix(probab)
                 return output
@@ -165,7 +165,7 @@ class Surprisal_features(Feature_extractor):
                 probab = []
                 for sent in self.preprocessor.getPOStagged():
                     log10Prob = model.score(sent, bos=True, eos=True)
-                    log2prob = math.log(10**log10Prob, 2)
+                    log2prob = log10Prob / math.log(2, 10)
                     probab.append([log2prob])
                 output = sparse.lil_matrix(probab)
                 return output
@@ -175,7 +175,7 @@ class Surprisal_features(Feature_extractor):
                 probab = []
                 for sent in self.preprocessor.getPOStagged():
                     log10Prob = arpaLM.score(sent)
-                    log2prob = math.log(10**log10Prob, 2)
+                    log2prob = log10Prob / math.log(2, 10)
                     probab.append([log2prob])
                 output = sparse.lil_matrix(probab)
                 return output
