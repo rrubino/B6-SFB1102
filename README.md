@@ -94,7 +94,7 @@ Perplexity language model POS | 18 | Using SRILM's ngram or KenLM to build a lan
 Surprisal log probability | 20 | Using SRILM's ngram or KenLM to build a language model then compute the sentence scores in units of bits (log2 probabilities) and perplexities. | Example: 0,3 (Trigrams language model) or 1,3,models\myLM.lm <li> Flag (0/1) Given language model </li> <li> Ngram of the LM and feature </li> <li> Language model file path (if flag is 1) </li>
 Surprisal POS log probability | 21 | Using SRILM's ngram or KenLM to build a language model then compute the sentence scores in units of bits (log2 probabilities) and perplexities for POS tagged sentences | Example: 0,1,0,3,models\myLM.lm <li> Tagged input flag (1/0) </li> <li> Given LM flag (0/1) </li> <li> Given tagged Corpus flag (0/1) </li> <li> Ngram order of model and feature </li> <li> Tagged POS file path (if Tagged inp. flag) </li> <li> LM file Path (if LM flag) </li> <li> Tagged Corpus path (if no LM flag but Tagged Corpus flag) </li>
 Ngram frequency quantile distribution | 19 | Models the input sequence as a frequency distribution over quantiles | Example: 1,1,4 <li> N in ngram </li> <li> Cutoff frequency </li> <li> Number of quantiles </li>
-Word vector average | 33 | Trains a word2vec model (gensim) and gets the average of all word vectors per sentence | Example: 200 <li> Vector length (default 100) </li>
+Word vector average | 33 | Trains or uses a word2vec model (gensim) and gets the average of all word vectors per sentence | Example: 200 <li> Vector length (default 100) </li> or: models\vecModel.ml <li> Path to the word embeddings model </li>
 
 
 # B6-SFB1102
