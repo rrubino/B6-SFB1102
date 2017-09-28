@@ -124,6 +124,8 @@ class Preprocess_Services:
         model = gensim.models.Word2Vec(tokenizedCorpus, size=vecSize, min_count=1, workers=threadsCount)
         print("Word2Vec model done.")
 
+        #model.save("model1")
+
         return model
 
     def ngramMinFreq(self, anNgram, freq, indexing=True):

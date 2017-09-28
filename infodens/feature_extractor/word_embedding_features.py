@@ -1,7 +1,7 @@
 from infodens.feature_extractor.feature_extractor import featid, Feature_extractor
 import numpy as np
 from scipy import sparse
-
+import gensim
 
 class Word_embedding_features(Feature_extractor):
     
@@ -9,26 +9,28 @@ class Word_embedding_features(Feature_extractor):
     def word2vecAverage(self, argString, preprocessReq=0):
         '''Find average word2vec vector of every sentence. '''
 
+        modelFile = ""
+        vecSize = 100
+
         if len(argString) > 0:
-            vecSize = int(argString)
-        else:
-            #default
-            vecSize = 100
+            if argString.isdigit():
+                vecSize = int(argString)
+            else:
+                modelFile = argString
 
         if preprocessReq:
             # Request all preprocessing functions to be prepared
-            self.preprocessor.getWord2vecModel(vecSize)
+            if not modelFile:
+                self.preprocessor.getWord2vecModel(vecSize)
             self.preprocessor.gettokenizeSents()
             return 1
 
-        if len(argString) > 0:
-            vecSize = int(argString)
-        else:
-            #default
-            vecSize = 100
-
         # Uses language Model from config File
-        model = self.preprocessor.getWord2vecModel(vecSize)
+        if not modelFile:
+            model = self.preprocessor.getWord2vecModel(vecSize)
+        else:
+            model = gensim.models.Word2Vec.load(modelFile)
+
         vecAverages = []
 
         for sentence in self.preprocessor.gettokenizeSents():
