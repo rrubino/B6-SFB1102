@@ -21,12 +21,18 @@ class Format:
         writer = Format_writer()
         writer.arffwriteToFile(self.X, self.Y, fileName)
 
+    def csvFormat(self, fileName):
+        writer = Format_writer()
+        writer.csvtoFile(self.X, self.Y, fileName)
+
     def outFormat(self, fileName, formatType):
         print("Writing features to file.")
         if formatType == "libsvm":
             self.libsvmFormat(fileName)
         elif formatType == "arff":
             self.arffFormat(fileName)
+        elif formatType == "csv":
+            self.csvFormat(fileName)
         else:
             self.libsvmFormat(fileName)
             print("Defaulting to libsvm format.")

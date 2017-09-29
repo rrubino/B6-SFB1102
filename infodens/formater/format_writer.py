@@ -8,10 +8,19 @@ Created on Thu Sep 15 08:39:18 2016
 import sklearn
 from scipy import sparse
 
+
 class Format_writer:
     
     def __init__(self):
         self.className = 'format Writer'
+
+    def csvtoFile(self, X, Y, theFile):
+        import numpy
+        Y = sparse.coo_matrix(Y).transpose()
+        data = sparse.hstack([X, Y], "lil")
+
+        # csv assumes dense matrix (takes time for large matrices)
+        numpy.savetxt(theFile, data.todense(), delimiter=',', fmt='%1.6g')
 
     def libsvmwriteToFile(self, X, Y, theFile):
         sklearn.datasets.dump_svmlight_file(X, Y, theFile, zero_based=False)

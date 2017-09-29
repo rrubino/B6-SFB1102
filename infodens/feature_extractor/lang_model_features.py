@@ -78,7 +78,8 @@ class Lang_model_features(Feature_extractor):
                 model = kenlm.Model(langModel)
                 probab = []
                 for sent in self.preprocessor.getPlainSentences():
-                    probab.append([model.score(sent, bos=True, eos=True)])
+                    probab.append([model.score(sent, bos=True, eos=True),
+                                   model.perplexity(sent)])
                 output = sparse.lil_matrix(probab)
                 return output
             except ImportError:
@@ -158,7 +159,8 @@ class Lang_model_features(Feature_extractor):
                 model = kenlm.Model(langModel)
                 probab = []
                 for sent in self.preprocessor.getPOStagged():
-                    probab.append([model.score(sent, bos=True, eos=True)])
+                    probab.append([model.score(sent, bos=True, eos=True),
+                                   model.perplexity(sent)])
                 output = sparse.lil_matrix(probab)
                 return output
             except ImportError:
