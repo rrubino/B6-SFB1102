@@ -35,8 +35,22 @@ class Surprisal_features(Feature_extractor):
                         feats.append(tmp)
         return feats
 
+    def perplexity(self, sentence, sentScore):
+        """
+        Compute perplexity of a sentence.
+        @param sentence One full sentence to score.  Do not include <s> or </s>.
+        (Reused from kenlm pyx)
+
+        """
+        def as_str(data):
+            return data.encode('utf8')
+
+        words = len(as_str(sentence).split()) + 1  # For </s>
+
+        return 2.0 ** (-sentScore / words)
+
     @featid(20)
-    def langModelFeat(self, argString, preprocessReq=0):
+    def surplangModelFeat(self, argString, preprocessReq=0):
         '''
         Extracts n-gram Language Model preplexity features.
         '''
@@ -82,13 +96,14 @@ class Surprisal_features(Feature_extractor):
                 for sent in self.preprocessor.getPlainSentences():
                     log10Prob = model.score(sent, bos=True, eos=True)
                     log2prob = log10Prob / math.log(2, 10)
-                    probab.append([log2prob])
+                    probab.append([log2prob, self.perplexity(sent, log2prob)])
                 output = sparse.lil_matrix(probab)
                 return output
             except ImportError:
                 import pynlpl.lm.lm as pineApple
                 arpaLM = pineApple.ARPALanguageModel(langModel)
                 probab = []
+                print("Using Pineapple")
                 for sent in self.preprocessor.gettokenizeSents():
                     log10Prob = arpaLM.score(sent)
                     log2prob = log10Prob / math.log(2, 10)
@@ -97,7 +112,7 @@ class Surprisal_features(Feature_extractor):
                 return output
 
     @featid(21)
-    def langModelPOSFeat(self, argString, preprocessReq=0):
+    def surplangModelPOSFeat(self, argString, preprocessReq=0):
         '''
         Extracts n-gram POS language model preplexity features.
         '''
@@ -166,7 +181,7 @@ class Surprisal_features(Feature_extractor):
                 for sent in self.preprocessor.getPOStagged():
                     log10Prob = model.score(sent, bos=True, eos=True)
                     log2prob = log10Prob / math.log(2, 10)
-                    probab.append([log2prob])
+                    probab.append([log2prob, self.perplexity(sent, log2prob)])
                 output = sparse.lil_matrix(probab)
                 return output
             except ImportError:
